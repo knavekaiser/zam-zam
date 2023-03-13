@@ -1,0 +1,96 @@
+@import "Components/variables";
+
+.container {
+  color: white;
+  padding: 1rem 0;
+  min-height: calc((var(--vh) * 100));
+  display: grid;
+  grid-template-rows: 1fr min-content;
+  place-items: center;
+  position: relative;
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    object-fit: cover;
+  }
+  form {
+    width: 100%;
+    max-width: 25rem;
+    overflow: hidden;
+    .illustration {
+      object-fit: contain;
+      width: calc(100% + 2rem);
+      height: calc(100% + 2rem);
+      margin: -1rem;
+    }
+    grid-template-columns: 1fr;
+    background: linear-gradient(
+      180deg,
+      rgba($black1, 0.85) 0%,
+      rgba($black2, 1) 100%
+    );
+    border: 1px solid $grey3;
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    .userTypes {
+      button {
+        justify-content: flex-start;
+        padding: 0.3rem;
+        opacity: 0.3;
+        font-weight: 400;
+        min-width: 5rem;
+        &.active {
+          font-weight: 600;
+          opacity: 1;
+        }
+      }
+    }
+    .passField {
+      display: grid;
+      .resetPasswordLink {
+        z-index: 5;
+        margin: auto;
+        margin-right: 0;
+        font-size: 0.8em;
+        margin-bottom: -0.8rem;
+        text-align: right;
+        text-decoration: underline;
+        width: max-content;
+      }
+    }
+    .signUpLink {
+      width: max-content;
+    }
+    .resend {
+      margin-top: -0.75rem;
+      button {
+        display: inline-block;
+        font-size: 1em;
+        background: none;
+        border: none;
+        outline: none;
+        font-weight: bold;
+        cursor: pointer;
+        font-style: italic;
+      }
+    }
+  }
+  footer {
+    padding: 1.5rem;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .container {
+    padding: 1rem;
+    padding-bottom: 0;
+    form {
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+    }
+  }
+}

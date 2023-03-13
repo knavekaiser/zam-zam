@@ -1,0 +1,177 @@
+@import "Components/variables";
+
+.wrapper {
+  container-name: wrapper;
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.content {
+  background: $black2;
+  color: white;
+  margin: 1rem auto;
+  border-radius: 1rem;
+  max-width: 60rem;
+  width: 100%;
+  grid-template-rows: min-content 1fr;
+  border: 1px solid rgba(#fff, 0.03);
+  position: relative;
+  transition: 0.25s margin ease-in-out, 0.25s border-radius ease-in-out;
+  .head {
+    flex-wrap: wrap;
+    grid-gap: 0.5rem;
+    h2 {
+      cursor: pointer;
+    }
+    .filterBtn {
+      margin: auto;
+      margin-right: 1rem;
+      padding: 0;
+      font-size: 1.75rem;
+    }
+    .filters {
+      flex-basis: 100%;
+      display: grid;
+      grid-gap: 0.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+  .data {
+    tr {
+      // grid-template-columns: 6rem 1fr 7rem 8rem 3.5rem;
+      .profileImg {
+        display: none;
+      }
+      .currencySymbol {
+        font-family: "Times New Roman", Times, serif;
+      }
+    }
+  }
+  .addBtn {
+    position: absolute;
+    right: 1rem;
+    font-size: 1.5rem;
+    bottom: 1rem;
+    width: 2em;
+    height: 2em;
+    display: grid;
+    place-items: center;
+    padding: 0;
+  }
+}
+
+.addDataFormModal {
+  width: 100%;
+  max-width: 30rem;
+}
+
+@container wrapper (max-width: 980px) {
+  .content {
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+    border: none;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .content {
+    border-radius: 0;
+    margin: 0;
+    .head {
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(#fff, 0.03);
+      h2 {
+        margin-left: 1rem;
+      }
+      .filters {
+        padding: 1rem;
+        width: calc(100% - 2rem);
+        background: linear-gradient(
+          45deg,
+          $primary-color-dark1 0%,
+          $primary-color-dark2 100%
+        );
+      }
+    }
+    .data {
+      margin: 0;
+      border: none;
+      thead {
+        display: none;
+      }
+      tr {
+        border-radius: 0.5rem;
+        margin: 0.5rem;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        border: none !important;
+        grid-gap: 10px;
+        grid-template-columns: 1fr 0.7fr !important;
+        grid-row-gap: 0px;
+        background: $black1;
+        grid-auto-rows: 1fr;
+        .date {
+          grid-column: 1 / 2;
+          grid-row: 1 / 2;
+          padding-bottom: 0;
+          font-size: 1em;
+        }
+        .profileImg {
+          display: block;
+          grid-row: 1 / 3;
+          margin: -0.5rem 0;
+          img {
+            height: 3.5rem;
+            width: 3.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+        }
+        .name {
+          grid-column: 1 / 2;
+          padding-top: 0;
+        }
+        .deposit {
+          color: $green;
+          grid-column: -1 / -2;
+          grid-row: 2 / 3;
+        }
+        .withdrawal {
+          color: $red;
+          grid-column: -1 / -2;
+        }
+        .status {
+          color: $grey2;
+          font-size: 0.8rem;
+          grid-column: 1 / 2;
+        }
+        .role {
+          text-align: right;
+        }
+        .actions {
+          grid-column: -1 / -2;
+          grid-row: 1 / 2;
+          justify-content: flex-end;
+          padding-top: 0;
+        }
+      }
+    }
+  }
+  .addDataForm {
+    .itemForm {
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: flex-end;
+      .itemName {
+        grid-column: 1 / -1;
+      }
+      & > button {
+        grid-column: 1 / -1;
+      }
+    }
+    .mainForm {
+      grid-template-columns: 1fr;
+    }
+  }
+}
