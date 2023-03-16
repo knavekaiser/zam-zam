@@ -21,11 +21,21 @@
     width: 100%;
     max-width: 25rem;
     overflow: hidden;
-    .illustration {
-      object-fit: contain;
-      width: calc(100% + 2rem);
-      height: calc(100% + 2rem);
-      margin: -1rem;
+    .logo {
+      // display: flex;
+      grid-gap: 0.5rem;
+      align-items: center;
+      font-size: 1.35rem;
+      h1 {
+        font-family: "Times New Roman";
+      }
+      span {
+        display: block;
+        font-size: 0.5em;
+        letter-spacing: 4.12em;
+        max-width: 2em;
+        text-align: center;
+      }
     }
     grid-template-columns: 1fr;
     background: linear-gradient(

@@ -3,8 +3,7 @@ const {
   appConfig: { responseFn },
 } = require("../config");
 
-const { Member, Staff, Role } = require("../models");
-const { dbHelper } = require("../helpers");
+const { Member, Staff } = require("../models");
 const { responseStr } = require("../config/app.config");
 
 verifyToken = async (req, res, next) => {

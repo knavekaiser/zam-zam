@@ -1,13 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Input,
-  Textarea,
-  moment,
-  Select,
-  MobileNumberInput,
-  Combobox,
-} from "Components/elements";
+import { Input, Textarea, moment, Select } from "Components/elements";
 import { useYup, useFetch } from "hooks";
 import { Prompt } from "Components/modal";
 import * as yup from "yup";
@@ -153,45 +146,6 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
       >
         {fields}
 
-        {/* <Input
-          label="Date"
-          type="date"
-          {...register("date")}
-          required
-          error={errors.date}
-        />
-
-        <Select
-          label="Member"
-          url={endpoints.members}
-          control={control}
-          name="member"
-          formOptions={{ required: true }}
-          getQuery={(inputValue, selected) => ({
-            name: inputValue,
-            _id: selected,
-          })}
-          readOnly={edit?.id}
-          handleData={(item) => ({
-            label: item.name,
-            value: item._id,
-          })}
-        />
-
-        <Input
-          label="Amount"
-          type="number"
-          required
-          {...register("amount")}
-          error={errors.amount}
-        />
-
-        <Textarea
-          label="Remark"
-          {...register("remark")}
-          error={errors.remark}
-        /> */}
-
         <div className="btns">
           <button className="btn" disabled={loading}>
             {edit ? "Update" : "Submit"}
@@ -231,12 +185,12 @@ export const Filter = ({ filters = {}, schema, setFilters }) => {
       {schema.some((item) => item.name === "member") && (
         <Select
           label="Members"
-          url={endpoints.members}
+          url={endpoints.findMembers}
           control={control}
           name="members"
           multiple
           getQuery={(inputValue, selected) => ({
-            name: inputValue,
+            ...(inputValue && { name: inputValue }),
             _id: selected,
           })}
           handleData={(item) => ({
@@ -245,6 +199,10 @@ export const Filter = ({ filters = {}, schema, setFilters }) => {
           })}
         />
       )}
+      {schema.some((item) => item.name === "name") && (
+        <Input label="Name" {...register("name")} />
+      )}
+
       <Select
         label="Status"
         control={control}

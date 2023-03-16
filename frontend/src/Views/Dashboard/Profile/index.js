@@ -3,7 +3,7 @@ import { SiteContext } from "SiteContext";
 import { useForm } from "react-hook-form";
 import { Input, AvatarInput } from "Components/elements";
 import * as yup from "yup";
-import s from "./settings.module.scss";
+import s from "./profile.module.scss";
 import { useYup, useFetch } from "hooks";
 import { Prompt } from "Components/modal";
 import { endpoints } from "config";

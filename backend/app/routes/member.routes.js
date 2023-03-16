@@ -35,7 +35,9 @@ module.exports = function (app) {
   );
 
   //------------------------- Management
-  router.get("/", authJwt.verifyToken, controller.find);
+  router.post("/", authJwt.verifyToken, controller.create);
+  router.get("/", authJwt.verifyToken, controller.get);
+  router.get("/find", authJwt.verifyToken, controller.find);
   router.put("/:_id/activate", authJwt.verifyToken, controller.activate);
   router.put("/:_id", authJwt.verifyToken, controller.update);
 

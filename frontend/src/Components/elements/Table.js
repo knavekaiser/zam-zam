@@ -27,7 +27,9 @@ export const Table = ({
   actions,
   loading,
   placeholder,
+  onScroll,
 }) => {
+  const scrollPos = useRef(0);
   const tbody = useRef();
   const table = useRef();
   useEffect(() => {
@@ -46,6 +48,16 @@ export const Table = ({
       className={`${s.table} ${className || ""} ${actions ? s.actions : ""}`}
       cellPadding={0}
       cellSpacing={0}
+      {...(onScroll && {
+        onScroll: (e) => {
+          if (scrollPos.current < e.target.scrollTop) {
+            onScroll("down");
+          } else {
+            onScroll("up");
+          }
+          scrollPos.current = e.target.scrollTop;
+        },
+      })}
     >
       {columns && (
         <thead>

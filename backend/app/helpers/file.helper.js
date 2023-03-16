@@ -11,7 +11,6 @@ exports.deleteFiles = (paths) => {
       });
     });
   } else {
-    console.log(paths, uploadDir + paths.replace(appConfig.uploadDir, ""));
     fs.unlink(uploadDir + paths.replace(appConfig.uploadDir, ""), (err) => {
       // store reminder to remove this file later
     });

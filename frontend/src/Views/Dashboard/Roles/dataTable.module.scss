@@ -1,0 +1,147 @@
+@import "Components/variables";
+
+.wrapper {
+  container-name: wrapper;
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.content {
+  background: $black2;
+  color: white;
+  margin: 1rem auto;
+  border-radius: 1rem;
+  max-width: 60rem;
+  width: 100%;
+  grid-template-rows: min-content 1fr;
+  border: 1px solid rgba(#fff, 0.03);
+  position: relative;
+  transition: 0.25s margin ease-in-out, 0.25s border-radius ease-in-out;
+  .head {
+    flex-wrap: wrap;
+    grid-gap: 0.5rem;
+    h2 {
+      cursor: pointer;
+    }
+    .filterBtn {
+      margin: auto;
+      margin-right: 1rem;
+      padding: 0;
+      font-size: 1.75rem;
+    }
+    .filters {
+      flex-basis: 100%;
+      display: grid;
+      grid-gap: 0.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+  .addBtn {
+    position: absolute;
+    right: 1rem;
+    font-size: 1.5rem;
+    bottom: 1rem;
+    width: 2em;
+    height: 2em;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    transform: translateY(4.5rem);
+    transition: 0.25s transform ease-in-out;
+    &.show {
+      transform: translateY(0);
+    }
+  }
+}
+.addForm {
+  .groups {
+    display: grid;
+    grid-gap: 1rem;
+    h3 {
+      margin-bottom: -1rem;
+    }
+    .permissionErr {
+      color: red;
+      font-size: 0.8rem;
+    }
+    .group {
+      display: grid;
+      grid-gap: 0.5rem;
+      .groupLabel {
+        display: block;
+        border-bottom: 1px solid $grey3;
+        padding: 0.5rem 0;
+      }
+      .permissions {
+        margin-left: 1rem;
+        display: grid;
+        grid-gap: 0.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 150px));
+        .checkbox {
+          // cursor: pointer !important;
+          label {
+            cursor: pointer !important;
+          }
+        }
+        input[type="checkbox"] {
+          cursor: pointer !important;
+          height: 16px;
+          width: 16px;
+        }
+      }
+    }
+  }
+}
+
+.addFormModal {
+  width: 100%;
+  max-width: 62rem;
+  form {
+  }
+}
+
+@container wrapper (max-width: 980px) {
+  .content {
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+    border: none;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .content {
+    border-radius: 0;
+    margin: 0;
+    .head {
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(#fff, 0.03);
+      h2 {
+        margin-left: 1rem;
+      }
+      .filters {
+        padding: 1rem;
+        width: calc(100% - 2rem);
+        background: linear-gradient(
+          45deg,
+          $primary-color-dark1 0%,
+          $primary-color-dark2 100%
+        );
+      }
+    }
+    .data {
+      margin: 0;
+      border: none;
+    }
+  }
+  .addForm {
+    .groups {
+      .group {
+        .permissions {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}

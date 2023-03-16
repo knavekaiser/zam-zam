@@ -75,13 +75,21 @@ exports.getPermissions = async (req, res) => {
         ...group,
         permissions: [
           { label: `View`, value: `${group.name}_read` },
-          { label: `Add`, value: `${group.name}_create` },
+          ...(!["member"].includes(group.name)
+            ? [{ label: `Add`, value: `${group.name}_create` }]
+            : []),
           { label: `Update`, value: `${group.name}_update` },
-          { label: `Approve`, value: `${group.name}_approve` },
-          {
-            label: `Request Delete`,
-            value: `${group.name}_request_delete`,
-          },
+          ...(!["role"].includes(group.name)
+            ? [{ label: `Approve`, value: `${group.name}_approve` }]
+            : []),
+          ...(["deposit", "expense", "withdrawal"].includes(group.name)
+            ? [
+                {
+                  label: `Request Delete`,
+                  value: `${group.name}_request_delete`,
+                },
+              ]
+            : []),
           { label: `Delete`, value: `${group.name}_delete` },
         ],
       })),

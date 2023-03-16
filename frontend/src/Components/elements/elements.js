@@ -1350,19 +1350,21 @@ export const MobileNumberInput = ({
     />
   );
 };
-export const Checkbox = forwardRef(({ label, readOnly, ...rest }, ref) => {
-  const id = useRef(Math.random().toString(36).substr(-8));
-  return (
-    <section
-      className={s.checkbox}
-      style={readOnly ? { pointerEvents: "none" } : {}}
-      data-testid="checkbox-input"
-    >
-      <input ref={ref} id={id.current} type="checkbox" {...rest} />
-      {label && <label htmlFor={id.current}>{label}</label>}
-    </section>
-  );
-});
+export const Checkbox = forwardRef(
+  ({ label, readOnly, className, ...rest }, ref) => {
+    const id = useRef(Math.random().toString(36).substr(-8));
+    return (
+      <section
+        className={`${s.checkbox} ${className || ""}`}
+        style={readOnly ? { pointerEvents: "none" } : {}}
+        data-testid="checkbox-input"
+      >
+        <input ref={ref} id={id.current} type="checkbox" {...rest} />
+        {label && <label htmlFor={id.current}>{label}</label>}
+      </section>
+    );
+  }
+);
 
 export const Tabs = ({
   tabs,

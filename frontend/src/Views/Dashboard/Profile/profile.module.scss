@@ -1,0 +1,39 @@
+@import "Components/variables";
+
+.wrapper {
+  container-name: wrapper;
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.container {
+  background: $black2;
+  color: white;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  max-width: 30rem;
+  width: 100%;
+  grid-template-rows: min-content 1fr;
+  border: 1px solid rgba(#fff, 0.03);
+  position: relative;
+  transition: 0.25s margin ease-in-out, 0.25s border-radius ease-in-out;
+  form {
+    display: grid;
+    justify-items: center;
+    & > *:not(.avatar) {
+      width: 100%;
+    }
+    width: 100%;
+  }
+}
+
+@container wrapper (max-width: 980px) {
+  .container {
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+    border: none;
+  }
+}

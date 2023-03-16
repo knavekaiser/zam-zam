@@ -110,6 +110,13 @@ const Data = ({
               ? [{ label: "Action", className: "text-right" }]
               : []),
           ]}
+          onScroll={(dir) => {
+            if (dir === "down") {
+              setShowAddBtn(false);
+            } else {
+              setShowAddBtn(true);
+            }
+          }}
         >
           {data.map((item) => (
             <tr key={item._id} style={trStyle}>
@@ -321,9 +328,9 @@ const Data = ({
           />
         </Modal>
 
-        {showAddBtn && checkPermission(`${name}_create`) && (
+        {checkPermission(`${name}_create`) && (
           <button
-            className={`btn m-a mr-0 ${s.addBtn}`}
+            className={`btn m-a mr-0 ${s.addBtn} ${showAddBtn ? s.show : ""}`}
             onClick={() => setAddData(true)}
           >
             <GoPlus />

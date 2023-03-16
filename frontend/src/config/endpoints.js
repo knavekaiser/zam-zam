@@ -23,6 +23,7 @@ const endpoints = {
   expenses: `${baseApiUrl}/api/expenses`,
   withdrawals: `${baseApiUrl}/api/withdrawals`,
   members: `${baseApiUrl}/api/members`,
+  findMembers: `${baseApiUrl}/api/members/find`,
   roles: `${baseApiUrl}/api/roles`,
   staffs: `${baseApiUrl}/api/staffs`,
   permissions: `${baseApiUrl}/api/permissions`,

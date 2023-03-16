@@ -27,6 +27,7 @@ exports.findAll = async (req, res) => {
       };
     }
     Deposit.find(conditions)
+      .sort("date")
       .populate("member", "name email photo phone")
       .then((data) => {
         responseFn.success(res, { data });
@@ -46,6 +47,10 @@ exports.create = async (req, res) => {
     })
       .save()
       .then(async (data) => {
+        data = await Deposit.findOne({ _id: data.id }).populate(
+          "member",
+          "name email photo phone"
+        );
         return responseFn.success(res, { data });
       })
       .catch((err) => responseFn.error(res, {}, err.message));

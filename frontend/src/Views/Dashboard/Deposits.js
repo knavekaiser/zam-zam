@@ -35,11 +35,11 @@ export default function Deposits({ setSidebarOpen }) {
         {
           fieldType: "select",
           label: "Member",
-          url: endpoints.members,
+          url: endpoints.findMembers,
           name: "member",
           formOptions: { required: true },
           getQuery: (inputValue, selected) => ({
-            name: inputValue,
+            ...(inputValue && { name: inputValue }),
             _id: selected,
           }),
           handleData: (item) => ({

@@ -245,6 +245,86 @@ exports.activate = async (req, res) => {
   }
 };
 
+exports.get = async (req, res) => {
+  try {
+    const conditions = {
+      // add filters here,
+    };
+    if ("name" in req.query) {
+      conditions.name = {
+        $regex: req.query.name,
+        $options: "i",
+      };
+    }
+    if ("status" in req.query) {
+      conditions.status = req.query.status;
+    }
+    Member.aggregate([
+      { $match: conditions },
+      {
+        $lookup: {
+          from: "deposits",
+          as: "deposit",
+          let: { member_id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$member", "$$member_id"] },
+                status: "approved",
+              },
+            },
+            { $group: { _id: null, amount: { $sum: "$amount" } } },
+          ],
+        },
+      },
+      { $set: { deposit: { $first: "$deposit.amount" } } },
+      {
+        $lookup: {
+          from: "withdrawals",
+          as: "withdrawal",
+          let: { member_id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$member", "$$member_id"] },
+                status: "approved",
+              },
+            },
+            { $group: { _id: null, amount: { $sum: "$amount" } } },
+          ],
+        },
+      },
+      { $set: { withdrawal: { $first: "$withdrawal.amount" } } },
+      { $project: { __v: 0, password: 0 } },
+    ])
+      .then((data) => responseFn.success(res, { data }))
+      .catch((err) => responseFn.error(res, {}, err.message));
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
+exports.create = async (req, res) => {
+  try {
+    req.body.password = appHelper.generateHash(req.body.password);
+
+    const role = await Role.findOne({ name: "Member" });
+    new Member({
+      ...req.body,
+      role: role?._id || null,
+    })
+      .save()
+      .then(async (user) => {
+        return responseFn.success(res, { data: user });
+      })
+      .catch((err) => {
+        return responseFn.error(res, {}, err.message);
+      });
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
 exports.update = async (req, res) => {
   try {
     const update = {};
@@ -279,7 +359,14 @@ exports.find = (req, res) => {
   try {
     const conditions = {
       // add filters here,
+      status: "active",
     };
+    if ("name" in req.query) {
+      conditions.name = {
+        $regex: req.query.name,
+        $options: "i",
+      };
+    }
     Member.aggregate([
       { $match: conditions },
       {
@@ -288,45 +375,25 @@ exports.find = (req, res) => {
           as: "deposit",
           pipeline: [
             { $match: { status: "approved" } },
-            {
-              $group: {
-                _id: null,
-                amount: { $sum: "$amount" },
-              },
-            },
+            { $group: { _id: null, amount: { $sum: "$amount" } } },
           ],
         },
       },
-      {
-        $set: {
-          deposit: { $first: "$deposit.amount" },
-        },
-      },
+      { $set: { deposit: { $first: "$deposit.amount" } } },
       {
         $lookup: {
           from: "withdrawals",
           as: "withdrawal",
           pipeline: [
             { $match: { status: "approved" } },
-            {
-              $group: {
-                _id: null,
-                amount: { $sum: "$amount" },
-              },
-            },
+            { $group: { _id: null, amount: { $sum: "$amount" } } },
           ],
         },
       },
-      {
-        $set: {
-          withdrawal: { $first: "$withdrawal.amount" },
-        },
-      },
+      { $set: { withdrawal: { $first: "$withdrawal.amount" } } },
       { $project: { __v: 0, password: 0 } },
     ])
-      .then((data) => {
-        responseFn.success(res, { data });
-      })
+      .then((data) => responseFn.success(res, { data }))
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
