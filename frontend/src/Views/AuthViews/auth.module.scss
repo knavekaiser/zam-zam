@@ -90,17 +90,33 @@
     }
   }
   footer {
+    font-size: 0.8rem;
     padding: 1.5rem;
   }
 }
 
 @media only screen and (max-width: 480px) {
   .container {
-    padding: 1rem;
+    padding: 0;
     padding-bottom: 0;
     form {
+      border-radius: 0;
+      height: 100%;
       grid-template-columns: 1fr;
+      grid-auto-rows: min-content;
+      justify-items: center;
       grid-gap: 1rem;
+      .logoContainer {
+        display: grid;
+      }
+      & > *:not(.logoContainer) {
+        width: 100%;
+      }
+    }
+    footer {
+      width: 100%;
+      background: rgba(#000, 0.85);
+      padding: 1rem;
     }
   }
 }

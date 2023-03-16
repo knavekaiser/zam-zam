@@ -55,7 +55,9 @@ const Form = ({ userType, setUserType }) => {
       })}
     >
       <div className={`grid gap-2`}>
-        <div className="flex justify-space-between align-center">
+        <div
+          className={`flex justify-space-between align-center ${s.logoContainer}`}
+        >
           <div className={s.logo}>
             {/* <img src="/assets/Zam-Zam-1.png" /> */}
             <h1 className="text-center">ZAM-ZAM</h1>

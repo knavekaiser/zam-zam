@@ -7,17 +7,17 @@ export default function Deposits({ setSidebarOpen }) {
   const { user } = useContext(SiteContext);
   return (
     <DataTable
-      key="Expenses"
-      title="Expenses"
-      name="expense"
+      key="Staffs"
+      title="Staffs"
+      name="staff"
       setSidebarOpen={setSidebarOpen}
-      endpoint={endpoints.expenses}
+      endpoint={endpoints.staffs}
       trStyle={{
-        gridTemplateColumns: `6rem 1fr 7rem ${
+        gridTemplateColumns: `1fr 9rem ${
           user.userType === "staff" ? "8rem" : ""
         } ${
           ["approve", "update", "delete"].some((item) =>
-            user.role?.permissions?.includes(`expense_${item}`)
+            user.role?.permissions?.includes(`staff_${item}`)
           )
             ? "3rem"
             : ""
@@ -27,24 +27,32 @@ export default function Deposits({ setSidebarOpen }) {
       schema={[
         {
           fieldType: "input",
-          type: "date",
-          name: "date",
-          label: "Date",
+          name: "name",
+          label: "Name",
           required: true,
         },
         {
-          fieldType: "input",
-          type: "number",
-          name: "amount",
-          label: "Amount",
-          required: true,
+          fieldType: "select",
+          label: "Role",
+          url: endpoints.roles,
+          name: "role",
+          formOptions: { required: true },
+          getQuery: (inputValue, selected) => ({
+            ...(inputValue && { name: inputValue }),
+            _id: selected,
+          }),
+          handleData: (item) => ({
+            label: item.name,
+            value: item._id,
+          }),
+          disabledOnEdit: true,
         },
-        {
-          fieldType: "textarea",
-          name: "description",
-          label: "Description",
-          required: true,
-        },
+        // {
+        //   fieldType: "textarea",
+        //   name: "description",
+        //   label: "Description",
+        //   required: true,
+        // },
       ]}
     />
   );
