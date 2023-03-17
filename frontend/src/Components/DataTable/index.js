@@ -129,7 +129,7 @@ const Data = ({
                 <>
                   {window.innerWidth <= 480 && (
                     <td className={s.profileImg}>
-                      <img src={user.photo || "/assets/avatar.webp"} />
+                      <img src={item.photo || "/assets/avatar.webp"} />
                     </td>
                   )}
                   <td className={s.name}>{item.name}</td>
