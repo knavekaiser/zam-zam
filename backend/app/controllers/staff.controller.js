@@ -3,6 +3,7 @@ const {
 } = require("../config");
 const {
   appHelper: { genId, ...appHelper },
+  smsHelper,
   fileHelper,
 } = require("../helpers");
 
@@ -219,7 +220,11 @@ exports.activate = async (req, res) => {
       { new: true }
     )
       .populate("role", "name permissions")
-      .then((data) =>
+      .then(async (data) => {
+        await smsHelper.sendSms({
+          to: data.mophone,
+          message: `আপনার অ্যাকাউন্ট অ্যাক্টিভ করা হয়েছে`,
+        });
         responseFn.success(
           res,
           {
@@ -231,8 +236,8 @@ exports.activate = async (req, res) => {
             },
           },
           responseStr.record_updated
-        )
-      )
+        );
+      })
       .catch((error) => responseFn.error(res, {}, error.message, 500));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);

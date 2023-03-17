@@ -220,12 +220,16 @@ exports.updateProfile = async (req, res) => {
 exports.activate = async (req, res) => {
   try {
     Member.findOneAndUpdate(
-      { _id: req.params._id },
+      { _id: req.params._id, status: "pending-activation" },
       { status: "active" },
       { new: true }
     )
       .populate("role", "name permissions")
-      .then((data) =>
+      .then(async (data) => {
+        await smsHelper.sendSms({
+          to: data.mophone,
+          message: `আপনার অ্যাকাউন্ট অ্যাক্টিভ করা হয়েছে`,
+        });
         responseFn.success(
           res,
           {
@@ -237,8 +241,8 @@ exports.activate = async (req, res) => {
             },
           },
           responseStr.record_updated
-        )
-      )
+        );
+      })
       .catch((error) => responseFn.error(res, {}, error.message, 500));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
