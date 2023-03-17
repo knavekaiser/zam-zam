@@ -1,7 +1,6 @@
 const {
-  appConfig: { responseFn, responseStr },
+  appConfig: { responseFn, responseStr, smsTemplate },
 } = require("../config");
-const { smsTemplate } = require("../config/app.config");
 const { smsHelper } = require("../helpers");
 
 const { Deposit } = require("../models");

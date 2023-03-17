@@ -1,7 +1,6 @@
 const {
-  appConfig: { responseFn, responseStr, ...appConfig },
+  appConfig: { responseFn, responseStr, smsTemplate, ...appConfig },
 } = require("../config");
-const { smsTemplate } = require("../config/app.config");
 const {
   appHelper: { genId, ...appHelper },
   smsHelper,
@@ -65,9 +64,11 @@ exports.forgotPassword = async (req, res) => {
       })
         .save()
         .then(async (otpRec) => {
-          const result = await smsHelper.send({
+          const result = await smsHelper.sendSms({
             to: staff.phone,
-            message: `Dear ${staff.name}, Please use ${otp} to reset your password. ZAM-ZAM`,
+            message: smsTemplate.password_otp
+              .replace("{name}", staff.name)
+              .replace("{otp}", otp),
           });
           if (result.success) {
             return responseFn.success(
