@@ -45,7 +45,6 @@ export default function Deposits({ setSidebarOpen }) {
             label: item.name,
             value: item._id,
           }),
-          disabledOnEdit: true,
         },
         // {
         //   fieldType: "textarea",
