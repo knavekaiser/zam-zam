@@ -1,6 +1,7 @@
 const {
   appConfig: { responseFn, responseStr, ...appConfig },
 } = require("../config");
+const { smsTemplate } = require("../config/app.config");
 const {
   appHelper: { genId, ...appHelper },
   smsHelper,
@@ -222,8 +223,8 @@ exports.activate = async (req, res) => {
       .populate("role", "name permissions")
       .then(async (data) => {
         await smsHelper.sendSms({
-          to: data.mophone,
-          message: `আপনার অ্যাকাউন্ট অ্যাক্টিভ করা হয়েছে`,
+          to: data.phone,
+          message: smsTemplate.account_activated,
         });
         responseFn.success(
           res,

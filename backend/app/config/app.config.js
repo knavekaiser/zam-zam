@@ -65,6 +65,15 @@ module.exports = {
     forbidden: "Forbidden",
   },
 
+  smsTemplate: {
+    account_activated: `আপনার অ্যাকাউন্ট অ্যাক্টিভ করা হয়েছে।
+    জম-জম টাওয়ার`,
+    money_deposited: `প্রিয় {name}, ৳{amount} জমা হয়েছে।
+    জম-জম টাওয়ার`,
+    money_withdrawed: `প্রিয় {name}, ৳{amount} তোলা হয়েছে।
+    জম-জম টাওয়ার`,
+  },
+
   uploadDir: "/assets/uploads",
   otpTimeout: 120, //in seconds
   passwordResetOtpAttepts: 5,

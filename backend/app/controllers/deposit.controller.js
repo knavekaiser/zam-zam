@@ -1,6 +1,7 @@
 const {
   appConfig: { responseFn, responseStr },
 } = require("../config");
+const { smsTemplate } = require("../config/app.config");
 const { smsHelper } = require("../helpers");
 
 const { Deposit } = require("../models");
@@ -91,9 +92,9 @@ exports.approve = async (req, res) => {
           if (data.member) {
             smsHelper.sendSms({
               to: data.member.phone,
-              message: `Dear ${data.member.name}, ৳${data.amount.toLocaleString(
-                "bn-BD"
-              )} জমা হয়েছে।`,
+              message: smsTemplate.money_deposited
+                .replace("{name}", data.member.name)
+                .replace("{amount}", data.amount.toLocaleString("bn-BD")),
             });
           }
           return responseFn.success(res, { data }, responseStr.record_updated);
