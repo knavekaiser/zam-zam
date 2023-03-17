@@ -60,20 +60,20 @@ exports.login = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
   try {
-    const user = await Member.findOne({ phone: req.body.phone });
+    const member = await Member.findOne({ phone: req.body.phone });
 
-    if (user) {
+    if (member) {
       const otp = genId(6, { numbers: true });
       new Otp({
-        user: user._id,
+        user: member._id,
         code: appHelper.generateHash(otp),
       })
         .save()
         .then(async (otpRec) => {
           const result = await smsHelper.sendSms({
-            to: staff.phone,
+            to: member.phone,
             message: smsTemplate.password_otp
-              .replace("{name}", staff.name)
+              .replace("{name}", member.name)
               .replace("{otp}", otp),
           });
           if (result.success) {
@@ -81,7 +81,7 @@ exports.forgotPassword = async (req, res) => {
               res,
               {
                 data: {
-                  phone: user.phone,
+                  phone: member.phone,
                   timeout: appConfig.otpTimeout,
                 },
               },
@@ -94,7 +94,7 @@ exports.forgotPassword = async (req, res) => {
         })
         .catch(async (err) => {
           if (err.code === 11000) {
-            const otpRec = await Otp.findOne({ user: user._id });
+            const otpRec = await Otp.findOne({ user: member._id });
 
             return responseFn.error(
               res,
@@ -107,7 +107,7 @@ exports.forgotPassword = async (req, res) => {
               responseStr.otp_sent_already
             );
           }
-          return responseFn.error(res, {}, error.message, 500);
+          return responseFn.error(res, {}, err.message, 500);
         });
     } else {
       return responseFn.error(res, {}, responseStr.record_not_found);

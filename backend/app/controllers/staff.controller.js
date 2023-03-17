@@ -101,7 +101,7 @@ exports.forgotPassword = async (req, res) => {
               responseStr.otp_sent_already
             );
           }
-          return responseFn.error(res, {}, error.message, 500);
+          return responseFn.error(res, {}, err.message, 500);
         });
     } else {
       return responseFn.error(res, {}, responseStr.record_not_found);
