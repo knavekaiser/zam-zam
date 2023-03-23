@@ -44,6 +44,11 @@ module.exports = function (app) {
     controller.activate
   );
   router.put("/:_id", authJwt.verifyToken("member_update"), controller.update);
+  router.delete(
+    "/:_id",
+    authJwt.verifyToken("member_delete"),
+    controller.delete
+  );
 
   app.use("/api/members", router);
 };

@@ -363,6 +363,16 @@ exports.update = async (req, res) => {
   }
 };
 
+exports.delete = async (req, res) => {
+  try {
+    Member.deleteOne({ _id: req.params._id })
+      .then((data) => responseFn.success(res, {}, responseStr.record_deleted))
+      .catch((error) => responseFn.error(res, {}, error.message, 500));
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
 exports.find = (req, res) => {
   try {
     const conditions = {
