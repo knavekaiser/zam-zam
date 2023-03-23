@@ -2,6 +2,11 @@ module.exports = mongoose.model(
   "Deposit",
   new Schema(
     {
+      milestone: {
+        type: Schema.Types.ObjectId,
+        ref: "Milestone",
+        required: true,
+      },
       member: { type: Schema.Types.ObjectId, ref: "Member", required: true },
       addedBy: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
       approvedBy: { type: Schema.Types.ObjectId, ref: "Staff" },

@@ -174,7 +174,7 @@ exports.profile = (req, res) => {
       .populate("role", "name permissions")
       .then(async (data) =>
         responseFn.success(res, {
-          data: { ...data._doc, userType: "business" },
+          data: { ...data._doc, userType: "member" },
         })
       )
       .catch((error) => responseFn.error(res, {}, error.message, 500));

@@ -1,10 +1,8 @@
-const authJwt = require("./authJwt");
-const file = require("./file");
 const { validate } = require("./validation");
 
 module.exports = {
-  authJwt,
-  file,
+  authJwt: require("./authJwt"),
+  file: require("./file"),
   validate,
   whitelabel: require("./whitelabel"),
 };

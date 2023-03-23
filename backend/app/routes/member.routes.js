@@ -21,10 +21,10 @@ module.exports = function (app) {
   router.post("/logout", controller.logout);
 
   //-------------------------- Profile
-  router.get("/profile", authJwt.verifyToken, controller.profile);
+  router.get("/profile", authJwt.verifyToken(), controller.profile);
   router.put(
     "/profile",
-    authJwt.verifyToken,
+    authJwt.verifyToken(),
     file.upload({ name: "photo" }, "/", {
       fileSize: appConfig.supportedImageSizes,
       fileTypes: appConfig.supportedImageTypes,
@@ -35,11 +35,15 @@ module.exports = function (app) {
   );
 
   //------------------------- Management
-  router.post("/", authJwt.verifyToken, controller.create);
-  router.get("/", authJwt.verifyToken, controller.get);
-  router.get("/find", authJwt.verifyToken, controller.find);
-  router.put("/:_id/activate", authJwt.verifyToken, controller.activate);
-  router.put("/:_id", authJwt.verifyToken, controller.update);
+  router.post("/", authJwt.verifyToken("member_create"), controller.create);
+  router.get("/", authJwt.verifyToken("member_read"), controller.get);
+  router.get("/find", authJwt.verifyToken(), controller.find);
+  router.put(
+    "/:_id/activate",
+    authJwt.verifyToken("member_approve"),
+    controller.activate
+  );
+  router.put("/:_id", authJwt.verifyToken("member_update"), controller.update);
 
   app.use("/api/members", router);
 };

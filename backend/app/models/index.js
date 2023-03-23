@@ -17,4 +17,5 @@ module.exports = {
   Expense: require("./expense.model"),
   Withdrawal: require("./withdrawal.model"),
   Role: require("./role.model"),
+  Milestone: require("./milestone.model"),
 };
