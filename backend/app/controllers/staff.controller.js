@@ -200,6 +200,7 @@ exports.updateProfile = async (req, res) => {
           {
             data: {
               ...data._doc,
+              userType: "staff",
               password: undefined,
               __v: undefined,
               updatedAt: undefined,

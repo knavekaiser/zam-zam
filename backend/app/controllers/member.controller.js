@@ -189,7 +189,7 @@ exports.updateProfile = async (req, res) => {
       fileHelper.deleteFiles(req.authUser.photo);
     }
     const update = {};
-    ["name", "email"].forEach((key) => {
+    ["name", "email", "photo"].forEach((key) => {
       if (key in req.body) {
         update[key] = req.body[key];
       }
@@ -203,6 +203,7 @@ exports.updateProfile = async (req, res) => {
             {
               data: {
                 ...data._doc,
+                userType: "member",
                 password: undefined,
                 __v: undefined,
                 updatedAt: undefined,
@@ -237,6 +238,7 @@ exports.activate = async (req, res) => {
           {
             data: {
               ...data._doc,
+              userType: "member",
               password: undefined,
               __v: undefined,
               updatedAt: undefined,
