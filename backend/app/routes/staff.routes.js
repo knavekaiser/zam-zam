@@ -18,7 +18,7 @@ module.exports = function (app) {
     validate(schema.resetPassword),
     controller.resetPassword
   );
-  router.post("/logout", controller.logout);
+  router.post("/logout", authJwt.verifyToken(), controller.logout);
 
   //-------------------------- Profile
   router.get("/profile", authJwt.verifyToken(), controller.profile);

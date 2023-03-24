@@ -26,8 +26,9 @@ import {
   BsPersonBadge,
   BsFileMedicalFill,
   BsFileMedical,
+  BsCalendar3Range,
+  BsCalendar3RangeFill,
 } from "react-icons/bs";
-import { RiListSettingsFill } from "react-icons/ri";
 
 import s from "./dashboard.module.scss";
 
@@ -39,6 +40,7 @@ import Members from "./Members";
 import Staffs from "./Staffs";
 import Profile from "./Profile";
 import Roles from "./Roles";
+import Milestones from "./Milestones";
 
 const MainApp = () => {
   const { user, setUser, checkPermission } = useContext(SiteContext);
@@ -84,6 +86,16 @@ const MainApp = () => {
           },
         ]
       : []),
+    ...(checkPermission("milestone_read")
+      ? [
+          {
+            icon: <BsCalendar3Range style={{ fontSize: ".96em" }} />,
+            activeIcon: <BsCalendar3RangeFill style={{ fontSize: ".96em" }} />,
+            label: "Milestones",
+            path: paths.milestones,
+          },
+        ]
+      : []),
     ...(checkPermission("member_read")
       ? [
           {
@@ -126,11 +138,7 @@ const MainApp = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate(
-        localStorage.getItem("userType") === "staff"
-          ? paths.staffSignIn
-          : paths.signIn
-      );
+      navigate(paths.signIn);
     }
   }, []);
 
@@ -176,10 +184,12 @@ const MainApp = () => {
           className={`clear ${s.logoutBtn}`}
           title="Log out"
           onClick={() => {
-            logout().then(({ data }) => {
+            logout({
+              deviceId: localStorage.getItem("deviceId"),
+            }).then(({ data }) => {
               if (data.success) {
                 setUser(null);
-                sessionStorage.removeItem("access_token");
+                localStorage.removeItem("access_token");
               }
             });
           }}
@@ -214,6 +224,10 @@ const MainApp = () => {
         <Route
           path={paths.withdrawals}
           element={<Withdrawals setSidebarOpen={setSidebarOpen} />}
+        />
+        <Route
+          path={paths.milestones}
+          element={<Milestones setSidebarOpen={setSidebarOpen} />}
         />
         <Route
           path={paths.members}

@@ -24,44 +24,52 @@ const Dashboard = ({ setSidebarOpen }) => {
   return (
     <div className={`${s.content} grid gap-1 m-a p-1`}>
       <div className="flex all-columns">
-        <h2 onClick={() => setSidebarOpen(true)}>Dashboard</h2>
+        <h2 onClick={() => setSidebarOpen((prev) => !prev)}>Dashboard</h2>
       </div>
-      <div className={s.card}>
-        <label>Current Balance</label>
-        <p>
-          <span className={s.currencySymbol}>৳</span>
-          <span className={s.amount}>
-            {(data.currentBalance || 0).toLocaleString("en-IN")}
-          </span>
-        </p>
-      </div>
-      <div className={s.card}>
-        <label>Total Deposit</label>
-        <p>
-          <span className={s.currencySymbol}>৳</span>
-          <span className={s.amount}>
-            {(data.totalDeposit || 0).toLocaleString("en-IN")}
-          </span>
-        </p>
-      </div>
-      <div className={s.card}>
-        <label>Total Expense</label>
-        <p>
-          <span className={s.currencySymbol}>৳</span>
-          <span className={s.amount}>
-            {(data.totalExpense || 0).toLocaleString("en-IN")}
-          </span>
-        </p>
-      </div>
-      <div className={s.card}>
-        <label>Total Withdrawal</label>
-        <p>
-          <span className={s.currencySymbol}>৳</span>
-          <span className={s.amount}>
-            {(data.totalWithdrawal || 0).toLocaleString("en-IN")}
-          </span>
-        </p>
-      </div>
+      {"currentBalance" in data && (
+        <div className={s.card}>
+          <label>Current Balance</label>
+          <p>
+            <span className={s.currencySymbol}>৳</span>
+            <span className={s.amount}>
+              {(data.currentBalance || 0).toLocaleString("en-IN")}
+            </span>
+          </p>
+        </div>
+      )}
+      {"totalDeposit" in data && (
+        <div className={s.card}>
+          <label>Total Deposit</label>
+          <p>
+            <span className={s.currencySymbol}>৳</span>
+            <span className={s.amount}>
+              {(data.totalDeposit || 0).toLocaleString("en-IN")}
+            </span>
+          </p>
+        </div>
+      )}
+      {"totalExpense" in data && (
+        <div className={s.card}>
+          <label>Total Expense</label>
+          <p>
+            <span className={s.currencySymbol}>৳</span>
+            <span className={s.amount}>
+              {(data.totalExpense || 0).toLocaleString("en-IN")}
+            </span>
+          </p>
+        </div>
+      )}
+      {"totalWithdrawal" in data && (
+        <div className={s.card}>
+          <label>Total Withdrawal</label>
+          <p>
+            <span className={s.currencySymbol}>৳</span>
+            <span className={s.amount}>
+              {(data.totalWithdrawal || 0).toLocaleString("en-IN")}
+            </span>
+          </p>
+        </div>
+      )}
     </div>
   );
 };

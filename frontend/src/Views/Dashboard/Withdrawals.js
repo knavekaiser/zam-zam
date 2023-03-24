@@ -1,4 +1,5 @@
 import DataTable from "Components/DataTable";
+import { Moment } from "Components/elements";
 import { endpoints } from "config";
 import { useContext } from "react";
 import { SiteContext } from "SiteContext";
@@ -24,6 +25,32 @@ export default function Withdrawals({ setSidebarOpen }) {
         }`,
       }}
       deleteRequest
+      columns={[
+        { label: "Date" },
+        { label: "Member" },
+        { label: "Amount", className: "text-right" },
+        ...(user.userType === "staff" ? [{ label: "Status" }] : []),
+        ...(["approve", "update", "delete"].some((item) =>
+          user.role?.permissions?.includes(`withdrawal_${item}`)
+        )
+          ? [{ label: "Action", className: "text-right" }]
+          : []),
+      ]}
+      renderRow={(item, s, status) => (
+        <>
+          <td className={s.date}>
+            <Moment format="MMM DD, YYYY">{item.date}</Moment>
+          </td>
+          <td className={s.member}>{item.member?.name}</td>
+          <td className={`text-right`}>
+            <span className={s.currencySymbol}>৳</span>
+            {item.amount.toLocaleString("en-IN")}
+          </td>
+          {user.userType === "staff" && (
+            <td className={s.status}>{status[item.status] || item.status}</td>
+          )}
+        </>
+      )}
       schema={[
         {
           fieldType: "input",

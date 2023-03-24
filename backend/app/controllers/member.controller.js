@@ -5,9 +5,10 @@ const {
   smsHelper,
   appHelper: { genId, ...appHelper },
   fileHelper,
+  firebase,
 } = require("../helpers");
 
-const { Member, Otp, Role } = require("../models");
+const { Member, Otp, Role, Staff } = require("../models");
 
 exports.signup = async (req, res) => {
   try {
@@ -21,6 +22,37 @@ exports.signup = async (req, res) => {
     })
       .save()
       .then(async (user) => {
+        const tokens = await Staff.aggregate([
+          {
+            $lookup: {
+              from: "roles",
+              localField: "role",
+              foreignField: "_id",
+              as: "role",
+            },
+          },
+          { $unwind: { path: "$role", preserveNullAndEmptyArrays: false } },
+          { $match: { "role.name": "Manager" } },
+          {
+            $lookup: {
+              from: "devices",
+              localField: "devices",
+              foreignField: "deviceId",
+              as: "devices",
+            },
+          },
+          { $unwind: { path: "$devices", preserveNullAndEmptyArrays: false } },
+          { $project: { fcmToken: "$devices.fcmToken" } },
+        ]).then((data) => data.map((item) => item.fcmToken));
+
+        await firebase.sendMessage({
+          tokens,
+          message: {
+            title: "New Member Sign Up",
+            body: `${user.name} (${user.phone}) has just signed up. Approve or Disapprove`,
+            click_action: `${process.env.SITE_URL}/members`,
+          },
+        });
         return responseFn.success(
           res,
           {},
@@ -52,6 +84,11 @@ exports.login = async (req, res) => {
     if (user.status !== "active") {
       return responseFn.error(res, {}, responseStr.account_deactivated);
     }
+    await Member.findOneAndUpdate(
+      { _id: user._id },
+      { devices: [...new Set([...(user.devices || []), req.body.deviceId])] },
+      { new: true }
+    );
     return appHelper.signIn(res, user._doc, "member");
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
@@ -85,7 +122,9 @@ exports.forgotPassword = async (req, res) => {
                   timeout: appConfig.otpTimeout,
                 },
               },
-              responseStr.otp_sent + ` (use ${otp})`
+              `${responseStr.otp_sent}${
+                process.env.MODE === "development" ? `(use ${otp})` : ""
+              }`
             );
           } else {
             await Otp.deleteOne({ _id: otpRec._id });
@@ -161,6 +200,14 @@ exports.resetPassword = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
+    await Member.findOneAndUpdate(
+      { _id: req.authUser._id },
+      {
+        devices: (req.authUser.devices || []).filter(
+          (item) => item !== req.body.deviceId
+        ),
+      }
+    );
     res.clearCookie("access_token");
     return responseFn.success(res, {});
   } catch (error) {
@@ -170,7 +217,10 @@ exports.logout = async (req, res) => {
 
 exports.profile = (req, res) => {
   try {
-    Member.findOne({ _id: req.authUser.id }, "-password -__v -updatedAt")
+    Member.findOne(
+      { _id: req.authUser.id },
+      "-password -__v -updatedAt -devices"
+    )
       .populate("role", "name permissions")
       .then(async (data) =>
         responseFn.success(res, {

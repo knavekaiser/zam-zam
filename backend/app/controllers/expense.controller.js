@@ -9,7 +9,11 @@ exports.findAll = async (req, res) => {
     const conditions = {
       // add filters here,
     };
-    Expense.aggregate([{ $match: conditions }, { $project: { __v: 0 } }])
+    Expense.aggregate([
+      { $match: conditions },
+      { $sort: { date: -1 } },
+      { $project: { __v: 0 } },
+    ])
       .then((data) => {
         responseFn.success(res, { data });
       })

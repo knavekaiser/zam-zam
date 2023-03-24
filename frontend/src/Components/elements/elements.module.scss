@@ -81,6 +81,9 @@
       color: rgba(#fff, 0.7) !important;
       background: $black1;
     }
+    &::placeholder {
+      color: rgba(white, 0.4);
+    }
   }
   textarea {
     resize: vertical;

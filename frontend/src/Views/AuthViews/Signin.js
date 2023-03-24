@@ -9,9 +9,11 @@ import { Prompt } from "Components/modal";
 import { phone } from "phone";
 import * as yup from "yup";
 import s from "./auth.module.scss";
+import { BsArrowRight } from "react-icons/bs";
+import { requestPermission } from "helpers/firebase";
 
 const validationSchema = yup.object({
-  phone: yup.string().phone({ country: "bangladesh" }).required("Required"),
+  phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
   password: yup.string().required("Required"),
 });
 
@@ -34,14 +36,17 @@ const Form = ({ userType, setUserType }) => {
       onSubmit={handleSubmit((values) => {
         setInvalidCred(false);
         const number = phone(values.phone, { country: "bangladesh" });
-        login({ phone: number.phoneNumber, password: values.password }).then(
-          ({ error, data }) => {
-            if (error) {
-              return Prompt({
-                type: "error",
-                message: error.message || error,
-              });
-            }
+        const deviceId = localStorage.getItem("deviceId");
+        if (!deviceId) {
+          requestPermission();
+          return setInvalidCred("Please allow notification");
+        }
+        login({
+          phone: number.phoneNumber,
+          password: values.password,
+          deviceId,
+        })
+          .then(({ data }) => {
             if (data.success) {
               setUser(data.data);
               localStorage.setItem("access_token", data.token);
@@ -50,8 +55,8 @@ const Form = ({ userType, setUserType }) => {
               setInvalidCred(data.message);
               setTimeout(() => setInvalidCred(false), 3000);
             }
-          }
-        );
+          })
+          .catch((err) => Prompt({ type: "error", message: err.message }));
       })}
     >
       <div className={`grid gap-2`}>
@@ -63,37 +68,47 @@ const Form = ({ userType, setUserType }) => {
             <h1 className="text-center">ZAM-ZAM</h1>
             <span>TOWER</span>
           </div>
-          <div className={s.userTypes}>
-            <button
-              type="button"
-              disabled={loading}
-              className={`btn clear ${userType === "member" ? s.active : ""}`}
-              onClick={() => {
-                localStorage.setItem("userType", "member");
-                setUserType("member");
-              }}
-            >
-              Member
-            </button>
-            <button
-              type="button"
-              disabled={loading}
-              className={`btn clear ${userType === "staff" ? s.active : ""}`}
-              onClick={() => {
-                localStorage.setItem("userType", "staff");
-                setUserType("staff");
-              }}
-            >
-              Staff
-            </button>
-          </div>
         </div>
+
+        <div className={s.userTypes}>
+          <button
+            type="button"
+            disabled={loading}
+            className={`btn clear ${userType === "member" ? s.active : ""}`}
+            onClick={() => {
+              localStorage.setItem("userType", "member");
+              setUserType("member");
+            }}
+          >
+            Member
+          </button>
+          <button
+            type="button"
+            disabled={loading}
+            className={`btn clear ${userType === "staff" ? s.active : ""}`}
+            onClick={() => {
+              localStorage.setItem("userType", "staff");
+              setUserType("staff");
+            }}
+          >
+            Staff
+          </button>
+          <span
+            style={
+              userType === "member"
+                ? { width: "55%" }
+                : { left: "55%", width: "45%" }
+            }
+            className={s.background}
+          />
+        </div>
+
         {invalidCred && (
           <p className="error">{invalidCred || "Invalid credentials"}</p>
         )}
         <Input
-          required
           label="Phone"
+          required
           {...register("phone")}
           error={errors.phone}
         />
@@ -114,7 +129,7 @@ const Form = ({ userType, setUserType }) => {
           Sign In
         </button>
         <Link className={s.signUpLink} to={paths.signUp}>
-          Create New Account
+          Create New Account <BsArrowRight />
         </Link>
       </div>
     </form>

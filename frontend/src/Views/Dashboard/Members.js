@@ -23,6 +23,38 @@ export default function Deposits({ setSidebarOpen }) {
             : ""
         }`,
       }}
+      columns={[
+        { label: "Name" },
+        { label: "Deposit", className: "text-right" },
+        { label: "Withdrawal", className: "text-right" },
+        ...(user.userType === "staff" ? [{ label: "Status" }] : []),
+        ...(["approve", "update", "delete"].some((item) =>
+          user.role?.permissions?.includes(`member_${item}`)
+        )
+          ? [{ label: "Action", className: "text-right" }]
+          : []),
+      ]}
+      renderRow={(item, s, status) => (
+        <>
+          {window.innerWidth <= 480 && (
+            <td className={s.profileImg}>
+              <img src={item.photo || "/assets/avatar.webp"} />
+            </td>
+          )}
+          <td className={s.name}>{item.name}</td>
+          <td className={`text-right ${s.deposit}`}>
+            <span className={s.currencySymbol}>৳</span>
+            {(item.deposit || 0).toLocaleString("en-IN")}
+          </td>
+          <td className={`text-right ${s.withdrawal}`}>
+            <span className={s.currencySymbol}>৳</span>
+            {(item.withdrawal || 0).toLocaleString("en-IN")}
+          </td>
+          {user.userType === "staff" && (
+            <td className={s.status}>{status[item.status] || item.status}</td>
+          )}
+        </>
+      )}
       schema={[
         {
           fieldType: "input",

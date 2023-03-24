@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input, Textarea, moment, Select } from "Components/elements";
 import { useYup, useFetch } from "hooks";
@@ -6,6 +6,7 @@ import { Prompt } from "Components/modal";
 import * as yup from "yup";
 import s from "./dataTable.module.scss";
 import { endpoints } from "config";
+import { SiteContext } from "SiteContext";
 
 export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   const {
@@ -31,7 +32,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
               field = yup.number().typeError("Please enter a valid number");
             }
             if (f.fieldType === "phone") {
-              field = yup.string().phone({ country: "bangladesh" });
+              field = yup.string().phn({ country: "bangladesh" });
             }
             if (f.dataType === "array") {
               field = yup.array();
@@ -157,31 +158,24 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
 };
 
 export const Filter = ({ filters = {}, schema, setFilters }) => {
+  const { user } = useContext(SiteContext);
   const { handleSubmit, control, register, reset } = useForm();
   useEffect(() => {
     const _filter = {};
     if (schema.some((item) => item.name === "member")) {
       _filter.members = filters.members || [];
     }
+    if (schema.some((item) => item.name === "milestone")) {
+      _filter.milestones = filters.milestones || [];
+    }
     _filter.status = filters.status || [];
     _filter.from_date = filters.from_date || "";
     _filter.to_date = filters.to_date || "";
     reset(_filter);
   }, [filters]);
-  return (
-    <form
-      onSubmit={handleSubmit((values) => {
-        setFilters(
-          Object.entries(values).reduce((p, [key, value]) => {
-            if (value?.length) {
-              p[key] = value;
-            }
-            return p;
-          }, {})
-        );
-      })}
-      className={s.filters}
-    >
+
+  const fields = (
+    <>
       {schema.some((item) => item.name === "member") && (
         <Select
           label="Members"
@@ -199,20 +193,39 @@ export const Filter = ({ filters = {}, schema, setFilters }) => {
           })}
         />
       )}
+      {schema.some((item) => item.name === "milestone") && (
+        <Select
+          label="Milestone"
+          url={endpoints.milestones}
+          control={control}
+          name="milestones"
+          multiple
+          getQuery={(inputValue, selected) => ({
+            ...(inputValue && { title: inputValue }),
+            _id: selected,
+          })}
+          handleData={(item) => ({
+            label: item.title,
+            value: item._id,
+          })}
+        />
+      )}
       {schema.some((item) => item.name === "name") && (
         <Input label="Name" {...register("name")} />
       )}
 
-      <Select
-        label="Status"
-        control={control}
-        name="status"
-        multiple
-        options={[
-          { label: "Pending Approval", value: "pending-approval" },
-          { label: "Approved", value: "approved" },
-        ]}
-      />
+      {user.userType === "staff" && (
+        <Select
+          label="Status"
+          control={control}
+          name="status"
+          multiple
+          options={[
+            { label: "Pending Approval", value: "pending-approval" },
+            { label: "Approved", value: "approved" },
+          ]}
+        />
+      )}
 
       {schema.some((item) => item.name === "date") && (
         <>
@@ -220,6 +233,28 @@ export const Filter = ({ filters = {}, schema, setFilters }) => {
           <Input label="End Date" type="date" {...register("to_date")} />
         </>
       )}
+    </>
+  );
+
+  if (fields.props.children.length === 0) {
+    return null;
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit((values) => {
+        setFilters(
+          Object.entries(values).reduce((p, [key, value]) => {
+            if (value?.length) {
+              p[key] = value;
+            }
+            return p;
+          }, {})
+        );
+      })}
+      className={s.filters}
+    >
+      {fields}
 
       <div className="btns">
         <button className="btn">Submit</button>

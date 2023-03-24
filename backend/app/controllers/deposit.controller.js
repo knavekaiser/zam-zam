@@ -3,7 +3,7 @@ const {
 } = require("../config");
 const { smsHelper } = require("../helpers");
 
-const { Deposit } = require("../models");
+const { Deposit, Milestone } = require("../models");
 
 exports.findAll = async (req, res) => {
   try {
@@ -14,11 +14,14 @@ exports.findAll = async (req, res) => {
       if (req.query.status) {
         conditions.status = { $in: req.query.status.split(",") };
       }
-      if (req.query.members) {
-        conditions.member = { $in: req.query.members.split(",") };
-      }
     } else {
       conditions.status = "approved";
+    }
+    if (req.query.members) {
+      conditions.member = { $in: req.query.members.split(",") };
+    }
+    if (req.query.milestones) {
+      conditions.milestone = { $in: req.query.milestones.split(",") };
     }
     if (req.query.from_date && req.query.to_date) {
       conditions.date = {
@@ -27,7 +30,7 @@ exports.findAll = async (req, res) => {
       };
     }
     Deposit.find(conditions)
-      .sort("date")
+      .sort("-date")
       .populate("member", "name email photo phone")
       .then((data) => {
         responseFn.success(res, { data });
@@ -86,7 +89,8 @@ exports.approve = async (req, res) => {
       { new: true }
     )
       .populate("member", "name email photo phone")
-      .then((data) => {
+      .populate("milestone", "title startDate endDate amount status")
+      .then(async (data) => {
         if (data) {
           if (data.member) {
             smsHelper.sendSms({
@@ -95,6 +99,24 @@ exports.approve = async (req, res) => {
                 .replace("{name}", data.member.name)
                 .replace("{amount}", data.amount.toLocaleString("bn-BD")),
             });
+          }
+          if (data.milestone) {
+            const totalDeposit = await Deposit.aggregate([
+              { $match: { status: "approved", milestone: data.milestone._id } },
+              { $group: { _id: null, total: { $sum: "$amount" } } },
+            ]).then((data) => data[0]?.total || 0);
+            if (totalDeposit >= data.milestone.amount) {
+              data.milestone = await Milestone.findOneAndUpdate(
+                { _id: data.milestone._id },
+                { status: "complete" },
+                { new: true }
+              ).then((data) => ({
+                title: data.title,
+                startDate: data.startDate,
+                endDate: data.endDate,
+                amount: data.amount,
+              }));
+            }
           }
           return responseFn.success(res, { data }, responseStr.record_updated);
         }

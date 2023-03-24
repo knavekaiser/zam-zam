@@ -4,8 +4,8 @@ module.exports = mongoose.model(
     {
       title: { type: Schema.Types.String, required: true },
       description: { type: Schema.Types.String },
-      start_date: { type: Schema.Types.Date, required: true },
-      end_date: { type: Schema.Types.Date, required: true },
+      startDate: { type: Schema.Types.Date, required: true },
+      endDate: { type: Schema.Types.Date, required: true },
       amount: { type: Schema.Types.Number, required: true },
       status: {
         type: Schema.Types.String,

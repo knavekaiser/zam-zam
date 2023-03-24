@@ -1,6 +1,8 @@
 import { moment } from "Components/elements/moment";
 import { phone } from "phone";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import * as yup from "yup";
+
 const XLSX = require("xlsx");
 
 export const findProperties = function (prop, obj) {
@@ -79,11 +81,25 @@ export const parseXLSXtoJSON = (file, cb) => {
   reader.readAsBinaryString(file);
 };
 
+export const fingerprint = () =>
+  new Promise((res, rej) => {
+    FingerprintJS.load().then((fp) => {
+      console.log();
+      fp.get()
+        .then((result) => {
+          if ("visitorId" in result) {
+            res(result.visitorId);
+          }
+        })
+        .catch((err) => rej(err));
+    });
+  });
+
 yup.addMethod(
   yup.string,
-  "phone",
+  "phn",
   function (options, message = "Please enter a valid number") {
-    return this.test("phone", message, function (value) {
+    return this.test("phone", "Please enter a valid number", function (value) {
       const { path, createError } = this;
       return (
         !value ||

@@ -5,4 +5,6 @@ module.exports = {
   expense: require("./expense"),
   withdrawal: require("./withdrawal"),
   role: require("./role"),
+  milestone: require("./milestone"),
+  common: require("./common"),
 };

@@ -1,8 +1,16 @@
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState, useCallback, useEffect } from "react";
+
+import { requestPermission } from "helpers/firebase";
+import { useFetch } from "hooks";
+import { endpoints } from "config";
 
 export const SiteContext = createContext();
 export const Provider = ({ children }) => {
   const [user, setUser] = useState(null);
+
+  const { post: updateDevice, loading: updatingDevice } = useFetch(
+    endpoints.devices
+  );
 
   const checkPermission = useCallback(
     (permission) => {
@@ -15,6 +23,9 @@ export const Provider = ({ children }) => {
     [user]
   );
 
+  useEffect(() => {
+    requestPermission(updateDevice, user);
+  }, [user]);
   return (
     <SiteContext.Provider
       value={{

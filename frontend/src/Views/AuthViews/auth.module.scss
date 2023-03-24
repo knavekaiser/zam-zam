@@ -21,22 +21,26 @@
     width: 100%;
     max-width: 25rem;
     overflow: hidden;
-    .logo {
-      // display: flex;
-      grid-gap: 0.5rem;
-      align-items: center;
-      font-size: 1.35rem;
-      h1 {
-        font-family: "Times New Roman";
-      }
-      span {
-        display: block;
-        font-size: 0.5em;
-        letter-spacing: 4.12em;
-        max-width: 2em;
-        text-align: center;
+    .logoContainer {
+      display: grid;
+      justify-content: center;
+      .logo {
+        grid-gap: 0.5rem;
+        align-items: center;
+        font-size: 1.5rem;
+        h1 {
+          font-family: "Times New Roman";
+        }
+        span {
+          display: block;
+          font-size: 0.5em;
+          letter-spacing: 4.12em;
+          max-width: 2em;
+          text-align: center;
+        }
       }
     }
+
     grid-template-columns: 1fr;
     background: linear-gradient(
       180deg,
@@ -47,17 +51,50 @@
     backdrop-filter: blur(10px);
     border-radius: 1rem;
     .userTypes {
+      display: flex;
+      margin: auto;
+      width: max-content;
+      background: linear-gradient(
+        90deg,
+        rgba(#291a36, 0.85) 0%,
+        rgba(#200d1a, 0.9) 100%
+      );
+      border-radius: 2rem;
+      padding: 0rem 0.5rem;
+      padding-right: 0;
+      position: relative;
+      .background {
+        z-index: 2;
+        border-radius: 2rem;
+        position: absolute;
+        display: block;
+        padding: 1rem 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(
+          90deg,
+          rgba($primary-color-dark1, 1) 0%,
+          rgba($primary-color-dark2, 1) 100%
+        );
+        transition: width 0.4s ease-in-out, left 0.4s ease-in-out;
+        filter: drop-shadow(0 0 10px rgba($primary-color-dark2, 0.5));
+      }
       button {
-        justify-content: flex-start;
+        z-index: 3;
         padding: 0.3rem;
         opacity: 0.3;
-        font-weight: 400;
+        font-weight: 500;
         min-width: 5rem;
+        transition: opacity 0.4s ease-in-out;
         &.active {
-          font-weight: 600;
+          // font-weight: 600;
           opacity: 1;
         }
       }
+    }
+    h3 {
+      font-weight: 400;
+      // letter-spacing: 0.5em;
     }
     .passField {
       display: grid;
@@ -72,12 +109,27 @@
         width: max-content;
       }
     }
-    .signUpLink {
+    .signUpLink,
+    .signInLink {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
       width: max-content;
+      font-size: 0.8rem;
+      grid-gap: 0.5rem;
+      // display: grid;
+      svg {
+        font-size: 1.75em;
+      }
+    }
+    .note {
+      font-size: 0.9rem;
     }
     .resend {
-      margin-top: -0.75rem;
+      margin-top: -1.5rem;
+      font-size: 0.8rem;
       button {
+        color: white;
         display: inline-block;
         font-size: 1em;
         background: none;
@@ -106,12 +158,10 @@
       grid-auto-rows: min-content;
       justify-items: center;
       grid-gap: 1rem;
-      .logoContainer {
-        display: grid;
-      }
-      & > *:not(.logoContainer) {
-        width: 100%;
-      }
+
+      // & > *:not(.logoContainer) {
+      //   width: 100%;
+      // }
     }
     footer {
       width: 100%;

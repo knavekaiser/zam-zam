@@ -1,34 +1,69 @@
 const {
   appConfig: { responseFn, responseStr, smsTemplate },
 } = require("../config");
-const { smsHelper } = require("../helpers");
 
 const { Milestone } = require("../models");
 
 exports.findAll = async (req, res) => {
   try {
-    const conditions = {
-      // add filters here,
-    };
-    if (req.authToken.userType === "staff") {
-      if (req.query.status) {
-        conditions.status = { $in: req.query.status.split(",") };
-      }
-      if (req.query.members) {
-        conditions.member = { $in: req.query.members.split(",") };
-      }
-    } else {
-      conditions.status = "approved";
+    const conditions = {};
+    if ("name" in req.query) {
+      conditions.name = {
+        $regex: req.query.name,
+        $options: "i",
+      };
     }
+    if (req.query.status) {
+      conditions.status = { $in: req.query.status.split(",") };
+    }
+
     if (req.query.from_date && req.query.to_date) {
       conditions.date = {
         $gte: new Date(req.query.from_date),
         $lte: new Date(req.query.to_date),
       };
     }
-    Milestone.find(conditions)
-      .sort("date")
-      .populate("member", "name email photo phone")
+    Milestone.aggregate([
+      { $match: conditions },
+      {
+        $lookup: {
+          from: "deposits",
+          let: { id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$$id", "$milestone"] },
+                    { $eq: ["$status", "approved"] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "deposited",
+        },
+      },
+      { $unwind: { path: "$deposited", preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: "$_id",
+          title: { $first: "$title" },
+          description: { $first: "$description" },
+          amount: { $first: "$amount" },
+          startDate: { $first: "$startDate" },
+          endDate: { $first: "$endDate" },
+          status: { $first: "$status" },
+          deposited: {
+            $sum: "$deposited.amount",
+          },
+          createdAt: { $first: "$createdAt" },
+          updatedAt: { $first: "$updatedAt" },
+        },
+      },
+      { $sort: { startDate: -1 } },
+    ])
+      // .sort("date")
       .then((data) => {
         responseFn.success(res, { data });
       })
@@ -40,17 +75,24 @@ exports.findAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
+    let status = "upcoming";
+    if (new Date(req.body.startDate) > new Date()) {
+      status = "upcoming";
+    } else if (new Date(req.body.endDate) < new Date()) {
+      status = "past-due";
+    } else if (
+      new Date(req.body.startDate) < new Date() &&
+      new Date(req.body.endDate) > new Date()
+    ) {
+      status = "ongoing";
+    }
     new Milestone({
       ...req.body,
       addedBy: req.authUser.id,
-      status: "pending-approval",
+      status,
     })
       .save()
       .then(async (data) => {
-        data = await Milestone.findOne({ _id: data.id }).populate(
-          "member",
-          "name email photo phone"
-        );
         return responseFn.success(res, { data });
       })
       .catch((err) => responseFn.error(res, {}, err.message));
@@ -61,12 +103,12 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    ["addedBy", "approvedBy", "status"].forEach((item) => {
+    ["addedBy", "status"].forEach((item) => {
       delete req.body[item];
     });
     Milestone.findOneAndUpdate(
       { _id: req.params.id },
-      { ...req.body, status: "pending-update" },
+      { ...req.body },
       { new: true }
     )
       .then((data) => {
@@ -78,53 +120,9 @@ exports.update = async (req, res) => {
   }
 };
 
-exports.approve = async (req, res) => {
-  try {
-    Milestone.findOneAndUpdate(
-      { _id: req.params.id },
-      { status: "approved" },
-      { new: true }
-    )
-      .populate("member", "name email photo phone")
-      .then((data) => {
-        if (data) {
-          if (data.member) {
-            smsHelper.sendSms({
-              to: data.member.phone,
-              message: smsTemplate.money_deposited
-                .replace("{name}", data.member.name)
-                .replace("{amount}", data.amount.toLocaleString("bn-BD")),
-            });
-          }
-          return responseFn.success(res, { data }, responseStr.record_updated);
-        }
-        return responseFn.error(res, {}, responseStr.record_not_found);
-      })
-      .catch((err) => responseFn.error(res, {}, err.message));
-  } catch (error) {
-    return responseFn.error(res, {}, error.message, 500);
-  }
-};
-
-exports.reqDelete = async (req, res) => {
-  try {
-    Milestone.findOneAndUpdate(
-      { _id: req.params.id },
-      { status: "pending-delete" }
-    )
-      .then((num) => responseFn.success(res, {}, responseStr.delete_requested))
-      .catch((err) => responseFn.error(res, {}, err.message, 500));
-  } catch (error) {
-    return responseFn.error(res, {}, error.message, 500);
-  }
-};
-
 exports.delete = async (req, res) => {
   try {
-    Milestone.findOneAndUpdate(
-      { _id: req.params.id, status: "pending-delete" },
-      { status: "deleted" }
-    )
+    Milestone.findOneAndUpdate({ _id: req.params.id }, { status: "deleted" })
       .then((num) => responseFn.success(res, {}, responseStr.record_deleted))
       .catch((err) => responseFn.error(res, {}, err.message, 500));
   } catch (error) {

@@ -102,4 +102,5 @@ module.exports = {
   appHelper: require("./app.helper"),
   smsHelper: require("./sms.helper"),
   fileHelper: require("./file.helper"),
+  firebase: require("./firebase.helper"),
 };

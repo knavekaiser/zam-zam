@@ -1,5 +1,6 @@
-const { authJwt } = require("../middlewares");
+const { authJwt, validate } = require("../middlewares");
 const controller = require("../controllers/common.controller");
+const { common: schema } = require("../validationSchemas");
 var router = require("express").Router();
 
 module.exports = function (app) {
@@ -8,6 +9,8 @@ module.exports = function (app) {
     authJwt.verifyToken(),
     controller.dashboardData
   );
+
+  router.post("/devices", validate(schema.addDevice), controller.addDevice);
 
   app.use("/api", router);
 };

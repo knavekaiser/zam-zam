@@ -127,6 +127,22 @@
           padding-bottom: 0;
           font-size: 1em;
         }
+        .startDate {
+          grid-column: 1 / 2;
+          grid-row: 1 / 2;
+        }
+        .endDate {
+          grid-column: 1 / 2;
+          grid-row: 2 / 3;
+        }
+        .milestoneAmount {
+          grid-column: 2 / 3;
+          grid-row: 2 / 3;
+          color: $red;
+        }
+        .milestoneDeposited {
+          color: $green;
+        }
         .profileImg {
           display: block;
           grid-row: 1 / 3;

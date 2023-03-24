@@ -27,6 +27,7 @@ module.exports = mongoose.model(
         default: "inactive",
       },
       role: { type: Schema.Types.ObjectId, ref: "Role" },
+      devices: [{ type: Schema.Types.String }],
     },
     { timestamps: true }
   )

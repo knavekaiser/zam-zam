@@ -8,6 +8,9 @@
   color: white;
   grid-auto-rows: min-content;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  h2 {
+    cursor: pointer;
+  }
   .card {
     padding: 1rem;
     border-radius: 1rem;

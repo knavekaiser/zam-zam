@@ -1,7 +1,4 @@
 const { Schema } = require("mongoose");
-const {
-  appHelper: { normalizeDomain },
-} = require("../helpers");
 
 module.exports = mongoose.model(
   "Member",
@@ -32,6 +29,7 @@ module.exports = mongoose.model(
         default: "inactive",
       },
       role: { type: Schema.Types.ObjectId, ref: "Role" },
+      devices: [{ type: Schema.Types.String, min: 3, required: true }],
     },
     { timestamps: true }
   )

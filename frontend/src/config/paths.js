@@ -4,6 +4,7 @@ const paths = {
   resetPassword: "/reset-password",
 
   home: "/",
+  milestones: "/milestones",
   deposits: "/deposits",
   expenses: "/expenses",
   withdrawals: "/withdrawals",

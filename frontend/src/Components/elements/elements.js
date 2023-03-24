@@ -220,6 +220,7 @@ export const PasswordInput = ({
   control,
   formOptions,
   placeholder,
+  ...rest
 }) => {
   const [type, setType] = useState("password");
   return (
@@ -248,6 +249,7 @@ export const PasswordInput = ({
                 type={type}
                 onChange={onChange}
                 placeholder={placeholder || "Enter"}
+                {...rest}
               />
               {value && (
                 <button

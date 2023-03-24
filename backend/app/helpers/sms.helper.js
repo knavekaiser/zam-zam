@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 exports.sendSms = ({ to, message }) => {
-  if (process.env.MODE === "test") {
+  if (process.env.MODE === "development") {
     console.log(message);
     return {
       response_code: 202,

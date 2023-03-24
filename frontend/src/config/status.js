@@ -5,6 +5,11 @@ const status = {
   approved: "Approved",
   active: "Active",
   inactive: "Inactive",
+
+  "past-due": "Past Due",
+  complete: "Complete",
+  upcoming: "Upcoming",
+  ongoing: "Ongoing",
 };
 
 export default status;

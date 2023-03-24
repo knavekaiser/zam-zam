@@ -19,6 +19,7 @@ const endpoints = {
   staffLogout: `${baseApiUrl}/api/staffs/logout`,
 
   dashboardData: `${baseApiUrl}/api/dashboard-data`,
+  milestones: `${baseApiUrl}/api/milestones`,
   deposits: `${baseApiUrl}/api/deposits`,
   expenses: `${baseApiUrl}/api/expenses`,
   withdrawals: `${baseApiUrl}/api/withdrawals`,
@@ -27,6 +28,8 @@ const endpoints = {
   roles: `${baseApiUrl}/api/roles`,
   staffs: `${baseApiUrl}/api/staffs`,
   permissions: `${baseApiUrl}/api/permissions`,
+
+  devices: `${baseApiUrl}/api/devices`,
 };
 
 export default endpoints;

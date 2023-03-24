@@ -24,6 +24,30 @@ export default function Deposits({ setSidebarOpen }) {
         }`,
       }}
       deleteRequest
+      columns={[
+        { label: "Name" },
+        { label: "Role" },
+        ...(user.userType === "staff" ? [{ label: "Status" }] : []),
+        ...(["approve", "update", "delete"].some((item) =>
+          user.role?.permissions?.includes(`staff_${item}`)
+        )
+          ? [{ label: "Action", className: "text-right" }]
+          : []),
+      ]}
+      renderRow={(item, s, status) => (
+        <>
+          {window.innerWidth <= 480 && (
+            <td className={s.profileImg}>
+              <img src={item.photo || "/assets/avatar.webp"} />
+            </td>
+          )}
+          <td className={s.name}>{item.name}</td>
+          <td className={s.role}>{item.role.name}</td>
+          {user.userType === "staff" && (
+            <td className={s.status}>{status[item.status] || item.status}</td>
+          )}
+        </>
+      )}
       schema={[
         {
           fieldType: "input",

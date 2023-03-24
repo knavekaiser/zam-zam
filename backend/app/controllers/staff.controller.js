@@ -47,6 +47,11 @@ exports.login = async (req, res) => {
     if (staff.status !== "active") {
       return responseFn.error(res, {}, responseStr.account_deactivated);
     }
+    await Staff.findOneAndUpdate(
+      { _id: staff._id },
+      { devices: [...new Set([...(staff.devices || []), req.body.deviceId])] },
+      { new: true }
+    );
     return appHelper.signIn(res, staff._doc, "staff");
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
@@ -79,7 +84,9 @@ exports.forgotPassword = async (req, res) => {
                   timeout: appConfig.otpTimeout,
                 },
               },
-              responseStr.otp_sent + ` (use ${otp})`
+              `${responseStr.otp_sent}${
+                process.env.MODE === "development" ? `(use ${otp})` : ""
+              }`
             );
           } else {
             await Otp.deleteOne({ _id: otpRec._id });
@@ -107,7 +114,6 @@ exports.forgotPassword = async (req, res) => {
       return responseFn.error(res, {}, responseStr.record_not_found);
     }
   } catch (error) {
-    console.log(error);
     return responseFn.error(res, {}, error.message, 500);
   }
 };
@@ -156,6 +162,14 @@ exports.resetPassword = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
+    await Staff.findOneAndUpdate(
+      { _id: req.authUser._id },
+      {
+        devices: (req.authUser.devices || []).filter(
+          (item) => item !== req.body.deviceId
+        ),
+      }
+    );
     res.clearCookie("access_token");
     return responseFn.success(res, {});
   } catch (error) {
@@ -165,7 +179,10 @@ exports.logout = async (req, res) => {
 
 exports.profile = (req, res) => {
   try {
-    Staff.findOne({ _id: req.authUser.id }, "-password -__v -updatedAt")
+    Staff.findOne(
+      { _id: req.authUser.id },
+      "-password -__v -updatedAt -devices"
+    )
       .populate("role", "name permissions")
       .then(async (data) => {
         responseFn.success(res, {

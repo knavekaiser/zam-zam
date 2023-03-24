@@ -1,10 +1,17 @@
 const yup = require("yup");
 const commonYup = require("./commonYup");
-const { Staff } = require("../models");
+const { Staff, Device } = require("../models");
 
 module.exports = {
   signup: yup.object({
     body: yup.object({
+      deviceId: yup
+        .string()
+        .required("deviceId is required")
+        .test("deviceId", "Please pass a valid device ID", (v) =>
+          Device.findOne({ deviceId: v })
+        )
+        .typeError("deviceId is required"),
       name: yup.string().required(),
       phone: yup
         .string()
@@ -19,6 +26,13 @@ module.exports = {
 
   login: yup.object({
     body: yup.object({
+      deviceId: yup
+        .string()
+        .required("deviceId is required")
+        .test("deviceId", "Please pass a valid device ID", (v) =>
+          Device.findOne({ deviceId: v })
+        )
+        .typeError("deviceId is required"),
       phone: yup.string().phone().required(),
       password: yup.string().required(),
     }),

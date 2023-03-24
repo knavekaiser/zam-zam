@@ -11,6 +11,7 @@ exports.findAll = async (req, res) => {
     };
     Withdrawal.find(conditions)
       .populate("member", "name email photo phone")
+      .sort("-date")
       .then((data) => {
         responseFn.success(res, { data });
       })

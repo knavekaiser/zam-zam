@@ -69,6 +69,7 @@ exports.getPermissions = async (req, res) => {
       { label: "Member", name: "member" },
       { label: "Staff", name: "staff" },
       { label: "Role", name: "role" },
+      { label: "Milestone", name: "milestone" },
     ];
     const groups = [
       ...basicGroups.map((group) => ({
@@ -79,7 +80,7 @@ exports.getPermissions = async (req, res) => {
             ? [{ label: `Add`, value: `${group.name}_create` }]
             : []),
           { label: `Update`, value: `${group.name}_update` },
-          ...(!["role"].includes(group.name)
+          ...(!["role", "milestone"].includes(group.name)
             ? [{ label: `Approve`, value: `${group.name}_approve` }]
             : []),
           ...(["deposit", "expense", "withdrawal"].includes(group.name)

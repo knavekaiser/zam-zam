@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Input, Countdown } from "Components/elements";
+import { Input, Countdown, PasswordInput } from "Components/elements";
 import { Link, useNavigate } from "react-router-dom";
 import { useYup, useFetch } from "hooks";
 import { paths, endpoints } from "config";
@@ -8,9 +8,10 @@ import { Prompt } from "Components/modal";
 import { phone } from "phone";
 import * as yup from "yup";
 import s from "./auth.module.scss";
+import { BsArrowLeft } from "react-icons/bs";
 
 const otpSchema = yup.object({
-  phone: yup.string().phone({ country: "bangladesh" }).required("Required"),
+  phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
 });
 const passwordResetSchema = yup.object({
   code: yup.string().required("Required"),
@@ -18,10 +19,6 @@ const passwordResetSchema = yup.object({
     .string()
     .min(8, "Password must be 8 characters or longer")
     .required("Required"),
-  confirmPassword: yup
-    .string()
-    .required("Required")
-    .oneOf([yup.ref("password")], "Password does not match"),
 });
 
 const Form = ({ userType, setUserType }) => {
@@ -44,6 +41,7 @@ const Form = ({ userType, setUserType }) => {
       )}
       {step === 2 && (
         <PasswordResetForm
+          userType={userType}
           setPhone={setPhone}
           phone={phone}
           setStep={setStep}
@@ -77,15 +75,11 @@ const SendOtpForm = ({ userType, onSuccess }) => {
   });
   return (
     <form
-      className="grid gap-1 p-1 m-a"
+      className="grid gap-1 p-2 m-a"
       onSubmit={handleSubmit((values) => {
         const number = phone(values.phone, { country: "bangladesh" });
         sendOtp({ phone: number.phoneNumber }).then(({ data }) => {
           if (data.success) {
-            Prompt({
-              type: "information",
-              message: data.message,
-            });
             onSuccess(data.data);
           } else {
             Prompt({
@@ -96,8 +90,18 @@ const SendOtpForm = ({ userType, onSuccess }) => {
         });
       })}
     >
-      <div className={"grid gap-1"}>
-        <h1 className="text-center">Reset Password</h1>
+      <div className={"grid gap-2"}>
+        <div
+          className={`flex justify-space-between align-center ${s.logoContainer}`}
+        >
+          <div className={s.logo}>
+            {/* <img src="/assets/Zam-Zam-1.png" /> */}
+            <h1 className="text-center">ZAM-ZAM</h1>
+            <span>TOWER</span>
+          </div>
+        </div>
+
+        {/* <h3 className="">Reset Password</h3> */}
         <Input
           label="Phone"
           required
@@ -107,13 +111,16 @@ const SendOtpForm = ({ userType, onSuccess }) => {
         <button className="btn" disabled={loading}>
           Next
         </button>
-        <Link to={paths.signIn}>Back to Login</Link>
+        <Link to={paths.signIn} className={s.signInLink}>
+          <BsArrowLeft /> Back to Login
+        </Link>
       </div>
     </form>
   );
 };
 
 const PasswordResetForm = ({
+  userType,
   setPhone,
   phone,
   setStep,
@@ -122,12 +129,17 @@ const PasswordResetForm = ({
   onSuccess,
 }) => {
   const { post: resendOtp, loading: resendingOtp } = useFetch(
-    endpoints.forgotPassword
+    userType === "member"
+      ? endpoints.forgotPassword
+      : endpoints.staffForgotPassword
   );
   const { post: resetPassword, loading: resettingPass } = useFetch(
-    endpoints.resetPassword
+    userType === "member"
+      ? endpoints.resetPassword
+      : endpoints.staffResetPassword
   );
   const {
+    control,
     handleSubmit,
     register,
     formState: { errors },
@@ -139,7 +151,7 @@ const PasswordResetForm = ({
   }, [phone]);
   return (
     <form
-      className="grid gap-1 p-1 m-a"
+      className="grid gap-2 p-2 m-a"
       onSubmit={handleSubmit((values) => {
         resetPassword({
           phone,
@@ -157,20 +169,21 @@ const PasswordResetForm = ({
         });
       })}
     >
-      <img className={s.illustration} src="/assets/comify.png" />
-      <div className={"grid gap-1"}>
-        <h1 className="text-center">Comify</h1>
-        <h2>Reset Password</h2>
+      <div className={"grid gap-2"}>
+        <div
+          className={`flex justify-space-between align-center ${s.logoContainer}`}
+        >
+          <div className={s.logo}>
+            {/* <img src="/assets/Zam-Zam-1.png" /> */}
+            <h1 className="text-center">ZAM-ZAM</h1>
+            <span>TOWER</span>
+          </div>
+        </div>
 
-        <p>Please enter the 6 digit code sent to {phone}.</p>
+        <p className={s.note}>
+          Please enter the 6 digit code sent to {phone}. <br />
+        </p>
 
-        <Input
-          type="number"
-          label="Code"
-          required
-          {...register("code")}
-          error={errors.code}
-        />
         <p className={s.resend}>
           Didn't recieve the Code?{" "}
           {timeout ? (
@@ -205,21 +218,20 @@ const PasswordResetForm = ({
           )}
         </p>
 
-        <hr />
-
         <Input
-          label="New Password"
-          type="password"
+          type="number"
+          label="Code"
           required
-          {...register("password")}
-          error={errors.password}
+          {...register("code")}
+          error={errors.code}
         />
-        <Input
-          label="Config Password"
-          type="password"
-          required
-          {...register("confirmPassword")}
-          error={errors.confirmPassword}
+
+        <PasswordInput
+          formOptions={{ required: true }}
+          label="New Password"
+          control={control}
+          name="password"
+          autoComplete="new-password"
         />
 
         <button
@@ -229,7 +241,9 @@ const PasswordResetForm = ({
         >
           Submit
         </button>
-        <Link to={paths.signIn}>Back to Login</Link>
+        <a onClick={() => setStep(1)} className={s.signInLink}>
+          <BsArrowLeft /> Back
+        </a>
       </div>
     </form>
   );

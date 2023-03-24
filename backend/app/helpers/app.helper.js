@@ -13,7 +13,9 @@ exports.compareHash = (password, hash) => bcrypt.compareSync(password, hash);
 
 exports.signIn = (res, user, userType) => {
   const token = signToken({ sub: user._id, userType });
-  ["password", "__v", "updatedAt"].forEach((key) => delete user[key]);
+  ["password", "__v", "updatedAt", "devices"].forEach(
+    (key) => delete user[key]
+  );
   res.cookie("access_token", token, {
     maxAge: 50000,
     httpOnly: true,
