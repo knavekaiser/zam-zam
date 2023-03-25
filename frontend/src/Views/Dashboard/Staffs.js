@@ -42,7 +42,7 @@ export default function Deposits({ setSidebarOpen }) {
             </td>
           )}
           <td className={s.name}>{item.name}</td>
-          <td className={s.role}>{item.role.name}</td>
+          <td className={s.role}>{item.role?.name}</td>
           {user.userType === "staff" && (
             <td className={s.status}>{status[item.status] || item.status}</td>
           )}
