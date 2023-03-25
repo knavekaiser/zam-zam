@@ -1,11 +1,9 @@
 const admin = require("firebase-admin");
 
-var serviceAccount = require("../config/firebase.config.json");
-
 const { Device, Member, Staff } = require("../models");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_CONFIG)),
   databaseURL: "https://zam-zam-tower.firebaseio.com",
 });
 
