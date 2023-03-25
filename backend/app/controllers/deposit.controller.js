@@ -73,12 +73,9 @@ exports.create = async (req, res) => {
           "name email photo phone"
         );
         await firebase.notifyStaffs("Cashier", {
-          tokens,
-          message: {
-            title: "Money Deposited",
-            body: `New Deposit from ${data.member.name} (${data.member.phone}). Approve or Disapprove`,
-            click_action: `${process.env.SITE_URL}/deposits`,
-          },
+          title: "Money Deposited",
+          body: `New Deposit from ${data.member.name} (${data.member.phone}). Approve or Disapprove`,
+          click_action: `${process.env.SITE_URL}/deposits`,
         });
         return responseFn.success(res, { data });
       })
@@ -101,12 +98,9 @@ exports.update = async (req, res) => {
       .populate("member", "name email photo phone")
       .then(async (data) => {
         await firebase.notifyStaffs("Cashier", {
-          tokens,
-          message: {
-            title: "Deposit Updated",
-            body: `A Deposit has been updated. Approve or Disapprove`,
-            click_action: `${process.env.SITE_URL}/deposits`,
-          },
+          title: "Deposit Updated",
+          body: `A Deposit has been updated. Approve or Disapprove`,
+          click_action: `${process.env.SITE_URL}/deposits`,
         });
         return responseFn.success(res, { data }, responseStr.record_updated);
       })

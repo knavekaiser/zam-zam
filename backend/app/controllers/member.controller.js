@@ -23,12 +23,9 @@ exports.signup = async (req, res) => {
       .save()
       .then(async (user) => {
         await firebase.notifyStaffs("Manager", {
-          tokens,
-          message: {
-            title: "New Member Sign Up",
-            body: `${user.name} (${user.phone}) has just signed up. Approve or Disapprove`,
-            click_action: `${process.env.SITE_URL}/members`,
-          },
+          title: "New Member Sign Up",
+          body: `${user.name} (${user.phone}) has just signed up. Approve or Disapprove`,
+          click_action: `${process.env.SITE_URL}/members`,
         });
         return responseFn.success(
           res,

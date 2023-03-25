@@ -65,12 +65,9 @@ exports.create = async (req, res) => {
       .save()
       .then(async (data) => {
         await firebase.notifyStaffs("Cashier", {
-          tokens,
-          message: {
-            title: "Expense Added",
-            body: `New Expense has been added. Approve or Disapprove`,
-            click_action: `${process.env.SITE_URL}/expenses`,
-          },
+          title: "Expense Added",
+          body: `New Expense has been added. Approve or Disapprove`,
+          click_action: `${process.env.SITE_URL}/expenses`,
         });
         return responseFn.success(res, { data });
       })
@@ -92,12 +89,9 @@ exports.update = async (req, res) => {
     )
       .then(async (data) => {
         await firebase.notifyStaffs("Cashier", {
-          tokens,
-          message: {
-            title: "Expense Updated",
-            body: `New Expense has been updated. Approve or Disapprove`,
-            click_action: `${process.env.SITE_URL}/expenses`,
-          },
+          title: "Expense Updated",
+          body: `New Expense has been updated. Approve or Disapprove`,
+          click_action: `${process.env.SITE_URL}/expenses`,
         });
         return responseFn.success(res, { data }, responseStr.record_updated);
       })

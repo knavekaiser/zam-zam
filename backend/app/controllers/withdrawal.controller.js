@@ -70,12 +70,9 @@ exports.create = async (req, res) => {
           "name email photo phone"
         );
         await firebase.notifyStaffs("Cashier", {
-          tokens,
-          message: {
-            title: "Withdrawal Added",
-            body: `New Withdrawal added. Approve or Disapprove`,
-            click_action: `${process.env.SITE_URL}/withdrawals`,
-          },
+          title: "Withdrawal Added",
+          body: `New Withdrawal added. Approve or Disapprove`,
+          click_action: `${process.env.SITE_URL}/withdrawals`,
         });
         return responseFn.success(res, { data });
       })
@@ -98,12 +95,9 @@ exports.update = async (req, res) => {
       .populate("member", "name email photo phone")
       .then(async (data) => {
         await firebase.notifyStaffs("Cashier", {
-          tokens,
-          message: {
-            title: "Withdrawal update",
-            body: `A Withdrawal has been added. Approve or Disapprove`,
-            click_action: `${process.env.SITE_URL}/withdrawals`,
-          },
+          title: "Withdrawal update",
+          body: `A Withdrawal has been added. Approve or Disapprove`,
+          click_action: `${process.env.SITE_URL}/withdrawals`,
         });
         return responseFn.success(res, { data }, responseStr.record_updated);
       })
