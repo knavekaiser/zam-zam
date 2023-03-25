@@ -61,7 +61,7 @@ exports.notifyStaffs = async (role, message) => {
       },
     },
     { $unwind: { path: "$role", preserveNullAndEmptyArrays: false } },
-    ...(role && { $match: { "role.name": role } }),
+    ...(role ? [{ $match: { "role.name": role } }] : []),
     {
       $lookup: {
         from: "devices",
