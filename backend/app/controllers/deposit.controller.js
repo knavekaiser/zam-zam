@@ -7,13 +7,31 @@ const { Deposit, Milestone } = require("../models");
 
 exports.findAll = async (req, res) => {
   try {
-    const conditions = {
-      // add filters here,
-    };
+    const conditions = {};
     if (req.authToken.userType === "staff") {
-      if (req.query.status) {
-        conditions.status = { $in: req.query.status.split(",") };
+      const allowedStatus = ["approved"];
+      if (req.authUser.role.permissions.includes("deposit_delete")) {
+        allowedStatus.push("pending-delete");
       }
+      if (
+        ["deposit_create", "deposit_update", "deposit_approve"].some((item) =>
+          req.authUser.role.permissions?.includes(item)
+        )
+      ) {
+        allowedStatus.push("pending-approval");
+      }
+      const filterStatus = req.query.status?.split(",") || null;
+      if (
+        req.authUser.role.name === "Manager" &&
+        filterStatus?.includes("deleted")
+      ) {
+        allowedStatus.push("deleted");
+      }
+      conditions.status = {
+        $in: filterStatus
+          ? allowedStatus.filter((s) => filterStatus.some((i) => i === s))
+          : allowedStatus,
+      };
     } else {
       conditions.status = "approved";
     }

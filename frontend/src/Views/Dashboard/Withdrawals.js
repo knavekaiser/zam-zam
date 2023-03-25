@@ -6,6 +6,23 @@ import { SiteContext } from "SiteContext";
 
 export default function Withdrawals({ setSidebarOpen }) {
   const { user } = useContext(SiteContext);
+  const actionColumns = ["approve", "update", "delete"].some((item) =>
+    user.role?.permissions?.includes(`withdrawal_${item}`)
+  );
+  const filterStatus = [
+    ...(["withdrawal_create", "withdrawal_update", "withdrawal_approve"].some(
+      (item) => user.role.permissions?.includes(item)
+    )
+      ? [{ label: "Pending Approval", value: "pending-approval" }]
+      : []),
+    { label: "Approved", value: "approved" },
+    ...(user.role.permissions?.includes("withdrawal_delete")
+      ? [{ label: "Pending Delete", value: "pending-delete" }]
+      : []),
+    ...(user.role.name === "Manager"
+      ? [{ label: "Deleted", value: "deleted" }]
+      : []),
+  ];
   return (
     <DataTable
       key="Withdrawals"
@@ -16,23 +33,16 @@ export default function Withdrawals({ setSidebarOpen }) {
       trStyle={{
         gridTemplateColumns: `6rem 1fr 7rem ${
           user.userType === "staff" ? "8rem" : ""
-        } ${
-          ["approve", "update", "delete"].some((item) =>
-            user.role?.permissions?.includes(`withdrawal_${item}`)
-          )
-            ? "3rem"
-            : ""
-        }`,
+        } ${actionColumns ? "3rem" : ""}`,
       }}
       deleteRequest
+      filterStatus={filterStatus}
       columns={[
         { label: "Date" },
         { label: "Member" },
         { label: "Amount", className: "text-right" },
         ...(user.userType === "staff" ? [{ label: "Status" }] : []),
-        ...(["approve", "update", "delete"].some((item) =>
-          user.role?.permissions?.includes(`withdrawal_${item}`)
-        )
+        ...(actionColumns
           ? [{ label: "Action", className: "text-right" }]
           : []),
       ]}

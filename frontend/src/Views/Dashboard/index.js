@@ -10,7 +10,7 @@ import {
 import { paths, endpoints } from "config";
 import { useFetch } from "hooks";
 
-import { FaPowerOff, FaUser, FaUserCog } from "react-icons/fa";
+import { FaPowerOff } from "react-icons/fa";
 import {
   BsHouseDoor,
   BsHouseDoorFill,

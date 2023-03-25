@@ -21,6 +21,7 @@ const Data = ({
   deleteRequest,
   endpoint,
   schema,
+  filterStatus,
 }) => {
   const { user, checkPermission } = useContext(SiteContext);
   const [filters, setFilters] = useState({});
@@ -70,6 +71,7 @@ const Data = ({
               <Filter
                 filters={filters}
                 schema={schema}
+                filterStatus={filterStatus}
                 setFilters={setFilters}
               />
             )}
@@ -168,9 +170,18 @@ const Data = ({
                                   ).then(({ data }) => {
                                     if (data.success) {
                                       setData((prev) =>
-                                        prev.filter(
-                                          (dep) => dep._id !== item._id
-                                        )
+                                        checkPermission(`${name}_delete`)
+                                          ? prev.map((i) =>
+                                              i._id === item._id
+                                                ? {
+                                                    ...item,
+                                                    status: "pending-delete",
+                                                  }
+                                                : i
+                                            )
+                                          : prev.filter(
+                                              (i) => i._id !== item._id
+                                            )
                                       );
                                     } else {
                                       Prompt({

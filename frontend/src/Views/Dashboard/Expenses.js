@@ -6,6 +6,23 @@ import { SiteContext } from "SiteContext";
 
 export default function Deposits({ setSidebarOpen }) {
   const { user } = useContext(SiteContext);
+  const actionColumns = ["approve", "update", "delete"].some((item) =>
+    user.role?.permissions?.includes(`expense_${item}`)
+  );
+  const filterStatus = [
+    ...(["expense_create", "expense_update", "expense_approve"].some((item) =>
+      user.role.permissions?.includes(item)
+    )
+      ? [{ label: "Pending Approval", value: "pending-approval" }]
+      : []),
+    { label: "Approved", value: "approved" },
+    ...(user.role.permissions?.includes("expense_delete")
+      ? [{ label: "Pending Delete", value: "pending-delete" }]
+      : []),
+    ...(user.role.name === "Manager"
+      ? [{ label: "Deleted", value: "deleted" }]
+      : []),
+  ];
   return (
     <DataTable
       key="Expenses"
@@ -16,23 +33,16 @@ export default function Deposits({ setSidebarOpen }) {
       trStyle={{
         gridTemplateColumns: `6rem 1fr 7rem ${
           user.userType === "staff" ? "8rem" : ""
-        } ${
-          ["approve", "update", "delete"].some((item) =>
-            user.role?.permissions?.includes(`expense_${item}`)
-          )
-            ? "3rem"
-            : ""
-        }`,
+        } ${actionColumns ? "3rem" : ""}`,
       }}
       deleteRequest
+      filterStatus={filterStatus}
       columns={[
         { label: "Date" },
         { label: "Description" },
         { label: "Amount", className: "text-right" },
         ...(user.userType === "staff" ? [{ label: "Status" }] : []),
-        ...(["approve", "update", "delete"].some((item) =>
-          user.role?.permissions?.includes(`expense_${item}`)
-        )
+        ...(actionColumns
           ? [{ label: "Action", className: "text-right" }]
           : []),
       ]}

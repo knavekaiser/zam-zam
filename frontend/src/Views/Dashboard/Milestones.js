@@ -6,6 +6,15 @@ import { SiteContext } from "SiteContext";
 
 export default function Deposits({ setSidebarOpen }) {
   const { user } = useContext(SiteContext);
+  const actionColumns = ["update", "delete"].some((item) =>
+    user.role?.permissions?.includes(`milestone_${item}`)
+  );
+  const filterStatus = [
+    { label: "Ongoing", value: "ongoing" },
+    { label: "Upcoming", value: "upcoming" },
+    { label: "Complete", value: "complete" },
+    { label: "Past Due", value: "past-due" },
+  ];
   return (
     <DataTable
       key="Milestones"
@@ -16,15 +25,8 @@ export default function Deposits({ setSidebarOpen }) {
       trStyle={{
         gridTemplateColumns: `1fr 7rem 7rem 7rem 7rem 7rem ${
           user.userType === "staff" ? "4rem" : ""
-        } ${
-          ["update", "delete"].some((item) =>
-            user.role?.permissions?.includes(`miletone_${item}`)
-          )
-            ? "3rem"
-            : ""
-        }`,
+        } ${actionColumns ? "3rem" : ""}`,
       }}
-      deleteRequest
       columns={[
         { label: "Title" },
         { label: "Start Date" },
@@ -32,12 +34,11 @@ export default function Deposits({ setSidebarOpen }) {
         { label: "Amount", className: "text-right" },
         { label: "Deposited", className: "text-right" },
         ...(user.userType === "staff" ? [{ label: "Status" }] : []),
-        ...(["approve", "update", "delete"].some((item) =>
-          user.role?.permissions?.includes(`milestone_${item}`)
-        )
+        ...(actionColumns
           ? [{ label: "Action", className: "text-right" }]
           : []),
       ]}
+      filterStatus={filterStatus}
       renderRow={(item, s, status) => (
         <>
           <td className={s.name}>{item.title}</td>

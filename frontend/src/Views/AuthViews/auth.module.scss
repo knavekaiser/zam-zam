@@ -152,13 +152,26 @@
     padding: 0;
     padding-bottom: 0;
     form {
+      margin: auto;
       border-radius: 0;
       height: 100%;
       grid-template-columns: 1fr;
       grid-auto-rows: min-content;
       justify-items: center;
       grid-gap: 1rem;
-
+      max-width: 100%;
+      grid-auto-rows: unset;
+      padding: 1.5rem;
+      & > div {
+        .logoContainer {
+          .logo {
+            font-size: 7vw;
+          }
+        }
+        padding: 0;
+        margin: auto;
+        width: 100%;
+      }
       // & > *:not(.logoContainer) {
       //   width: 100%;
       // }

@@ -7,9 +7,9 @@ const { Milestone } = require("../models");
 exports.findAll = async (req, res) => {
   try {
     const conditions = {};
-    if ("name" in req.query) {
-      conditions.name = {
-        $regex: req.query.name,
+    if ("title" in req.query) {
+      conditions.title = {
+        $regex: req.query.title,
         $options: "i",
       };
     }

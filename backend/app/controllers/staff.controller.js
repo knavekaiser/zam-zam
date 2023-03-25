@@ -299,6 +299,12 @@ exports.find = (req, res) => {
     const conditions = {
       _id: { $ne: req.authUser._id },
     };
+    if ("name" in req.query) {
+      conditions.name = {
+        $regex: req.query.name,
+        $options: "i",
+      };
+    }
     // Staff.aggregate([
     //   { $match: conditions },
     //   { $project: { __v: 0, password: 0 } },

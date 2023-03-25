@@ -6,9 +6,40 @@ const { Expense } = require("../models");
 
 exports.findAll = async (req, res) => {
   try {
-    const conditions = {
-      // add filters here,
-    };
+    const conditions = {};
+    if (req.authToken.userType === "staff") {
+      const allowedStatus = ["approved"];
+      if (req.authUser.role.permissions.includes("expense_delete")) {
+        allowedStatus.push("pending-delete");
+      }
+      if (
+        ["expense_create", "expense_update", "expense_approve"].some((item) =>
+          req.authUser.role.permissions?.includes(item)
+        )
+      ) {
+        allowedStatus.push("pending-approval");
+      }
+      const filterStatus = req.query.status?.split(",") || null;
+      if (
+        req.authUser.role.name === "Manager" &&
+        filterStatus?.includes("deleted")
+      ) {
+        allowedStatus.push("deleted");
+      }
+      conditions.status = {
+        $in: filterStatus
+          ? allowedStatus.filter((s) => filterStatus.some((i) => i === s))
+          : allowedStatus,
+      };
+    } else {
+      conditions.status = "approved";
+    }
+    if (req.query.from_date && req.query.to_date) {
+      conditions.date = {
+        $gte: new Date(req.query.from_date),
+        $lte: new Date(req.query.to_date),
+      };
+    }
     Expense.aggregate([
       { $match: conditions },
       { $sort: { date: -1 } },

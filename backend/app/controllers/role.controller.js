@@ -6,7 +6,14 @@ const { Role } = require("../models");
 
 exports.findAll = async (req, res) => {
   try {
-    Role.find({ user: req.business?._id || req.authUser._id })
+    const conditions = {};
+    if ("name" in req.query) {
+      conditions.name = {
+        $regex: req.query.name,
+        $options: "i",
+      };
+    }
+    Role.find(conditions)
       .then((data) => responseFn.success(res, { data }))
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
@@ -16,10 +23,7 @@ exports.findAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    new Role({
-      ...req.body,
-      user: req.business?._id || req.authUser._id,
-    })
+    new Role({ ...req.body })
       .save()
       .then(async (data) => responseFn.success(res, { data }))
       .catch((err) => responseFn.error(res, {}, err.message));
@@ -30,11 +34,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    Role.findOneAndUpdate(
-      { _id: req.params.id, user: req.business?._id || req.authUser._id },
-      req.body,
-      { new: true }
-    )
+    Role.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .then((data) => {
         responseFn.success(res, { data }, responseStr.record_updated);
       })
@@ -49,10 +49,7 @@ exports.delete = async (req, res) => {
     if (!req.params.id && !req.body.ids?.length) {
       return responseFn.error(res, {}, responseStr.select_atleast_one_record);
     }
-    Role.deleteMany({
-      _id: { $in: [...(req.body.ids || []), req.params.id] },
-      user: req.business?._id || req.authUser._id,
-    })
+    Role.deleteMany({ _id: { $in: [...(req.body.ids || []), req.params.id] } })
       .then((num) => responseFn.success(res, {}, responseStr.record_deleted))
       .catch((err) => responseFn.error(res, {}, err.message, 500));
   } catch (error) {

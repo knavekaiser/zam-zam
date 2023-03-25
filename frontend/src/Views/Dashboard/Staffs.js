@@ -5,6 +5,14 @@ import { SiteContext } from "SiteContext";
 
 export default function Deposits({ setSidebarOpen }) {
   const { user } = useContext(SiteContext);
+  const actionColumns = ["approve", "update", "delete"].some((item) =>
+    user.role?.permissions?.includes(`staff_${item}`)
+  );
+  const filterStatus = [
+    { label: "Pending Activation", value: "pending-activation" },
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+  ];
   return (
     <DataTable
       key="Staffs"
@@ -15,22 +23,14 @@ export default function Deposits({ setSidebarOpen }) {
       trStyle={{
         gridTemplateColumns: `1fr 9rem ${
           user.userType === "staff" ? "8rem" : ""
-        } ${
-          ["approve", "update", "delete"].some((item) =>
-            user.role?.permissions?.includes(`staff_${item}`)
-          )
-            ? "3rem"
-            : ""
-        }`,
+        } ${actionColumns ? "3rem" : ""}`,
       }}
-      deleteRequest
+      filterStatus={filterStatus}
       columns={[
         { label: "Name" },
         { label: "Role" },
         ...(user.userType === "staff" ? [{ label: "Status" }] : []),
-        ...(["approve", "update", "delete"].some((item) =>
-          user.role?.permissions?.includes(`staff_${item}`)
-        )
+        ...(actionColumns
           ? [{ label: "Action", className: "text-right" }]
           : []),
       ]}

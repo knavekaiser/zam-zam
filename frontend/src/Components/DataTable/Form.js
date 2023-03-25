@@ -157,7 +157,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   );
 };
 
-export const Filter = ({ filters = {}, schema, setFilters }) => {
+export const Filter = ({ filters = {}, filterStatus, schema, setFilters }) => {
   const { user } = useContext(SiteContext);
   const { handleSubmit, control, register, reset } = useForm();
   useEffect(() => {
@@ -213,17 +213,17 @@ export const Filter = ({ filters = {}, schema, setFilters }) => {
       {schema.some((item) => item.name === "name") && (
         <Input label="Name" {...register("name")} />
       )}
+      {schema.some((item) => item.name === "title") && (
+        <Input label="Title" {...register("title")} />
+      )}
 
-      {user.userType === "staff" && (
+      {user.userType === "staff" && filterStatus?.length > 0 && (
         <Select
           label="Status"
           control={control}
           name="status"
           multiple
-          options={[
-            { label: "Pending Approval", value: "pending-approval" },
-            { label: "Approved", value: "approved" },
-          ]}
+          options={filterStatus}
         />
       )}
 

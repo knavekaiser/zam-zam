@@ -6,9 +6,23 @@ import { SiteContext } from "SiteContext";
 
 export default function Deposits({ setSidebarOpen }) {
   const { user } = useContext(SiteContext);
-  const actionColumn = ["approve", "update", "delete"].some((item) =>
+  const actionColumns = ["approve", "update", "delete"].some((item) =>
     user.role?.permissions?.includes(`deposit_${item}`)
   );
+  const filterStatus = [
+    ...(["deposit_create", "deposit_update", "deposit_approve"].some((item) =>
+      user.role.permissions?.includes(item)
+    )
+      ? [{ label: "Pending Approval", value: "pending-approval" }]
+      : []),
+    { label: "Approved", value: "approved" },
+    ...(user.role.permissions?.includes("deposit_delete")
+      ? [{ label: "Pending Delete", value: "pending-delete" }]
+      : []),
+    ...(user.role.name === "Manager"
+      ? [{ label: "Deleted", value: "deleted" }]
+      : []),
+  ];
   return (
     <DataTable
       key="Deposits"
@@ -19,7 +33,7 @@ export default function Deposits({ setSidebarOpen }) {
       trStyle={{
         gridTemplateColumns: `6rem 1fr 7rem ${
           user.userType === "staff" ? "8rem" : ""
-        } ${actionColumn ? "3rem" : ""}`,
+        } ${actionColumns ? "3rem" : ""}`,
       }}
       deleteRequest
       columns={[
@@ -27,7 +41,9 @@ export default function Deposits({ setSidebarOpen }) {
         { label: "Member" },
         { label: "Amount", className: "text-right" },
         ...(user.userType === "staff" ? [{ label: "Status" }] : []),
-        ...(actionColumn ? [{ label: "Action", className: "text-right" }] : []),
+        ...(actionColumns
+          ? [{ label: "Action", className: "text-right" }]
+          : []),
       ]}
       renderRow={(item, s, status) => (
         <>
@@ -44,6 +60,7 @@ export default function Deposits({ setSidebarOpen }) {
           )}
         </>
       )}
+      filterStatus={filterStatus.length > 0 ? filterStatus : []}
       schema={[
         {
           fieldType: "input",
@@ -76,7 +93,8 @@ export default function Deposits({ setSidebarOpen }) {
           formOptions: { required: true },
           getQuery: (inputValue, selected) => ({
             ...(inputValue && { title: inputValue }),
-            _id: selected,
+            status: ["past-due", "ongoing"],
+            ...(selected && { _id: selected }),
           }),
           handleData: (item) => ({
             label: item.title,
