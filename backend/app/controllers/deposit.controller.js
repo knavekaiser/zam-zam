@@ -1,7 +1,7 @@
 const {
   appConfig: { responseFn, responseStr, smsTemplate },
 } = require("../config");
-const { smsHelper } = require("../helpers");
+const { smsHelper, firebase } = require("../helpers");
 
 const { Deposit, Milestone } = require("../models");
 
@@ -63,15 +63,23 @@ exports.create = async (req, res) => {
   try {
     new Deposit({
       ...req.body,
-      addedBy: req.authUser.id,
+      addedBy: req.authUser._id,
       status: "pending-approval",
     })
       .save()
       .then(async (data) => {
-        data = await Deposit.findOne({ _id: data.id }).populate(
+        data = await Deposit.findOne({ _id: data._id }).populate(
           "member",
           "name email photo phone"
         );
+        await firebase.notifyStaffs("Cashier", {
+          tokens,
+          message: {
+            title: "Money Deposited",
+            body: `New Deposit from ${data.member.name} (${data.member.phone}). Approve or Disapprove`,
+            click_action: `${process.env.SITE_URL}/deposits`,
+          },
+        });
         return responseFn.success(res, { data });
       })
       .catch((err) => responseFn.error(res, {}, err.message));
@@ -86,11 +94,20 @@ exports.update = async (req, res) => {
       delete req.body[item];
     });
     Deposit.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       { ...req.body, status: "pending-update" },
       { new: true }
     )
-      .then((data) => {
+      .populate("member", "name email photo phone")
+      .then(async (data) => {
+        await firebase.notifyStaffs("Cashier", {
+          tokens,
+          message: {
+            title: "Deposit Updated",
+            body: `A Deposit has been updated. Approve or Disapprove`,
+            click_action: `${process.env.SITE_URL}/deposits`,
+          },
+        });
         return responseFn.success(res, { data }, responseStr.record_updated);
       })
       .catch((err) => responseFn.error(res, {}, err.message));
@@ -102,7 +119,7 @@ exports.update = async (req, res) => {
 exports.approve = async (req, res) => {
   try {
     Deposit.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       { status: "approved" },
       { new: true }
     )
@@ -149,7 +166,7 @@ exports.approve = async (req, res) => {
 exports.reqDelete = async (req, res) => {
   try {
     Deposit.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       { status: "pending-delete" }
     )
       .then((num) => responseFn.success(res, {}, responseStr.delete_requested))
@@ -162,7 +179,7 @@ exports.reqDelete = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     Deposit.findOneAndUpdate(
-      { _id: req.params.id, status: "pending-delete" },
+      { _id: req.params._id, status: "pending-delete" },
       { status: "deleted" }
     )
       .then((num) => responseFn.success(res, {}, responseStr.record_deleted))

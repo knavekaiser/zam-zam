@@ -11,25 +11,25 @@ module.exports = function (app) {
     controller.create
   );
   router.put(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("expense_update"),
     validate(schema.update),
     controller.update
   );
   router.put(
-    "/:id/approve",
+    "/:_id/approve",
     authJwt.verifyToken("expense_approve"),
     controller.approve
   );
-  router.get("/:id?", authJwt.verifyToken("expense_read"), controller.findAll);
+  router.get("/:_id?", authJwt.verifyToken("expense_read"), controller.findAll);
 
   router.delete(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("expense_delete"),
     controller.delete
   );
   router.delete(
-    "/:id/request",
+    "/:_id/request",
     authJwt.verifyToken("expense_request_delete"),
     controller.reqDelete
   );

@@ -7,7 +7,7 @@ admin.initializeApp({
   databaseURL: "https://zam-zam-tower.firebaseio.com",
 });
 
-exports.sendMessage = async ({ _ids, tokens, message }) => {
+const notify = async ({ _ids, tokens, message }) => {
   if (!tokens) {
     tokens = await Device.find(
       {
@@ -50,6 +50,51 @@ exports.sendMessage = async ({ _ids, tokens, message }) => {
   }
 };
 
+exports.notifyStaffs = async (role, message) => {
+  const tokens = await Staff.aggregate([
+    {
+      $lookup: {
+        from: "roles",
+        localField: "role",
+        foreignField: "_id",
+        as: "role",
+      },
+    },
+    { $unwind: { path: "$role", preserveNullAndEmptyArrays: false } },
+    ...(role && { $match: { "role.name": role } }),
+    {
+      $lookup: {
+        from: "devices",
+        localField: "devices",
+        foreignField: "deviceId",
+        as: "devices",
+      },
+    },
+    { $unwind: { path: "$devices", preserveNullAndEmptyArrays: false } },
+    { $project: { fcmToken: "$devices.fcmToken" } },
+  ]).then((data) => data.map((item) => item.fcmToken));
+
+  await notify({ tokens, message });
+};
+
+exports.notifyMembers = async (filters, message) => {
+  const tokens = await Member.aggregate([
+    { $match: { status: "active", ...filters } },
+    {
+      $lookup: {
+        from: "devices",
+        localField: "devices",
+        foreignField: "deviceId",
+        as: "devices",
+      },
+    },
+    { $unwind: { path: "$devices", preserveNullAndEmptyArrays: false } },
+    { $project: { fcmToken: "$devices.fcmToken" } },
+  ]).then((data) => data.map((item) => item.fcmToken));
+
+  await notify({ tokens, message });
+};
+
 exports.validateToken = async (token) => {
   try {
     // validate somehow
@@ -58,3 +103,5 @@ exports.validateToken = async (token) => {
     return null;
   }
 };
+
+module.export = { notify };

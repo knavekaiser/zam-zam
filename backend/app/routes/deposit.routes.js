@@ -11,25 +11,25 @@ module.exports = function (app) {
     controller.create
   );
   router.put(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("deposit_update"),
     validate(schema.update),
     controller.update
   );
   router.put(
-    "/:id/approve",
+    "/:_id/approve",
     authJwt.verifyToken("deposit_approve"),
     controller.approve
   );
-  router.get("/:id?", authJwt.verifyToken("deposit_read"), controller.findAll);
+  router.get("/:_id?", authJwt.verifyToken("deposit_read"), controller.findAll);
 
   router.delete(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("deposit_delete"),
     controller.delete
   );
   router.delete(
-    "/:id/request",
+    "/:_id/request",
     authJwt.verifyToken("deposit_request_delete"),
     controller.reqDelete
   );

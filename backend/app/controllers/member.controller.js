@@ -8,7 +8,7 @@ const {
   firebase,
 } = require("../helpers");
 
-const { Member, Otp, Role, Staff } = require("../models");
+const { Member, Otp, Role } = require("../models");
 
 exports.signup = async (req, res) => {
   try {
@@ -22,30 +22,7 @@ exports.signup = async (req, res) => {
     })
       .save()
       .then(async (user) => {
-        const tokens = await Staff.aggregate([
-          {
-            $lookup: {
-              from: "roles",
-              localField: "role",
-              foreignField: "_id",
-              as: "role",
-            },
-          },
-          { $unwind: { path: "$role", preserveNullAndEmptyArrays: false } },
-          { $match: { "role.name": "Manager" } },
-          {
-            $lookup: {
-              from: "devices",
-              localField: "devices",
-              foreignField: "deviceId",
-              as: "devices",
-            },
-          },
-          { $unwind: { path: "$devices", preserveNullAndEmptyArrays: false } },
-          { $project: { fcmToken: "$devices.fcmToken" } },
-        ]).then((data) => data.map((item) => item.fcmToken));
-
-        await firebase.sendMessage({
+        await firebase.notifyStaffs("Manager", {
           tokens,
           message: {
             title: "New Member Sign Up",

@@ -1,6 +1,7 @@
 const {
   appConfig: { responseFn, responseStr, smsTemplate },
 } = require("../config");
+const { firebase, smsHelper } = require("../helpers");
 
 const { Withdrawal } = require("../models");
 
@@ -59,11 +60,23 @@ exports.create = async (req, res) => {
   try {
     new Withdrawal({
       ...req.body,
-      addedBy: req.authUser.id,
+      addedBy: req.authUser._id,
       status: "pending-approval",
     })
       .save()
       .then(async (data) => {
+        data = await Withdrawal.findOne({ _id: data._id }).populate(
+          "member",
+          "name email photo phone"
+        );
+        await firebase.notifyStaffs("Cashier", {
+          tokens,
+          message: {
+            title: "Withdrawal Added",
+            body: `New Withdrawal added. Approve or Disapprove`,
+            click_action: `${process.env.SITE_URL}/withdrawals`,
+          },
+        });
         return responseFn.success(res, { data });
       })
       .catch((err) => responseFn.error(res, {}, err.message));
@@ -78,11 +91,20 @@ exports.update = async (req, res) => {
       delete req.body[item];
     });
     Withdrawal.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       { ...req.body, status: "pending-update" },
       { new: true }
     )
-      .then((data) => {
+      .populate("member", "name email photo phone")
+      .then(async (data) => {
+        await firebase.notifyStaffs("Cashier", {
+          tokens,
+          message: {
+            title: "Withdrawal update",
+            body: `A Withdrawal has been added. Approve or Disapprove`,
+            click_action: `${process.env.SITE_URL}/withdrawals`,
+          },
+        });
         return responseFn.success(res, { data }, responseStr.record_updated);
       })
       .catch((err) => responseFn.error(res, {}, err.message));
@@ -94,7 +116,7 @@ exports.update = async (req, res) => {
 exports.approve = async (req, res) => {
   try {
     Withdrawal.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       { status: "approved" },
       { new: true }
     )
@@ -122,7 +144,7 @@ exports.approve = async (req, res) => {
 exports.reqDelete = async (req, res) => {
   try {
     Withdrawal.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       { status: "pending-delete" }
     )
       .then((num) => responseFn.success(res, {}, responseStr.delete_requested))
@@ -135,7 +157,7 @@ exports.reqDelete = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     Withdrawal.findOneAndUpdate(
-      { _id: req.params.id, status: "pending-delete" },
+      { _id: req.params._id, status: "pending-delete" },
       { status: "deleted" }
     )
       .then((num) => responseFn.success(res, {}, responseStr.record_deleted))

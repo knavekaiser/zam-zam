@@ -5,6 +5,7 @@ const {
   appHelper: { genId, ...appHelper },
   smsHelper,
   fileHelper,
+  firebase,
 } = require("../helpers");
 
 const { Staff, Otp } = require("../models");
@@ -16,6 +17,14 @@ exports.signup = async (req, res) => {
     new Staff({ ...req.body, status: "pending-activation" })
       .save()
       .then(async (staff) => {
+        await firebase.notifyStaffs("Manager", {
+          tokens,
+          message: {
+            title: "New Staff Sign Up",
+            body: `${staff.name} (${staff.phone}) has just signed up. Approve or Disapprove`,
+            click_action: `${process.env.SITE_URL}/staffs`,
+          },
+        });
         return responseFn.success(
           res,
           {},
