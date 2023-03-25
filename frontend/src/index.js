@@ -6,6 +6,12 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "SiteContext";
 import { BrowserRouter } from "react-router-dom";
 
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js");
+  });
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
