@@ -28,7 +28,7 @@ require("./app/routes")(app);
 
 // simple route
 app.get("/api", (req, res) => {
-  res.json({ message: "Welcome to Biz App API." });
+  res.json({ message: "Welcome to ZAM-ZAM API." });
 });
 
 const fs = require("fs");

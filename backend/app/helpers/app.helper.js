@@ -70,6 +70,24 @@ exports.genId = (l, { uppercase, lowercase, letters, numbers } = {}) => {
   return id;
 };
 
+exports.getPast12Months = () => {
+  let months = [];
+  let currentDate = new Date();
+  let currentYear = currentDate.getFullYear().toString().substr(-2);
+
+  for (let i = 0; i < 12; i++) {
+    let month = currentDate.toLocaleString("default", { month: "short" });
+    months.push(month + " " + currentYear);
+
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    if (currentDate.getMonth() === 11) {
+      currentYear = (parseInt(currentYear) - 1).toString();
+    }
+  }
+
+  return months.reverse();
+};
+
 exports.normalizeDomain = (url) =>
   (url || "")
     .toLowerCase()

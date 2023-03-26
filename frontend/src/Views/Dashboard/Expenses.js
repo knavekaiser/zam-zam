@@ -51,7 +51,7 @@ export default function Deposits({ setSidebarOpen }) {
           <td className={s.date}>
             <Moment format="MMM DD, YYYY">{item.date}</Moment>
           </td>
-          <td className={s.member}>{item.description}</td>
+          <td className={s.description}>{item.description}</td>
           <td className={`text-right`}>
             <span className={s.currencySymbol}>৳</span>
             {item.amount.toLocaleString("en-IN")}

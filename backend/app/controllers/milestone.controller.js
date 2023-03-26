@@ -1,8 +1,9 @@
 const {
   appConfig: { responseFn, responseStr, smsTemplate },
 } = require("../config");
+const { firebase } = require("../helpers");
 
-const { Milestone } = require("../models");
+const { Milestone, Member } = require("../models");
 
 exports.findAll = async (req, res) => {
   try {
@@ -23,12 +24,14 @@ exports.findAll = async (req, res) => {
         $lte: new Date(req.query.to_date),
       };
     }
+    const totalShares = await Member.count({ status: "active" });
     Milestone.aggregate([
       { $match: conditions },
+      { $set: { perMember: { $divide: ["$amount", totalShares] } } },
       {
         $lookup: {
           from: "deposits",
-          let: { id: "$_id" },
+          let: { id: "$_id", perMember: "$perMember" },
           pipeline: [
             {
               $match: {
@@ -40,30 +43,38 @@ exports.findAll = async (req, res) => {
                 },
               },
             },
+            { $group: { _id: "$member", deposited: { $sum: "$amount" } } },
+            {
+              $lookup: {
+                from: "members",
+                localField: "_id",
+                foreignField: "_id",
+                as: "member",
+              },
+            },
+            { $unwind: "$member" },
+            {
+              $project: {
+                name: "$member.name",
+                email: "$member.email",
+                phone: "$member.phone",
+                status: "$member.status",
+                deposited: "$deposited",
+                due: { $subtract: ["$$perMember", "$deposited"] },
+              },
+            },
           ],
-          as: "deposited",
+          as: "deposits",
         },
       },
-      { $unwind: { path: "$deposited", preserveNullAndEmptyArrays: true } },
       {
-        $group: {
-          _id: "$_id",
-          title: { $first: "$title" },
-          description: { $first: "$description" },
-          amount: { $first: "$amount" },
-          startDate: { $first: "$startDate" },
-          endDate: { $first: "$endDate" },
-          status: { $first: "$status" },
-          deposited: {
-            $sum: "$deposited.amount",
-          },
-          createdAt: { $first: "$createdAt" },
-          updatedAt: { $first: "$updatedAt" },
+        $set: {
+          totalDeposited: { $sum: "$deposits.deposited" },
+          totalDue: { $subtract: ["$amount", { $sum: "$deposits.deposited" }] },
         },
       },
       { $sort: { startDate: -1 } },
     ])
-      // .sort("date")
       .then((data) => {
         responseFn.success(res, { data });
       })
@@ -93,6 +104,13 @@ exports.create = async (req, res) => {
     })
       .save()
       .then(async (data) => {
+        if (data.status === "ongoing") {
+          await firebase.notifyMembers(null, {
+            title: "New Milestone",
+            body: `New Milestone has been created. Please complete the milestone before ${data.endDate.toDateString()}`,
+            click_action: `${process.env.SITE_URL}`,
+          });
+        }
         return responseFn.success(res, { data });
       })
       .catch((err) => responseFn.error(res, {}, err.message));

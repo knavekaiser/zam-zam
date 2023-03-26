@@ -37,7 +37,7 @@ module.exports = function (app) {
   router.get("/", authJwt.verifyToken("staff_read"), controller.find);
   router.put(
     "/:_id/activate",
-    authJwt.verifyToken("staff_activate"),
+    authJwt.verifyToken("staff_approve"),
     controller.activate
   );
   router.put("/:_id", authJwt.verifyToken("staff_update"), controller.update);

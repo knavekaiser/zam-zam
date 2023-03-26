@@ -1,0 +1,288 @@
+@import "Components/variables";
+
+.contentWrapper {
+  margin: 0 auto;
+  grid-template-rows: min-content 1fr;
+  .head {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(#fff, 0.03);
+    h2 {
+      margin-left: 1rem;
+      cursor: pointer;
+    }
+  }
+  color: white;
+  max-width: 60rem;
+  width: 100%;
+  max-height: calc((var(--vh) * 100));
+  .content {
+    height: 100%;
+    overflow-y: auto;
+    display: grid;
+    padding: 1rem 0;
+    grid-gap: 1rem;
+    border-radius: 1rem;
+    width: 100%;
+    grid-auto-rows: min-content;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    .milestones {
+      border-radius: 1rem;
+      grid-column: 1/-1;
+      display: grid;
+      overflow: hidden;
+      grid-gap: 1rem;
+      padding: 1rem;
+      background: linear-gradient(
+        45deg,
+        rgb(5, 5, 5) -10%,
+        rgb(22, 22, 22) 80%
+      );
+      .milestoneInfoWrapper {
+        width: 100%;
+        overflow: hidden;
+        .milestoneInfo {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          transition: transform 0.95s cubic-bezier(0.69, -0.01, 0.13, 1.03);
+          .info {
+            display: grid;
+            grid-gap: 0.3rem;
+            grid-template-columns: 1fr 1fr;
+            padding-right: 1rem;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            .left,
+            .right {
+              display: grid;
+              grid-gap: 0.5rem;
+              grid-auto-rows: min-content;
+            }
+            .left {
+              .dscr {
+                font-size: 0.85rem;
+                color: $grey2;
+              }
+            }
+            .right {
+              text-align: right;
+            }
+            &.view {
+              opacity: 1;
+            }
+          }
+          .currencySymbol {
+            font-family: "Times New Roman", Times, serif;
+            display: inline-block;
+          }
+          .dates {
+            font-size: 0.85rem;
+            padding-right: 4px;
+            color: $grey2;
+          }
+          .money {
+            padding-right: 4px;
+            font-size: 1.5rem;
+            .paid {
+              font-size: 1.5em;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+      .progressBars {
+        display: grid;
+        transition: grid-template-columns 0.7s
+          cubic-bezier(0.65, 0.04, 0.06, 0.99);
+        .singleBar {
+          background: rgba(255, 255, 255, 0.062);
+          border-radius: 1rem;
+          position: relative;
+          cursor: pointer;
+          height: 1rem;
+          transition: margin-right 0.5s ease-in-out,
+            margin-left 0.5s ease-in-out;
+          .progressWrapper {
+            display: block;
+            position: absolute;
+            height: 77%;
+            width: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 1rem;
+            transition: width 0.4s cubic-bezier(0.34, 0.05, 0.14, 1.01),
+              height 0.4s ease-in-out;
+            .progress {
+              display: block;
+              position: absolute;
+              height: 100%;
+              background: $red;
+              border-radius: 1rem;
+              transition: width 1s cubic-bezier(0.49, 0.01, 0.14, 1.01),
+                height 0.4s ease-in-out;
+            }
+          }
+          &:not(.view) {
+            .progressWrapper {
+              width: 100%;
+              height: 100%;
+              .progress {
+                width: 100% !important;
+                height: 100%;
+              }
+            }
+          }
+
+          &.view {
+            .progressWrapper {
+              width: 99%;
+              .progress {
+                transition-delay: 0.3s;
+              }
+            }
+          }
+          &.ongoing {
+            .progress {
+              background: $green;
+            }
+          }
+        }
+      }
+      &.loading {
+        background: $black1;
+        .milestoneInfo {
+          grid-template-columns: 1fr 1fr;
+        }
+        .left {
+          h4 {
+            height: 1rem;
+            width: 7rem;
+            margin-bottom: 8px;
+          }
+          p {
+            display: block;
+            margin-bottom: 5px;
+            height: 1rem;
+            width: 12rem;
+            &:nth-child(2) {
+              width: 10rem;
+            }
+          }
+        }
+        .right {
+          margin-left: auto;
+          margin-right: 0;
+          display: grid;
+          .money {
+            margin-right: 0;
+            margin-left: auto;
+            height: 2.75rem;
+            width: 11rem;
+            font-size: 1rem;
+          }
+          P {
+            display: block;
+            height: 1rem;
+            width: 12rem;
+          }
+        }
+        .progress {
+          height: 1rem;
+        }
+      }
+    }
+    .card {
+      padding: 1rem;
+      border-radius: 1rem;
+      background: linear-gradient(
+        45deg,
+        $primary-color-dark1 0%,
+        $primary-color-dark2 100%
+      );
+      p {
+        .currencySymbol {
+          font-family: "Times New Roman", Times, serif;
+          font-size: 0.57em;
+          display: inline-block;
+          transform: translateY(-0.8rem);
+        }
+        font-size: 3.5rem;
+        font-weight: 600;
+      }
+      &.loading {
+        background: $black1;
+        label {
+          display: block;
+          height: 1.5rem;
+          width: 10rem;
+        }
+        .currencySymbol {
+          height: 1rem;
+          width: 1rem;
+        }
+        .amount {
+          margin-top: 0.5rem;
+          height: 3.5rem;
+          width: 15rem;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .contentWrapper {
+    .content {
+      padding: 1rem;
+      border-radius: 0;
+      margin: 0;
+      grid-template-columns: 1fr;
+      .milestones {
+        .milestoneInfoWrapper {
+          .milestoneInfo {
+            width: 100%;
+            .info {
+              grid-gap: 1rem;
+              grid-template-columns: 1fr;
+              width: max-content;
+              .left {
+                width: max-content;
+              }
+              .right {
+                width: max-content;
+                text-align: left;
+                grid-gap: 1rem;
+                .money {
+                  font-size: 6.5vw;
+                  .paid {
+                    font-size: 1.75em;
+                    display: block;
+                  }
+                }
+              }
+            }
+          }
+        }
+        &.loading {
+          .milestoneInfo {
+            grid-template-columns: 1fr;
+            .right {
+              margin: unset;
+              .money {
+                margin: unset;
+                margin-top: 10px;
+                margin-bottom: 5px;
+              }
+            }
+          }
+        }
+      }
+      .card {
+        p {
+          font-size: 13vw;
+        }
+      }
+    }
+  }
+}

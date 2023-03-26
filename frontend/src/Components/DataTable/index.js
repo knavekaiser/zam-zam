@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { SiteContext } from "SiteContext";
-import { Table, TableActions, Moment } from "Components/elements";
+import { Table, TableActions } from "Components/elements";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BiEditAlt, BiCheckDouble, BiFilter } from "react-icons/bi";
 import { GoPlus } from "react-icons/go";

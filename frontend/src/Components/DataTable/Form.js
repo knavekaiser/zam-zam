@@ -158,7 +158,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
 };
 
 export const Filter = ({ filters = {}, filterStatus, schema, setFilters }) => {
-  const { user } = useContext(SiteContext);
+  const { user, checkPermission } = useContext(SiteContext);
   const { handleSubmit, control, register, reset } = useForm();
   useEffect(() => {
     const _filter = {};
@@ -193,23 +193,24 @@ export const Filter = ({ filters = {}, filterStatus, schema, setFilters }) => {
           })}
         />
       )}
-      {schema.some((item) => item.name === "milestone") && (
-        <Select
-          label="Milestone"
-          url={endpoints.milestones}
-          control={control}
-          name="milestones"
-          multiple
-          getQuery={(inputValue, selected) => ({
-            ...(inputValue && { title: inputValue }),
-            _id: selected,
-          })}
-          handleData={(item) => ({
-            label: item.title,
-            value: item._id,
-          })}
-        />
-      )}
+      {schema.some((item) => item.name === "milestone") &&
+        checkPermission("milestone_read") && (
+          <Select
+            label="Milestone"
+            url={endpoints.milestones}
+            control={control}
+            name="milestones"
+            multiple
+            getQuery={(inputValue, selected) => ({
+              ...(inputValue && { title: inputValue }),
+              _id: selected,
+            })}
+            handleData={(item) => ({
+              label: item.title,
+              value: item._id,
+            })}
+          />
+        )}
       {schema.some((item) => item.name === "name") && (
         <Input label="Name" {...register("name")} />
       )}

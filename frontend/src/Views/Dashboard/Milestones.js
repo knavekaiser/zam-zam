@@ -55,7 +55,7 @@ export default function Deposits({ setSidebarOpen }) {
           </td>
           <td className={`text-right ${s.milestoneDeposited}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.deposited || 0).toLocaleString("en-IN")}
+            {(item.totalDeposited || 0).toLocaleString("en-IN")}
           </td>
 
           {user.userType === "staff" && (
