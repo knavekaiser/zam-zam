@@ -11,6 +11,7 @@ import * as yup from "yup";
 import s from "./auth.module.scss";
 import { BsArrowRight } from "react-icons/bs";
 import { requestPermission } from "helpers/firebase";
+import { fingerprint } from "helpers";
 
 const validationSchema = yup.object({
   phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
@@ -33,13 +34,13 @@ const Form = ({ userType, setUserType }) => {
   return (
     <form
       className="grid p-2 m-a"
-      onSubmit={handleSubmit((values) => {
+      onSubmit={handleSubmit(async (values) => {
         setInvalidCred(false);
         const number = phone(values.phone, { country: "bangladesh" });
-        const deviceId = localStorage.getItem("deviceId");
+        let deviceId = localStorage.getItem("deviceId");
         if (!deviceId) {
-          requestPermission();
-          return setInvalidCred("Please allow notification");
+          deviceId = await fingerprint();
+          localStorage.setItem("deviceId", deviceId);
         }
         login({
           phone: number.phoneNumber,

@@ -8,7 +8,7 @@ import { phone } from "phone";
 import * as yup from "yup";
 import s from "./auth.module.scss";
 import { BsArrowLeft } from "react-icons/bs";
-import { requestPermission } from "helpers/firebase";
+import { fingerprint } from "helpers";
 
 const validationSchema = yup.object({
   phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
@@ -37,15 +37,12 @@ const Form = ({ userType, setUserType }) => {
     <form
       className="grid gap-1 p-2 m-a"
       autoComplete="off"
-      onSubmit={handleSubmit((values) => {
+      onSubmit={handleSubmit(async (values) => {
         const number = phone(values.phone, { country: "bangladesh" });
-        const deviceId = localStorage.getItem("deviceId");
+        let deviceId = localStorage.getItem("deviceId");
         if (!deviceId) {
-          return Prompt({
-            type: "error",
-            message: "Please allow notification.",
-            callback: () => requestPermission(),
-          });
+          deviceId = await fingerprint();
+          localStorage.setItem("deviceId", deviceId);
         }
         signup({
           phone: number.phoneNumber,

@@ -18,6 +18,7 @@ exports.signup = async (req, res) => {
     new Member({
       ...req.body,
       role: role?._id || null,
+      ...(req.body.deviceId && { devices: [req.body.deviceId] }),
       status: "pending-activation",
     })
       .save()
@@ -58,11 +59,14 @@ exports.login = async (req, res) => {
     if (user.status !== "active") {
       return responseFn.error(res, {}, responseStr.account_deactivated);
     }
-    await Member.findOneAndUpdate(
-      { _id: user._id },
-      { devices: [...new Set([...(user.devices || []), req.body.deviceId])] },
-      { new: true }
-    );
+    if (req.body.deviceId) {
+      await Member.findOneAndUpdate(
+        { _id: user._id },
+        { devices: [...new Set([...(user.devices || []), req.body.deviceId])] },
+        { new: true }
+      );
+    }
+
     return appHelper.signIn(res, user._doc, "member");
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
@@ -174,14 +178,16 @@ exports.resetPassword = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    await Member.findOneAndUpdate(
-      { _id: req.authUser._id },
-      {
-        devices: (req.authUser.devices || []).filter(
-          (item) => item !== req.body.deviceId
-        ),
-      }
-    );
+    if (req.body.deviceId) {
+      await Member.findOneAndUpdate(
+        { _id: req.authUser._id },
+        {
+          devices: (req.authUser.devices || []).filter(
+            (item) => item !== req.body.deviceId
+          ),
+        }
+      );
+    }
     res.clearCookie("access_token");
     return responseFn.success(res, {});
   } catch (error) {

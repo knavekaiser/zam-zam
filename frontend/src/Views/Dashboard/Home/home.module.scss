@@ -82,6 +82,7 @@
           .money {
             padding-right: 4px;
             font-size: 1.5rem;
+            line-height: 1.5em;
             .paid {
               font-size: 1.5em;
               font-weight: 600;
@@ -246,8 +247,11 @@
               grid-gap: 1rem;
               grid-template-columns: 1fr;
               width: max-content;
+              padding: 0;
+              grid-gap: 1.75rem;
               .left {
                 width: max-content;
+                grid-gap: 4px;
               }
               .right {
                 width: max-content;

@@ -262,3 +262,14 @@ exports.addDevice = async (req, res) => {
     responseFn.error(res, {}, err.message);
   }
 };
+
+exports.autoBugReport = async (req, res) => {
+  try {
+    new BugReport({ ...req.body })
+      .save()
+      .then(() => responseFn.success(res, {}, responseStr.success))
+      .catch((err) => responseFn.error(res, {}, err.message));
+  } catch (err) {
+    responseFn.error(res, {}, err.message);
+  }
+};

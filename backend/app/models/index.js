@@ -19,4 +19,5 @@ module.exports = {
   Role: require("./role.model"),
   Milestone: require("./milestone.model"),
   Device: require("./device.model"),
+  BugReport: require("./bugReport.model"),
 };

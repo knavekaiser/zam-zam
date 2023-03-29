@@ -14,7 +14,11 @@ exports.signup = async (req, res) => {
   try {
     req.body.password = appHelper.generateHash(req.body.password);
 
-    new Staff({ ...req.body, status: "pending-activation" })
+    new Staff({
+      ...req.body,
+      ...(req.body.deviceId && { devices: [req.body.deviceId] }),
+      status: "pending-activation",
+    })
       .save()
       .then(async (staff) => {
         await firebase.notifyStaffs("Manager", {
@@ -53,11 +57,15 @@ exports.login = async (req, res) => {
     if (staff.status !== "active") {
       return responseFn.error(res, {}, responseStr.account_deactivated);
     }
-    await Staff.findOneAndUpdate(
-      { _id: staff._id },
-      { devices: [...new Set([...(staff.devices || []), req.body.deviceId])] },
-      { new: true }
-    );
+    if (req.body.deviceId) {
+      await Staff.findOneAndUpdate(
+        { _id: staff._id },
+        {
+          devices: [...new Set([...(staff.devices || []), req.body.deviceId])],
+        },
+        { new: true }
+      );
+    }
     return appHelper.signIn(res, staff._doc, "staff");
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
@@ -168,14 +176,16 @@ exports.resetPassword = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    await Staff.findOneAndUpdate(
-      { _id: req.authUser._id },
-      {
-        devices: (req.authUser.devices || []).filter(
-          (item) => item !== req.body.deviceId
-        ),
-      }
-    );
+    if (req.body.deviceId) {
+      await Staff.findOneAndUpdate(
+        { _id: req.authUser._id },
+        {
+          devices: (req.authUser.devices || []).filter(
+            (item) => item !== req.body.deviceId
+          ),
+        }
+      );
+    }
     res.clearCookie("access_token");
     return responseFn.success(res, {});
   } catch (error) {

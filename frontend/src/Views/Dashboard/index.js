@@ -156,7 +156,7 @@ const MainApp = () => {
         </Link>
 
         <ul className={s.links}>
-          {sidebarItems.current.map((item) => (
+          {sidebarItems.current.map((item, i, arr) => (
             <li
               key={item.path}
               className={location.pathname === item.path ? s.active : ""}
@@ -169,12 +169,30 @@ const MainApp = () => {
                   }
                 }}
               >
-                <span className={s.icon}>
+                <span
+                  className={s.icon}
+                  style={{
+                    transitionDelay: `${
+                      (window.innerWidth <= 480 ? 500 : 0) +
+                      50 * (sidebarOpen ? i : arr.length - i)
+                    }ms`,
+                  }}
+                >
                   {location.pathname === item.path
                     ? item.activeIcon
                     : item.icon}
                 </span>
-                <span className={s.label}>{item.label}</span>
+                <span
+                  className={s.label}
+                  style={{
+                    transitionDelay: `${
+                      (window.innerWidth <= 480 ? 500 : 0) +
+                      50 * (sidebarOpen ? i : arr.length - i)
+                    }ms`,
+                  }}
+                >
+                  {item.label}
+                </span>
               </Link>
             </li>
           ))}

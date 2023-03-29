@@ -51,7 +51,15 @@ export default function Withdrawals({ setSidebarOpen }) {
           <td className={s.date}>
             <Moment format="MMM DD, YYYY">{item.date}</Moment>
           </td>
-          <td className={s.name}>{item.member?.name}</td>
+          <td className={s.user}>
+            <img src={item.member.photo || "/assets/avatar.webp"} />
+            <div className={s.detail}>
+              <span className={s.name}>{item.member?.name}</span>
+              <span className={s.phone}>
+                <a href={`tel:${item.member?.phone}`}>{item.member.phone}</a>
+              </span>
+            </div>
+          </td>
           <td className={`text-right`}>
             <span className={s.currencySymbol}>৳</span>
             {item.amount.toLocaleString("en-IN")}

@@ -37,12 +37,15 @@ export default function Deposits({ setSidebarOpen }) {
       filterStatus={filterStatus}
       renderRow={(item, s, status) => (
         <>
-          {window.innerWidth <= 480 && (
-            <td className={s.profileImg}>
-              <img src={item.photo || "/assets/avatar.webp"} />
-            </td>
-          )}
-          <td className={s.name}>{item.name}</td>
+          <td className={s.user}>
+            <img src={item.photo || "/assets/avatar.webp"} />
+            <div className={s.detail}>
+              <span className={s.name}>{item.name}</span>
+              <span className={s.phone}>
+                <a href={`tel:${item.phone}`}>{item.phone}</a>
+              </span>
+            </div>
+          </td>
           <td className={`text-right ${s.deposit}`}>
             <span className={s.currencySymbol}>৳</span>
             {(item.deposit || 0).toLocaleString("en-IN")}

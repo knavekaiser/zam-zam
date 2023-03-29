@@ -46,6 +46,28 @@
       .profileImg {
         display: none;
       }
+      grid-auto-rows: min-content !important;
+      .user {
+        display: flex;
+        grid-gap: 1rem;
+        align-items: center;
+        img {
+          height: 3rem;
+          width: 3rem;
+          object-fit: cover;
+          border-radius: 50%;
+          outline: 2px solid $primary-color;
+          outline-offset: 2px;
+        }
+        .detail {
+          display: grid;
+          grid-gap: 0.3rem;
+          .phone {
+            font-size: 0.8rem;
+            color: $grey2;
+          }
+        }
+      }
       .currencySymbol {
         font-family: "Times New Roman", Times, serif;
       }
@@ -117,7 +139,7 @@
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         border: none !important;
         grid-gap: 10px;
-        grid-template-columns: 1fr 0.7fr !important;
+        grid-template-columns: 1fr 0.5fr !important;
         grid-row-gap: 0px;
         background: $black1;
         grid-auto-rows: 1fr;
@@ -143,16 +165,9 @@
         .milestoneDeposited {
           color: $green;
         }
-        .profileImg {
-          display: block;
-          grid-row: 1 / 3;
-          margin: -0.5rem 0;
-          img {
-            height: 3.5rem;
-            width: 3.5rem;
-            border-radius: 50%;
-            object-fit: cover;
-          }
+        .user {
+          grid-column: 1 / 2;
+          grid-row: 2 / 3;
         }
         .name {
           grid-column: 1 / 2;
@@ -174,7 +189,9 @@
         .status {
           color: $grey2;
           font-size: 0.8rem;
-          grid-column: 1 / 2;
+          grid-column: 2 / 3;
+          text-align: right;
+          margin: 0;
         }
         .role {
           text-align: right;

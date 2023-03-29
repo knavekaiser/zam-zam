@@ -11,6 +11,7 @@ module.exports = function (app) {
   );
 
   router.post("/devices", validate(schema.addDevice), controller.addDevice);
+  router.post("/auto-bug-report", controller.autoBugReport);
 
   app.use("/api", router);
 };

@@ -36,12 +36,15 @@ export default function Deposits({ setSidebarOpen }) {
       ]}
       renderRow={(item, s, status) => (
         <>
-          {window.innerWidth <= 480 && (
-            <td className={s.profileImg}>
-              <img src={item.photo || "/assets/avatar.webp"} />
-            </td>
-          )}
-          <td className={s.name}>{item.name}</td>
+          <td className={s.user}>
+            <img src={item.photo || "/assets/avatar.webp"} />
+            <div className={s.detail}>
+              <span className={s.name}>{item.name}</span>
+              <span className={s.phone}>
+                <a href={`tel:${item.phone}`}>{item.phone}</a>
+              </span>
+            </div>
+          </td>
           <td className={s.role}>{item.role?.name}</td>
           {user.userType === "staff" && (
             <td className={s.status}>{status[item.status] || item.status}</td>
