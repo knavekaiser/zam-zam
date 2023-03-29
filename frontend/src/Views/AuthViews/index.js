@@ -44,6 +44,7 @@ const Auth = () => {
             <ResetPassword userType={userType} setUserType={setUserType} />
           }
         />
+        <Route path="*" element={<h1>404</h1>} />
       </Routes>
       <img
         className={s.background}

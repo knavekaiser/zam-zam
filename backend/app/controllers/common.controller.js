@@ -10,6 +10,7 @@ const {
   Device,
   Milestone,
   Member,
+  BugReport,
 } = require("../models");
 
 exports.dashboardData = async (req, res) => {

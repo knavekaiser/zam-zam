@@ -263,6 +263,19 @@ const MainApp = () => {
           path={paths.profile}
           element={<Profile setSidebarOpen={setSidebarOpen} />}
         />
+        <Route
+          path="*"
+          element={
+            <h1
+              style={{
+                color: "white",
+                margin: "auto",
+              }}
+            >
+              /404
+            </h1>
+          }
+        />
       </Routes>
     </div>
   );
