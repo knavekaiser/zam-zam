@@ -195,6 +195,10 @@ exports.logout = async (req, res) => {
 
 exports.profile = (req, res) => {
   try {
+    if (req.authToken.userType === "member") {
+      return res.redirect(301, "/api/members/profile");
+    }
+
     Staff.findOne(
       { _id: req.authUser.id },
       "-password -__v -updatedAt -devices"

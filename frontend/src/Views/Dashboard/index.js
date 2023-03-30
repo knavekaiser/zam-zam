@@ -1,12 +1,6 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { SiteContext } from "SiteContext";
-import {
-  Routes,
-  Route,
-  useNavigate,
-  Link,
-  useLocation,
-} from "react-router-dom";
+import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import { paths, endpoints } from "config";
 import { useFetch } from "hooks";
 
@@ -127,7 +121,6 @@ const MainApp = () => {
         ]
       : []),
   ]);
-  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { post: logout } = useFetch(
@@ -136,11 +129,9 @@ const MainApp = () => {
       : endpoints.logout
   );
 
-  useEffect(() => {
-    if (!user) {
-      navigate(paths.signIn);
-    }
-  }, []);
+  if (!user) {
+    return <Navigate to={paths.signIn} />;
+  }
 
   return (
     <div className={s.container}>

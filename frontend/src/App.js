@@ -1,7 +1,7 @@
 import "./App.scss";
 import { useEffect, useContext } from "react";
 import { SiteContext } from "SiteContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
 import { paths, endpoints } from "config";
 import { Prompt } from "Components/modal";
 import { useFetch } from "hooks";
@@ -65,7 +65,9 @@ function App() {
   }
   return (
     <div className="App">
-      <MainApp />
+      <Routes>
+        <Route path="*" element={<MainApp />} />
+      </Routes>
     </div>
   );
 }

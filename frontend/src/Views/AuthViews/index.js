@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { SiteContext } from "SiteContext";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import Signup from "./Signup";
 import SignIn from "./Signin";
 import ResetPassword from "./ResetPassword";
@@ -9,17 +8,9 @@ import { paths } from "config";
 import s from "./auth.module.scss";
 
 const Auth = () => {
-  const { user } = useContext(SiteContext);
   const [userType, setUserType] = useState(
     localStorage.getItem("userType") || "member"
   );
-  const navigate = useNavigate();
-  const location = useLocation();
-  useEffect(() => {
-    if (user) {
-      navigate("/", { replace: true });
-    }
-  }, [user, location]);
 
   useEffect(() => {
     if (!["staff", "member"].includes(localStorage.getItem("userType"))) {
@@ -27,6 +18,7 @@ const Auth = () => {
       setUserType("member");
     }
   }, []);
+
   return (
     <div className={s.container}>
       <Routes>
@@ -44,7 +36,7 @@ const Auth = () => {
             <ResetPassword userType={userType} setUserType={setUserType} />
           }
         />
-        <Route path="*" element={<h1>404</h1>} />
+        {/* <Route path="*" element={<h1>404</h1>} /> */}
       </Routes>
       <img
         className={s.background}
