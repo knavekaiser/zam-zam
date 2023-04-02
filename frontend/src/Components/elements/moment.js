@@ -1,49 +1,11 @@
 import { useRef, useState, useEffect } from "react";
+import { format } from "date-fns";
 
-export const moment = (time, format) => {
-  if (isNaN(new Date(time || new Date()).getTime())) {
+export const moment = (time, _format) => {
+  if (isNaN(new Date(time).getTime())) {
     return time;
   }
-  const options = {
-    year: format.includes("YYYY") ? "numeric" : "2-digit",
-    month: format.includes("MMMM")
-      ? "long"
-      : format.includes("MMM")
-      ? "short"
-      : format.includes("MM")
-      ? "2-digit"
-      : "numeric"
-      ? "long"
-      : format.includes("ddd")
-      ? "short"
-      : "narrow",
-    weekday: format.includes("dddd")
-      ? "long"
-      : format.includes("ddd")
-      ? "short"
-      : "narrow",
-    day: format.includes("DD") ? "2-digit" : "numeric",
-    hour: format.includes("hh") ? "2-digit" : "numeric",
-    minute: format.includes("mm") ? "2-digit" : "numeric",
-    second: format.includes("ss") ? "2-digit" : "numeric",
-    hourCycle: format.includes("a") ? "h11" : "h23",
-  };
-  const values = {};
-  new Intl.DateTimeFormat("en-IN", options)
-    .formatToParts(new Date(time || new Date()))
-    .map(({ type, value, ...rest }) => {
-      values[type] = value;
-    });
-  // console.log(options, format, values);
-  return format
-    .replace(/a/g, values.dayPeriod)
-    .replace(/d+/g, values.weekday)
-    .replace(/D+/g, values.day)
-    .replace(/Y+/g, values.year)
-    .replace(/M+/g, values.month)
-    .replace(/h+/g, values.hour)
-    .replace(/m+/g, values.minute)
-    .replace(/s+/g, values.second);
+  return format(new Date(time), _format);
 };
 
 export const Moment = ({ format, children, ...rest }) => {

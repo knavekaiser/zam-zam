@@ -46,10 +46,11 @@ export default function Deposits({ setSidebarOpen }) {
           ? [{ label: "Action", className: "text-right" }]
           : []),
       ]}
+      viewDetail={user.userType === "staff"}
       renderRow={(item, s, status) => (
         <>
           <td className={s.date}>
-            <Moment format="MMM DD, YYYY">{item.date}</Moment>
+            <Moment format="MMM dd, yyyy">{item.date}</Moment>
           </td>
           <td className={s.user}>
             <img src={item.member.photo || "/assets/avatar.webp"} />

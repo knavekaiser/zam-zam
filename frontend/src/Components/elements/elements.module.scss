@@ -971,6 +971,9 @@
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
   background: $black2;
   border-color: $grey3;
+  // transform-origin: top right;
+  animation: none;
+  opacity: 1;
   div {
     display: grid;
     button {
@@ -999,6 +1002,7 @@
 .actionBackdrop {
   backdrop-filter: none;
   background: rgba(0, 0, 0, 0) !important;
+  animation: none;
 }
 
 .tabs {

@@ -6,6 +6,7 @@ import { Prompt } from "Components/modal";
 import * as yup from "yup";
 import s from "./dataTable.module.scss";
 import { endpoints } from "config";
+import { motion } from "framer-motion";
 
 export const Form = ({ edit, allPermissions, onSuccess }) => {
   const {
@@ -128,39 +129,45 @@ export const Form = ({ edit, allPermissions, onSuccess }) => {
   );
 };
 
-export const Filter = ({ filters = {}, setFilters }) => {
+export const Filter = ({ showFilter, filters = {}, setFilters }) => {
   const { handleSubmit, register, reset } = useForm();
   useEffect(() => {
     reset(filters);
   }, [filters]);
   return (
-    <form
-      onSubmit={handleSubmit((values) => {
-        setFilters(
-          Object.entries(values).reduce((p, [key, value]) => {
-            if (value?.length) {
-              p[key] = value;
-            }
-            return p;
-          }, {})
-        );
-      })}
-      className={s.filters}
+    <motion.div
+      initial={{ height: 0 }}
+      animate={{ height: showFilter ? "auto" : 0 }}
+      className={s.filterWrapper}
     >
-      <Input label="Name" {...register("name")} />
+      <form
+        onSubmit={handleSubmit((values) => {
+          setFilters(
+            Object.entries(values).reduce((p, [key, value]) => {
+              if (value?.length) {
+                p[key] = value;
+              }
+              return p;
+            }, {})
+          );
+        })}
+        className={s.filters}
+      >
+        <Input label="Name" {...register("name")} />
 
-      <div className="btns">
-        <button className="btn">Submit</button>
-        <button
-          className="btn clear"
-          onClick={() => {
-            reset({});
-            setFilters({});
-          }}
-        >
-          Clear
-        </button>
-      </div>
-    </form>
+        <div className="btns">
+          <button className="btn medium">Submit</button>
+          <button
+            className="btn clear medium"
+            onClick={() => {
+              reset({});
+              setFilters({});
+            }}
+          >
+            Clear
+          </button>
+        </div>
+      </form>
+    </motion.div>
   );
 };

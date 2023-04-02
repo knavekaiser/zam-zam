@@ -7,7 +7,7 @@
   height: calc((var(--vh) * 100));
   grid-template-columns: 6rem 1fr;
   grid-template-rows: 1fr;
-  transition: grid-template-columns 0.25s ease-in-out;
+  transition: grid-template-columns 0.5s cubic-bezier(0.6, 0.15, 0.37, 1.01);
   &:has(.header.open) {
     grid-template-columns: 15rem 1fr;
   }
@@ -48,6 +48,11 @@
           object-fit: cover;
           height: 100%;
           width: 100%;
+        }
+      }
+      &.staff {
+        .profile {
+          outline-color: $orange;
         }
       }
       .role {

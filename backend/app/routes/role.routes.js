@@ -12,13 +12,17 @@ module.exports = function (app) {
     controller.create
   );
   router.put(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("role_update"),
     validate(schema.update),
     controller.update
   );
-  router.get("/:id?", authJwt.verifyToken("role_read"), controller.findAll);
-  router.delete("/:id?", authJwt.verifyToken("role_delete"), controller.delete);
+  router.get("/:_id?", authJwt.verifyToken("role_read"), controller.findAll);
+  router.delete(
+    "/:_id?",
+    authJwt.verifyToken("role_delete"),
+    controller.delete
+  );
 
   app.use("/api/roles", router);
 

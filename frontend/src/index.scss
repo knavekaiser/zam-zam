@@ -40,6 +40,10 @@ button {
     );
     position: relative;
     z-index: 1;
+    &.medium {
+      width: 100%;
+      max-width: 10rem;
+    }
     &:not(.clear)::before,
     &:not(.clear)::after {
       // content: "";
@@ -133,6 +137,9 @@ a {
   flex: 1;
 }
 
+.gap_5 {
+  grid-gap: 0.5rem;
+}
 .gap-1 {
   grid-gap: 1rem;
 }
@@ -344,6 +351,10 @@ a {
       }
     }
   }
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .error {

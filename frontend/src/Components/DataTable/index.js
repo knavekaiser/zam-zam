@@ -2,14 +2,17 @@ import { useState, useEffect, useContext } from "react";
 import { SiteContext } from "SiteContext";
 import { Table, TableActions } from "Components/elements";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { BiEditAlt, BiCheckDouble, BiFilter } from "react-icons/bi";
+import { BiEditAlt, BiCheckDouble, BiFilter, BiDetail } from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
 import { Prompt, Modal } from "Components/modal";
 import s from "./dataTable.module.scss";
 import { useFetch } from "hooks";
 import { status } from "config";
-
+import { cubicBezier, motion } from "framer-motion";
 import { Form, Filter } from "./Form";
+import Detail from "./Detail";
+import { IoClose } from "react-icons/io5";
+import { BsList } from "react-icons/bs";
 
 const Data = ({
   setSidebarOpen,
@@ -18,6 +21,7 @@ const Data = ({
   columns,
   renderRow,
   trStyle,
+  viewDetail,
   deleteRequest,
   endpoint,
   schema,
@@ -30,6 +34,7 @@ const Data = ({
   const [addData, setAddData] = useState(false);
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const [view, setView] = useState(null);
 
   const { get: getData, loading } = useFetch(endpoint);
   const { remove: deleteItem, loading: deletingItem } = useFetch(
@@ -59,24 +64,38 @@ const Data = ({
     <div className={s.wrapper}>
       <div className={`${s.content} grid m-a`}>
         <div className={`${s.head} flex p-1`}>
-          <h2 onClick={() => setSidebarOpen((prev) => !prev)}>{title}</h2>
+          <div
+            className={`flex align-center pointer gap_5 ${
+              window.innerWidth <= 480 ? "ml-1" : ""
+            }`}
+            onClick={() => setSidebarOpen((prev) => !prev)}
+          >
+            <BsList style={{ fontSize: "1.75rem" }} />
+            <h2>{title}</h2>
+          </div>
           <>
             <button
               className={`btn clear ${s.filterBtn}`}
               onClick={() => setShowFilter(!showFilter)}
             >
+              <span
+                className={`${s.indicator} ${
+                  Object.values(filters).length > 0 ? s.active : ""
+                }`}
+              />
               <BiFilter />
             </button>
-            {showFilter && (
-              <Filter
-                filters={filters}
-                schema={schema}
-                filterStatus={filterStatus}
-                setFilters={setFilters}
-              />
-            )}
+            <Filter
+              showFilter={showFilter}
+              close={() => setShowFilter(false)}
+              filters={filters}
+              schema={schema}
+              filterStatus={filterStatus}
+              setFilters={setFilters}
+            />
           </>
         </div>
+
         <Table
           loading={loading}
           className={s.data}
@@ -98,6 +117,17 @@ const Data = ({
                 <TableActions
                   className={s.actions}
                   actions={[
+                    ...(viewDetail
+                      ? [
+                          {
+                            icon: <BiDetail />,
+                            label: "View Detail",
+                            callBack: () => {
+                              setView({ ...item, type: title.slice(0, -1) });
+                            },
+                          },
+                        ]
+                      : []),
                     ...([
                       "pending-approval",
                       "pending-update",
@@ -238,6 +268,7 @@ const Data = ({
             </tr>
           ))}
         </Table>
+
         <Modal
           open={addData}
           head
@@ -266,6 +297,49 @@ const Data = ({
               setAddData(false);
             }}
           />
+        </Modal>
+
+        <Modal
+          open={view}
+          className={s.addDetailModal}
+          setOpen={() => {
+            setView(null);
+          }}
+          entryAnimation={{
+            initial: {
+              opacity: 0,
+              // scale: 1.3,
+              translateY: "4rem",
+            },
+            animation: {
+              opacity: 1,
+              // scale: 1,
+              translateY: "0",
+              transition: {
+                type: "ease",
+                mass: 0.5,
+                damping: 10,
+                stiffness: 80,
+              },
+            },
+          }}
+          exitAnimation={{
+            opacity: 0,
+            translateY: "8rem",
+            transition: {
+              type: "tween",
+              easing: cubicBezier([0, 0.46, 0.21, 0.98]),
+            },
+          }}
+        >
+          <button
+            className="btn clear"
+            type="button"
+            onClick={() => setView(null)}
+          >
+            <IoClose />
+          </button>
+          <Detail data={view} />
         </Modal>
 
         {checkPermission(`${name}_create`) && (

@@ -3,6 +3,7 @@ const status = {
   "pending-activation": "Pending Activation",
   "pending-update": "Pending Update",
   "pending-delete": "Pending Delete",
+  deleted: "Deleted",
   approved: "Approved",
   active: "Active",
   inactive: "Inactive",

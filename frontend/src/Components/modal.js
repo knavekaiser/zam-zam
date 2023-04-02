@@ -2,6 +2,7 @@ import React, { forwardRef, useRef } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import * as ReactDOMClient from "react-dom/client";
 
 export const Modal = forwardRef(
@@ -17,47 +18,101 @@ export const Modal = forwardRef(
       style,
       head,
       label,
+      entryAnimation,
+      exitAnimation,
     },
     ref
   ) => {
     const backdropRef = useRef();
-    if (open) {
-      return createPortal(
-        <>
-          <div
-            data-testid="modal"
-            className={`modalBackdrop ${backdropClass || ""}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onBackdropClick?.();
-            }}
-            style={clickThroughBackdrop ? { pointerEvents: "none" } : {}}
-            ref={backdropRef}
-          />
-          <div
-            style={{ ...style }}
-            ref={ref}
-            className={`modal ${className || ""} ${head ? "withHead" : ""}`}
-            onSubmit={(e) => e.stopPropagation()}
-          >
-            {head && (
-              <div className="head">
-                {label}{" "}
-                <button
-                  className="btn clear"
-                  type="button"
-                  onClick={() => setOpen(false)}
-                >
-                  <IoClose />
-                </button>
-              </div>
-            )}
-            {children}
-          </div>
-        </>,
-        document.querySelector("#portal") || document.body
-      );
-    }
+    return createPortal(
+      <AnimatePresence>
+        {open && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: {
+                  type: "spring",
+                  mass: 0.5,
+                  damping: 10,
+                  stiffness: 80,
+                },
+              }}
+              exit={{
+                opacity: 0,
+                transition: {
+                  type: "spring",
+                  mass: 0.5,
+                  damping: 10,
+                  stiffness: 80,
+                },
+              }}
+              className={`modalBackdrop ${backdropClass || ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onBackdropClick?.();
+              }}
+              key="backdrop"
+              style={clickThroughBackdrop ? { pointerEvents: "none" } : {}}
+              ref={backdropRef}
+            />
+            <motion.div
+              initial={
+                entryAnimation?.initial || {
+                  opacity: 0,
+                  scale: 1.3,
+                }
+              }
+              animate={
+                entryAnimation?.animation || {
+                  opacity: 1,
+                  scale: 1,
+                  transition: {
+                    type: "ease",
+                    mass: 0.5,
+                    damping: 10,
+                    stiffness: 80,
+                  },
+                }
+              }
+              exit={
+                exitAnimation || {
+                  opacity: 0,
+                  scale: 0.7,
+                  transition: {
+                    type: "ease",
+                    mass: 0.5,
+                    damping: 10,
+                    stiffness: 80,
+                  },
+                }
+              }
+              key="modal"
+              style={{ ...style }}
+              ref={ref}
+              className={`modal ${className || ""} ${head ? "withHead" : ""}`}
+              onSubmit={(e) => e.stopPropagation()}
+            >
+              {head && (
+                <div className="head">
+                  {label}{" "}
+                  <button
+                    className="btn clear"
+                    type="button"
+                    onClick={() => setOpen(false)}
+                  >
+                    <IoClose />
+                  </button>
+                </div>
+              )}
+              {children}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>,
+      document.querySelector("#portal") || document.body
+    );
     return null;
   }
 );

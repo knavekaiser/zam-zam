@@ -41,11 +41,9 @@ exports.findAll = async (req, res) => {
         $lte: new Date(req.query.to_date),
       };
     }
-    Expense.aggregate([
-      { $match: conditions },
-      { $sort: { date: -1 } },
-      { $project: { __v: 0 } },
-    ])
+    Expense.find(conditions)
+      .populate("timeline.staff", "name email photo phone")
+      .sort("-date")
       .then((data) => {
         responseFn.success(res, { data });
       })
@@ -59,11 +57,21 @@ exports.create = async (req, res) => {
   try {
     new Expense({
       ...req.body,
-      addedBy: req.authUser._id,
       status: "pending-approval",
+      timeline: [
+        {
+          action: "Created",
+          staff: req.authUser._id,
+          dateTime: new Date(),
+        },
+      ],
     })
       .save()
       .then(async (data) => {
+        data = await Expense.findOne({ _id: data._id }).populate(
+          "timeline.staff",
+          "name email photo phone"
+        );
         await firebase.notifyStaffs("Cashier", {
           title: "Expense Added",
           body: `New Expense has been added. Approve or Disapprove`,
@@ -79,14 +87,33 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    ["addedBy", "approvedBy", "status"].forEach((item) => {
+    ["timeline"].forEach((item) => {
       delete req.body[item];
     });
+    const expense = await Expense.findOne({ _id: req.params._id });
     Expense.findOneAndUpdate(
       { _id: req.params._id },
-      { ...req.body, status: "pending-update" },
+      {
+        ...req.body,
+        status: "pending-update",
+        $push: {
+          timeline: {
+            $each: [
+              {
+                action:
+                  expense.status === "pending-update"
+                    ? "Update Approved"
+                    : "Updated",
+                staff: req.authUser._id,
+                dateTime: new Date(),
+              },
+            ],
+          },
+        },
+      },
       { new: true }
     )
+      .populate("timeline.staff", "name email photo phone")
       .then(async (data) => {
         await firebase.notifyStaffs("Cashier", {
           title: "Expense Updated",
@@ -105,9 +132,23 @@ exports.approve = async (req, res) => {
   try {
     Expense.findOneAndUpdate(
       { _id: req.params._id },
-      { status: "approved" },
+      {
+        status: "approved",
+        $push: {
+          timeline: {
+            $each: [
+              {
+                action: "Approved",
+                staff: req.authUser._id,
+                dateTime: new Date(),
+              },
+            ],
+          },
+        },
+      },
       { new: true }
     )
+      .populate("timeline.staff", "name email photo phone")
       .then((data) => {
         return responseFn.success(res, { data }, responseStr.record_updated);
       })
@@ -121,7 +162,20 @@ exports.reqDelete = async (req, res) => {
   try {
     Expense.findOneAndUpdate(
       { _id: req.params._id },
-      { status: "pending-delete" }
+      {
+        status: "pending-delete",
+        $push: {
+          timeline: {
+            $each: [
+              {
+                action: "Delete Requested",
+                staff: req.authUser._id,
+                dateTime: new Date(),
+              },
+            ],
+          },
+        },
+      }
     )
       .then((num) => responseFn.success(res, {}, responseStr.delete_requested))
       .catch((err) => responseFn.error(res, {}, err.message, 500));
@@ -133,8 +187,24 @@ exports.reqDelete = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     Expense.findOneAndUpdate(
-      { _id: req.params._id, status: "pending-delete" },
-      { status: "deleted" }
+      {
+        _id: req.params._id,
+        status: "pending-delete",
+      },
+      {
+        status: "deleted",
+        $push: {
+          timeline: {
+            $each: [
+              {
+                action: "Deleted",
+                staff: req.authUser._id,
+                dateTime: new Date(),
+              },
+            ],
+          },
+        },
+      }
     )
       .then((num) => responseFn.success(res, {}, responseStr.record_deleted))
       .catch((err) => responseFn.error(res, {}, err.message, 500));

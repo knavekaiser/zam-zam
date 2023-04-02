@@ -1,20 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Prompt } from "Components/modal";
 import s from "./home.module.scss";
 import { useFetch } from "hooks";
 import { endpoints } from "config";
-import { Moment } from "Components/elements";
+import { CountUp, Moment } from "Components/elements";
 import { paths } from "config";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Chart from "chart.js/auto";
+import { SiteContext } from "SiteContext";
+import {
+  BsList,
+  BsPeople,
+  BsPeopleFill,
+  BsPerson,
+  BsPersonFill,
+} from "react-icons/bs";
+
+const Toggle = ({}) => {
+  const { user, selfOnly, setSelfOnly } = useContext(SiteContext);
+
+  if (user?.userType !== "member") {
+    return null;
+  }
+
+  return (
+    <button
+      className={`${s.selfOnlyToggle} ${selfOnly ? s.selfOnly : ""}`}
+      onClick={() => setSelfOnly((prev) => !prev)}
+    >
+      <div className={s.left}>{selfOnly ? <BsPersonFill /> : <BsPerson />}</div>
+      <div className={s.right}>
+        {!selfOnly ? <BsPeopleFill /> : <BsPeople />}
+      </div>
+    </button>
+  );
+};
 
 const Dashboard = ({ setSidebarOpen }) => {
+  const { user, selfOnly } = useContext(SiteContext);
   const [data, setData] = useState({});
 
   const { get: getDashboardData, loading } = useFetch(endpoints.dashboardData);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getDashboardData()
+    getDashboardData({ query: { selfOnly } })
       .then(({ data }) => {
         if (data.success) {
           return setData(data.data);
@@ -24,13 +54,22 @@ const Dashboard = ({ setSidebarOpen }) => {
         console.log(err);
         Prompt({ type: "error", message: err.message });
       });
-  }, []);
+  }, [selfOnly]);
   return (
     <div className={`${s.contentWrapper} grid`}>
-      <div className={`${s.head} flex all-columns`}>
-        <h2 onClick={() => setSidebarOpen((prev) => !prev)}>Dashboard</h2>
-      </div>
+      <div
+        className={`${s.head} flex all-columns justify-space-between align-center`}
+      >
+        <div
+          className="flex align-center ml-1 pointer"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+        >
+          <BsList style={{ fontSize: "1.75rem" }} />
+          <h2>Dashboard</h2>
+        </div>
 
+        <Toggle />
+      </div>
       <div className={s.content}>
         {Object.values(data).length === 0 && (
           <>
@@ -73,58 +112,54 @@ const Dashboard = ({ setSidebarOpen }) => {
         {data.milestones?.length && <Milestones milestones={data.milestones} />}
 
         {"currentBalance" in data && (
-          <div className={s.card}>
-            <label>Current Balance</label>
-            <p>
-              <span className={s.currencySymbol}>৳</span>
-              <span className={s.amount}>
-                {(data.currentBalance || 0).toLocaleString("en-IN")}
-              </span>
-            </p>
-          </div>
+          <Card label="Current Balance" amount={data.currentBalance} />
         )}
         {"deposits" in data && (
-          <Link to={paths.deposits}>
-            <div className={s.card}>
-              <label>Total Deposit</label>
-              <p>
-                <span className={s.currencySymbol}>৳</span>
-                <span className={s.amount}>
-                  {(data.deposits.total || 0).toLocaleString("en-IN")}
-                </span>
-              </p>
-            </div>
-          </Link>
+          <Card
+            label={
+              user.userType === "member" && selfOnly
+                ? "My Deposit"
+                : "Total Deposit"
+            }
+            amount={data.deposits.total}
+            onClick={() => navigate(paths.deposits)}
+          />
         )}
         {"expenses" in data && (
-          <Link to={paths.expenses}>
-            <div className={s.card}>
-              <label>Total Expense</label>
-              <p>
-                <span className={s.currencySymbol}>৳</span>
-                <span className={s.amount}>
-                  {(data.expenses.total || 0).toLocaleString("en-IN")}
-                </span>
-              </p>
-            </div>
-          </Link>
+          <Card
+            label="Total Expense"
+            amount={data.expenses.total}
+            onClick={() => navigate(paths.expenses)}
+          />
         )}
         {"withdrawals" in data && (
-          <Link to={paths.withdrawals}>
-            <div className={s.card}>
-              <label>Total Withdrawal</label>
-              <p>
-                <span className={s.currencySymbol}>৳</span>
-                <span className={s.amount}>
-                  {(data.withdrawals.total || 0).toLocaleString("en-IN")}
-                </span>
-              </p>
-            </div>
-          </Link>
+          <Card
+            label={
+              user.userType === "member" && selfOnly
+                ? "My Withdrawals"
+                : "Total Withdrawals"
+            }
+            amount={data.withdrawals.total}
+            onClick={() => navigate(paths.withdrawals)}
+          />
         )}
 
-        <GraphComponent data={data} />
+        {/* <GraphComponent data={data} /> */}
       </div>
+    </div>
+  );
+};
+
+const Card = ({ label, amount, onClick = () => {} }) => {
+  return (
+    <div className={s.card} onClick={onClick}>
+      <label>{label}</label>
+      <p>
+        <span className={s.currencySymbol}>৳</span>
+        <span className={s.amount}>
+          <CountUp number={amount} duration={3000} locale="en-IN" />
+        </span>
+      </p>
     </div>
   );
 };
@@ -198,6 +233,7 @@ function GraphComponent({ data }) {
 }
 
 const Milestones = ({ milestones }) => {
+  const { user } = useContext(SiteContext);
   const [view, setView] = useState(milestones.length - 1);
   return (
     <div className={s.milestones}>
@@ -222,21 +258,32 @@ const Milestones = ({ milestones }) => {
                 <div className={s.money}>
                   <span className={s.paid}>
                     <span className={s.currencySymbol}>৳</span>
-                    {(item.myDeposit || 0).toLocaleString("en-IN")}
+                    <CountUp
+                      number={
+                        user.userType === "member"
+                          ? item.myDeposit
+                          : item.totalDeposited
+                      }
+                      offset={50}
+                      locale="en-IN"
+                    />
                   </span>
 
                   <span>
-                    {" "}
                     / <span className={s.currencySymbol}>৳</span>
-                    {(item.perMember || 0).toLocaleString("en-IN")}
+                    {(
+                      (user.userType === "member"
+                        ? item.perMember
+                        : item.amount) || 0
+                    ).toLocaleString("en-IN")}
                   </span>
                 </div>
                 <div className={s.dates}>
-                  <Moment className={s.startDate} format="MMM DD 'YY">
+                  <Moment className={s.startDate} format="MMM dd yy">
                     {item.startDate}
                   </Moment>{" "}
                   -{" "}
-                  <Moment format="MMM DD 'YY" className={s.endDate}>
+                  <Moment format="MMM dd yy" className={s.endDate}>
                     {item.endDate}
                   </Moment>
                 </div>
@@ -289,7 +336,12 @@ const Milestones = ({ milestones }) => {
               <span
                 className={s.progress}
                 style={{
-                  width: `${(item.myDeposit / item.perMember) * 100}%`,
+                  width: `${Math.min(
+                    (user.userType === "member"
+                      ? item.myDeposit / item.perMember
+                      : item.totalDeposited / item.amount) * 100,
+                    100
+                  )}%`,
                 }}
               />
             </span>

@@ -125,7 +125,7 @@ exports.update = async (req, res) => {
       delete req.body[item];
     });
     Milestone.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       { ...req.body },
       { new: true }
     )
@@ -140,7 +140,7 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    Milestone.findOneAndUpdate({ _id: req.params.id }, { status: "deleted" })
+    Milestone.findOneAndUpdate({ _id: req.params._id }, { status: "deleted" })
       .then((num) => responseFn.success(res, {}, responseStr.record_deleted))
       .catch((err) => responseFn.error(res, {}, err.message, 500));
   } catch (error) {

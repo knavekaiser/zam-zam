@@ -11,6 +11,7 @@ import { status } from "config";
 
 import { Form, Filter } from "./Form";
 import { endpoints } from "config";
+import { BsList } from "react-icons/bs";
 
 const Data = ({ setSidebarOpen }) => {
   const { user, checkPermission } = useContext(SiteContext);
@@ -51,7 +52,15 @@ const Data = ({ setSidebarOpen }) => {
     <div className={s.wrapper}>
       <div className={`${s.content} grid m-a`}>
         <div className={`${s.head} flex p-1`}>
-          <h2 onClick={() => setSidebarOpen((prev) => !prev)}>Roles</h2>
+          <div
+            className={`flex align-center pointer gap_5 ${
+              window.innerWidth <= 480 ? "ml-1" : ""
+            }`}
+            onClick={() => setSidebarOpen((prev) => !prev)}
+          >
+            <BsList style={{ fontSize: "1.75rem" }} />
+            <h2>Roles</h2>
+          </div>
           <>
             <button
               className={`btn clear ${s.filterBtn}`}
@@ -59,7 +68,11 @@ const Data = ({ setSidebarOpen }) => {
             >
               <BiFilter />
             </button>
-            {showFilter && <Filter filters={filters} setFilters={setFilters} />}
+            <Filter
+              showFilter={showFilter}
+              filters={filters}
+              setFilters={setFilters}
+            />
           </>
         </div>
         <Table

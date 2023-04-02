@@ -11,29 +11,29 @@ module.exports = function (app) {
     controller.create
   );
   router.put(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("withdrawal_update"),
     validate(schema.update),
     controller.update
   );
   router.put(
-    "/:id/approve",
+    "/:_id/approve",
     authJwt.verifyToken("withdrawal_approve"),
     controller.approve
   );
   router.get(
-    "/:id?",
+    "/:_id?",
     authJwt.verifyToken("withdrawal_read"),
     controller.findAll
   );
 
   router.delete(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("withdrawal_delete"),
     controller.delete
   );
   router.delete(
-    "/:id/request",
+    "/:_id/request",
     authJwt.verifyToken("withdrawal_request_delete"),
     controller.reqDelete
   );

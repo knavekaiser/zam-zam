@@ -36,6 +36,7 @@ export default function Withdrawals({ setSidebarOpen }) {
         } ${actionColumns ? "3rem" : ""}`,
       }}
       deleteRequest
+      viewDetail={user.userType === "staff"}
       filterStatus={filterStatus}
       columns={[
         { label: "Date" },
@@ -49,7 +50,7 @@ export default function Withdrawals({ setSidebarOpen }) {
       renderRow={(item, s, status) => (
         <>
           <td className={s.date}>
-            <Moment format="MMM DD, YYYY">{item.date}</Moment>
+            <Moment format="MMM dd, yyyy">{item.date}</Moment>
           </td>
           <td className={s.user}>
             <img src={item.member.photo || "/assets/avatar.webp"} />

@@ -37,6 +37,7 @@ export default function Deposits({ setSidebarOpen }) {
       }}
       deleteRequest
       filterStatus={filterStatus}
+      viewDetail={user.userType === "staff"}
       columns={[
         { label: "Date" },
         { label: "Description" },
@@ -49,7 +50,7 @@ export default function Deposits({ setSidebarOpen }) {
       renderRow={(item, s, status) => (
         <>
           <td className={s.date}>
-            <Moment format="MMM DD, YYYY">{item.date}</Moment>
+            <Moment format="MMM dd, yyyy">{item.date}</Moment>
           </td>
           <td className={s.description}>{item.description}</td>
           <td className={`text-right`}>

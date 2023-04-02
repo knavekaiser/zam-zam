@@ -5,12 +5,12 @@ const { Member, Device } = require("../models");
 module.exports = {
   signup: yup.object({
     body: yup.object({
-      deviceId: yup
-        .string()
-        // .required("deviceId is required")
-        .test("deviceId", "Please pass a valid device ID", (v) =>
-          Device.findOne({ deviceId: v })
-        ),
+      // deviceId: yup
+      //   .string()
+      // .required("deviceId is required")
+      // .test("deviceId", "Please pass a valid device ID", (v) =>
+      //   Device.findOne({ deviceId: v })
+      // ),
       name: yup.string().required(),
       phone: yup
         .string()
@@ -25,12 +25,12 @@ module.exports = {
 
   login: yup.object({
     body: yup.object({
-      deviceId: yup
-        .string()
-        // .required("deviceId is required")
-        .test("deviceId", "Please pass a valid device ID", (v) =>
-          Device.findOne({ deviceId: v })
-        ),
+      // deviceId: yup
+      //   .string()
+      // .required("deviceId is required")
+      // .test("deviceId", "Please pass a valid device ID", (v) =>
+      //   Device.findOne({ deviceId: v })
+      // ),
       phone: yup.string().required(),
       password: yup.string().required(),
     }),

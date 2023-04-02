@@ -7,6 +7,7 @@ import * as yup from "yup";
 import s from "./dataTable.module.scss";
 import { endpoints } from "config";
 import { SiteContext } from "SiteContext";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   const {
@@ -68,7 +69,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
         if (["input", "textarea"].includes(field.fieldType)) {
           if (field.type === "date") {
             _edit[field.name] = edit[field.name]
-              ? moment(edit[field.name], "YYYY-MM-DD")
+              ? moment(edit[field.name], "yyyy-MM-dd")
               : "";
           } else {
             _edit[field.name] = edit[field.name] || "";
@@ -157,8 +158,15 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   );
 };
 
-export const Filter = ({ filters = {}, filterStatus, schema, setFilters }) => {
-  const { user, checkPermission } = useContext(SiteContext);
+export const Filter = ({
+  showFilter,
+  close,
+  filters = {},
+  filterStatus,
+  schema,
+  setFilters,
+}) => {
+  const { selfOnly, user, checkPermission } = useContext(SiteContext);
   const { handleSubmit, control, register, reset } = useForm();
   useEffect(() => {
     const _filter = {};
@@ -237,38 +245,69 @@ export const Filter = ({ filters = {}, filterStatus, schema, setFilters }) => {
     </>
   );
 
+  useEffect(() => {
+    if (
+      user.userType === "member" &&
+      selfOnly &&
+      schema.some((item) => item.name === "member")
+    ) {
+      setFilters({ members: [user._id] });
+      reset({ members: [user._id] });
+    }
+  }, []);
+
   if (fields.props.children.length === 0) {
     return null;
   }
 
   return (
-    <form
-      onSubmit={handleSubmit((values) => {
-        setFilters(
-          Object.entries(values).reduce((p, [key, value]) => {
-            if (value?.length) {
-              p[key] = value;
-            }
-            return p;
-          }, {})
-        );
-      })}
-      className={s.filters}
+    <motion.div
+      initial={{ height: 0 }}
+      animate={{ height: showFilter ? "auto" : 0 }}
+      className={s.filterWrapper}
     >
-      {fields}
+      <form
+        onSubmit={handleSubmit((values) => {
+          if (window.innerWidth <= 480) {
+            close();
+          }
+          setFilters(
+            Object.entries(values).reduce((p, [key, value]) => {
+              if (value?.length) {
+                p[key] = value;
+              }
+              return p;
+            }, {})
+          );
+        })}
+        className={s.filters}
+      >
+        {fields}
 
-      <div className="btns">
-        <button className="btn">Submit</button>
-        <button
-          className="btn clear"
-          onClick={() => {
-            reset({});
-            setFilters({});
-          }}
-        >
-          Clear
-        </button>
-      </div>
-    </form>
+        <div className="btns">
+          <button className="btn medium">Submit</button>
+          <button
+            className="btn clear medium"
+            onClick={() => {
+              reset({});
+              setFilters({});
+              if (window.innerWidth <= 480) {
+                close();
+              }
+            }}
+          >
+            Clear
+          </button>
+        </div>
+      </form>
+    </motion.div>
   );
+
+  // return (
+  //   <AnimatePresence>
+  //     {showFilter && (
+
+  //     )}
+  //   </AnimatePresence>
+  // );
 };

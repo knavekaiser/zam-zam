@@ -8,17 +8,22 @@ const {
   firebase,
 } = require("../helpers");
 
-const { Member, Otp, Role } = require("../models");
+const { Member, Otp, Role, Device } = require("../models");
 
 exports.signup = async (req, res) => {
   try {
     req.body.password = appHelper.generateHash(req.body.password);
 
     const role = await Role.findOne({ name: "Member" });
+    if (
+      req.body.deviceId &&
+      (await Device.findOne({ deviceId: req.body.deviceId }))
+    ) {
+      req.body.devices = [req.body.deviceId];
+    }
     new Member({
       ...req.body,
       role: role?._id || null,
-      ...(req.body.deviceId && { devices: [req.body.deviceId] }),
       status: "pending-activation",
     })
       .save()
@@ -59,7 +64,10 @@ exports.login = async (req, res) => {
     if (user.status !== "active") {
       return responseFn.error(res, {}, responseStr.account_deactivated);
     }
-    if (req.body.deviceId) {
+    if (
+      req.body.deviceId &&
+      (await Device.findOne({ deviceId: req.body.deviceId }))
+    ) {
       await Member.findOneAndUpdate(
         { _id: user._id },
         { devices: [...new Set([...(user.devices || []), req.body.deviceId])] },

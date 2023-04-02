@@ -137,7 +137,9 @@ const MainApp = () => {
     <div className={s.container}>
       <div className={`${s.header} ${sidebarOpen ? s.open : ""}`}>
         <Link to={paths.profile} onClick={() => setSidebarOpen(false)}>
-          <div className={s.user}>
+          <div
+            className={`${s.user} ${user.userType === "staff" ? s.staff : ""}`}
+          >
             <div className={s.profile}>
               <img src={user.photo || "/assets/avatar.webp"} />
             </div>

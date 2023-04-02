@@ -11,19 +11,19 @@ module.exports = function (app) {
     controller.create
   );
   router.put(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("milestone_update"),
     validate(schema.update),
     controller.update
   );
   router.get(
-    "/:id?",
+    "/:_id?",
     authJwt.verifyToken("milestone_read"),
     controller.findAll
   );
 
   router.delete(
-    "/:id",
+    "/:_id",
     authJwt.verifyToken("milestone_delete"),
     controller.delete
   );

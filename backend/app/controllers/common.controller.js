@@ -21,10 +21,14 @@ exports.dashboardData = async (req, res) => {
     const viewWithdrawals = permissions.includes("withdrawal_read");
 
     const conditions = { status: "approved" };
+    const expenseCondition = { status: "approved" };
+
+    if (req.authToken.userType === "member" && req.query.selfOnly === "true") {
+      conditions.member = req.authUser._id;
+    }
 
     const totalShares = await Member.count({ status: "active" });
     const pipeline = [
-      { $match: conditions },
       {
         $group: {
           _id: {
@@ -61,156 +65,186 @@ exports.dashboardData = async (req, res) => {
     const processData = (data) =>
       data.reduce(
         (p, c) => {
-          const total = c.data.reduce((sum, item) => sum + item.y, 0);
+          p.eachMonth = [
+            ...Array(12).fill(null),
+            ...c.data.map((item) => item.y),
+          ].splice(-12);
 
-          const eachMonth = Array(12).fill(null);
-
-          p.total += total;
-          p.eachMonth = [...eachMonth, ...c.data.map((item) => item.y)].splice(
-            -12
-          );
+          p.total = c.data.reduce((sum, item) => sum + item.y, 0);
 
           return p;
         },
         { total: 0, eachMonth: [] }
       );
-    const [deposits, expenses, withdrawals, milestones = []] =
+    const [deposits, expenses, withdrawals, currentBalance, milestones = []] =
       await Promise.all([
-        Deposit.aggregate(pipeline).then((data) => processData(data)),
-        Expense.aggregate(pipeline).then((data) => processData(data)),
-        Withdrawal.aggregate(pipeline).then((data) => processData(data)),
+        Deposit.aggregate([{ $match: conditions }, ...pipeline]).then((data) =>
+          processData(data)
+        ),
+        Expense.aggregate([{ $match: expenseCondition }, ...pipeline]).then(
+          (data) => processData(data)
+        ),
+        Withdrawal.aggregate([{ $match: conditions }, ...pipeline]).then(
+          (data) => processData(data)
+        ),
 
-        req.authToken.userType === "member"
-          ? Milestone.aggregate([
-              { $match: { status: { $in: ["past-due", "ongoing"] } } },
-              { $set: { perMember: { $divide: ["$amount", totalShares] } } },
-              {
-                $lookup: {
-                  from: "deposits",
-                  let: { id: "$_id", perMember: "$perMember" },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            { $eq: ["$$id", "$milestone"] },
-                            { $eq: ["$status", "approved"] },
-                            { $eq: ["$member", req.authUser._id] },
-                          ],
+        Promise.all([
+          Deposit.aggregate([
+            { $match: { status: "approved" } },
+            { $group: { _id: null, total: { $sum: "$amount" } } },
+          ]),
+          Expense.aggregate([
+            { $match: { status: "approved" } },
+            { $group: { _id: null, total: { $sum: "$amount" } } },
+          ]),
+          Withdrawal.aggregate([
+            { $match: { status: "approved" } },
+            { $group: { _id: null, total: { $sum: "$amount" } } },
+          ]),
+        ]).then(([[deposit], [expense], [withdrawal]]) =>
+          viewDeposits && (viewWithdrawals || viewExpenses)
+            ? +(
+                (deposit?.total || 0) -
+                ((viewExpenses ? expense?.total || 0 : 0) +
+                  (viewWithdrawals ? withdrawal?.total || 0 : 0))
+              ).toFixed(2)
+            : undefined
+        ),
+
+        // req.authToken.userType === "member"
+        Milestone.aggregate([
+          { $match: { status: { $in: ["past-due", "ongoing"] } } },
+          { $set: { perMember: { $divide: ["$amount", totalShares] } } },
+          ...(req.authToken.userType === "member"
+            ? [
+                {
+                  $lookup: {
+                    from: "deposits",
+                    let: { id: "$_id", perMember: "$perMember" },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$$id", "$milestone"] },
+                              { $eq: ["$status", "approved"] },
+                              { $eq: ["$member", req.authUser._id] },
+                            ],
+                          },
                         },
                       },
-                    },
-                    {
-                      $group: {
-                        _id: "$member",
-                        deposited: { $sum: "$amount" },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: "members",
-                        localField: "_id",
-                        foreignField: "_id",
-                        as: "member",
-                      },
-                    },
-                    { $unwind: "$member" },
-                    {
-                      $project: {
-                        name: "$member.name",
-                        email: "$member.email",
-                        phone: "$member.phone",
-                        status: "$member.status",
-                        deposited: "$deposited",
-                        due: { $subtract: ["$$perMember", "$deposited"] },
-                      },
-                    },
-                  ],
-                  as: "deposits",
-                },
-              },
-              {
-                $set: {
-                  myDeposit: { $sum: "$deposits.deposited" },
-                  myDue: {
-                    $subtract: ["$perMember", { $sum: "$deposits.deposited" }],
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: "deposits",
-                  let: { id: "$_id", perMember: "$perMember" },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            { $eq: ["$$id", "$milestone"] },
-                            { $eq: ["$status", "approved"] },
-                          ],
+                      {
+                        $group: {
+                          _id: "$member",
+                          deposited: { $sum: "$amount" },
                         },
                       },
-                    },
-                    {
-                      $group: {
-                        _id: "$member",
-                        deposited: { $sum: "$amount" },
+                      {
+                        $lookup: {
+                          from: "members",
+                          localField: "_id",
+                          foreignField: "_id",
+                          as: "member",
+                        },
                       },
-                    },
-                    {
-                      $lookup: {
-                        from: "members",
-                        localField: "_id",
-                        foreignField: "_id",
-                        as: "member",
+                      { $unwind: "$member" },
+                      {
+                        $project: {
+                          name: "$member.name",
+                          email: "$member.email",
+                          phone: "$member.phone",
+                          status: "$member.status",
+                          deposited: "$deposited",
+                          due: { $subtract: ["$$perMember", "$deposited"] },
+                        },
                       },
-                    },
-                    { $unwind: "$member" },
-                    {
-                      $project: {
-                        name: "$member.name",
-                        email: "$member.email",
-                        phone: "$member.phone",
-                        status: "$member.status",
-                        deposited: "$deposited",
-                        due: { $subtract: ["$$perMember", "$deposited"] },
-                      },
-                    },
-                  ],
-                  as: "totalDeposits",
-                },
-              },
-              {
-                $set: {
-                  totalDeposited: { $sum: "$totalDeposits.deposited" },
-                  totalDue: {
-                    $subtract: [
-                      "$amount",
-                      { $sum: "$totalDeposits.deposited" },
                     ],
+                    as: "deposits",
                   },
                 },
-              },
-              // filter only my due
-              {
-                $project: {
-                  title: 1,
-                  description: 1,
-                  startDate: 1,
-                  endDate: 1,
-                  amount: 1,
-                  totalDeposited: 1,
-                  totalDue: 1,
-                  myDeposit: 1,
-                  myDue: 1,
-                  perMember: 1,
-                  status: 1,
+                {
+                  $set: {
+                    myDeposit: { $sum: "$deposits.deposited" },
+                    myDue: {
+                      $subtract: [
+                        "$perMember",
+                        { $sum: "$deposits.deposited" },
+                      ],
+                    },
+                  },
                 },
+              ]
+            : []),
+          {
+            $lookup: {
+              from: "deposits",
+              let: { id: "$_id", perMember: "$perMember" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$$id", "$milestone"] },
+                        { $eq: ["$status", "approved"] },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$member",
+                    deposited: { $sum: "$amount" },
+                  },
+                },
+                {
+                  $lookup: {
+                    from: "members",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "member",
+                  },
+                },
+                { $unwind: "$member" },
+                {
+                  $project: {
+                    name: "$member.name",
+                    email: "$member.email",
+                    phone: "$member.phone",
+                    status: "$member.status",
+                    deposited: "$deposited",
+                    due: { $subtract: ["$$perMember", "$deposited"] },
+                  },
+                },
+              ],
+              as: "totalDeposits",
+            },
+          },
+          {
+            $set: {
+              totalDeposited: { $sum: "$totalDeposits.deposited" },
+              totalDue: {
+                $subtract: ["$amount", { $sum: "$totalDeposits.deposited" }],
               },
-              { $sort: { startDate: 1 } },
-            ])
-          : [],
+            },
+          },
+          // filter only my due
+          {
+            $project: {
+              title: 1,
+              description: 1,
+              startDate: 1,
+              endDate: 1,
+              amount: 1,
+              totalDeposited: 1,
+              totalDue: 1,
+              myDeposit: 1,
+              myDue: 1,
+              perMember: 1,
+              status: 1,
+            },
+          },
+          { $sort: { startDate: 1 } },
+        ]),
       ]);
 
     return responseFn.success(res, {
@@ -220,23 +254,16 @@ exports.dashboardData = async (req, res) => {
         expenses: viewExpenses ? expenses : undefined,
         withdrawals: viewWithdrawals ? withdrawals : undefined,
 
-        currentBalance:
-          viewDeposits && (viewWithdrawals || viewExpenses)
-            ? +(
-                deposits.total -
-                ((viewExpenses ? expenses.total : 0) +
-                  (viewWithdrawals ? withdrawals.total : 0))
-              ).toFixed(2)
-            : undefined,
+        currentBalance,
 
-        ...(req.authToken.userType === "member" && {
-          milestones: milestones.map((item) => ({
-            ...item,
+        milestones: milestones.map((item) => ({
+          ...item,
+          ...(req.authToken.userType === "member" && {
             myDue: +item.myDue.toFixed(2),
             myDeposit: +item.myDeposit.toFixed(2),
-            perMember: +item.perMember.toFixed(2),
-          })),
-        }),
+          }),
+          perMember: +item.perMember.toFixed(2),
+        })),
       },
     });
   } catch (error) {

@@ -7,8 +7,48 @@
     padding: 1rem 0;
     border-bottom: 1px solid rgba(#fff, 0.03);
     h2 {
-      margin-left: 1rem;
+      margin-left: 0.5rem;
       cursor: pointer;
+    }
+    .selfOnlyToggle {
+      display: flex;
+      font-size: 1.25rem;
+      padding: 0.4rem 0.4rem;
+      // padding-left: 0.4rem;
+      grid-gap: 1.25rem;
+      color: white;
+      border: 1px solid $grey3;
+      border-radius: 2rem;
+      outline: none;
+      background: $black1;
+      position: relative;
+      cursor: pointer;
+      &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        height: 90%;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(15%);
+        // width: 100%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: $primary-color-dark1;
+        transition: transform 0.4s cubic-bezier(0.62, 0.34, 0.24, 1.01);
+      }
+      &.selfOnly {
+        &::after {
+          transform: translateY(-50%) translateX(-117%);
+        }
+      }
+      .left,
+      .right {
+        z-index: 1;
+      }
+      svg {
+        display: grid;
+      }
     }
   }
   color: white;
@@ -200,6 +240,13 @@
         $primary-color-dark1 0%,
         $primary-color-dark2 100%
       );
+      opacity: 0;
+      animation: cardIn 1.5s forwards cubic-bezier(0.01, 0.38, 0.35, 0.96);
+      @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+          animation-delay: (100ms * $i);
+        }
+      }
       p {
         .currencySymbol {
           font-family: "Times New Roman", Times, serif;
@@ -232,8 +279,24 @@
   }
 }
 
+@keyframes cardIn {
+  0% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media only screen and (max-width: 480px) {
   .contentWrapper {
+    .head {
+      .selfOnlyToggle {
+        margin-right: 1rem;
+      }
+    }
     .content {
       padding: 1rem;
       border-radius: 0;

@@ -8,12 +8,18 @@ const {
   firebase,
 } = require("../helpers");
 
-const { Staff, Otp } = require("../models");
+const { Staff, Otp, Device } = require("../models");
 
 exports.signup = async (req, res) => {
   try {
     req.body.password = appHelper.generateHash(req.body.password);
 
+    if (
+      req.body.deviceId &&
+      (await Device.findOne({ deviceId: req.body.deviceId }))
+    ) {
+      req.body.devices = [req.body.deviceId];
+    }
     new Staff({
       ...req.body,
       ...(req.body.deviceId && { devices: [req.body.deviceId] }),
@@ -57,7 +63,10 @@ exports.login = async (req, res) => {
     if (staff.status !== "active") {
       return responseFn.error(res, {}, responseStr.account_deactivated);
     }
-    if (req.body.deviceId) {
+    if (
+      req.body.deviceId &&
+      (await Device.findOne({ deviceId: req.body.deviceId }))
+    ) {
       await Staff.findOneAndUpdate(
         { _id: staff._id },
         {

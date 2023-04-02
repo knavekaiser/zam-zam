@@ -43,10 +43,10 @@ export default function Deposits({ setSidebarOpen }) {
         <>
           <td className={s.name}>{item.title}</td>
           <td className={s.startDate}>
-            <Moment format="MMM DD, YYYY">{item.startDate}</Moment>
+            <Moment format="MMM dd, yyyy">{item.startDate}</Moment>
           </td>
           <td className={s.endDate}>
-            <Moment format="MMM DD, YYYY">{item.endDate}</Moment>
+            <Moment format="MMM dd, yyyy">{item.endDate}</Moment>
           </td>
 
           <td className={`text-right ${s.milestoneAmount}`}>

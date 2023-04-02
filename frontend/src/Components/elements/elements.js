@@ -41,6 +41,8 @@ import { useFetch } from "hooks";
 import { phone } from "phone";
 import { Table, TableActions } from "./Table";
 
+import { useTransitionValue } from "react-transition-value";
+
 import { Combobox } from "./combobox";
 
 export const Input = forwardRef(
@@ -1582,4 +1584,30 @@ export const CalendarInput = ({
       }}
     />
   );
+};
+
+export const CountUp = ({
+  number = 0,
+  duration = 5000,
+  offset = 1000,
+  ease,
+  locale,
+}) => {
+  const [transitionValue, setTransitionValue] = useTransitionValue(
+    Math.max(number - offset, 0),
+    {
+      from: Math.max(number - offset, 0),
+      to: number,
+      duration,
+      autoStart: true,
+      ...(ease && { easing: ease }),
+    }
+  );
+  useEffect(() => {
+    setTransitionValue();
+  }, [number]);
+  if (locale) {
+    return Math.round(transitionValue).toLocaleString(locale);
+  }
+  return Math.round(transitionValue);
 };

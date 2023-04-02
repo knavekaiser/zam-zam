@@ -7,6 +7,7 @@ import { endpoints } from "config";
 export const SiteContext = createContext();
 export const Provider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [selfOnly, setSelfOnly] = useState(false);
 
   const { post: updateDevice, loading: updatingDevice } = useFetch(
     endpoints.devices
@@ -25,6 +26,11 @@ export const Provider = ({ children }) => {
 
   useEffect(() => {
     requestPermission(updateDevice, user);
+    if (user) {
+      if (user.userType === "member") {
+        setSelfOnly(true);
+      }
+    }
   }, [user]);
   return (
     <SiteContext.Provider
@@ -32,6 +38,8 @@ export const Provider = ({ children }) => {
         user,
         setUser,
         checkPermission,
+        selfOnly,
+        setSelfOnly,
       }}
     >
       {children}

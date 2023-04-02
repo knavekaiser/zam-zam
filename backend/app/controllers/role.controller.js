@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    Role.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+    Role.findOneAndUpdate({ _id: req.params._id }, req.body, { new: true })
       .then((data) => {
         responseFn.success(res, { data }, responseStr.record_updated);
       })
@@ -46,10 +46,10 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    if (!req.params.id && !req.body.ids?.length) {
+    if (!req.params._id && !req.body.ids?.length) {
       return responseFn.error(res, {}, responseStr.select_atleast_one_record);
     }
-    Role.deleteMany({ _id: { $in: [...(req.body.ids || []), req.params.id] } })
+    Role.deleteMany({ _id: { $in: [...(req.body.ids || []), req.params._id] } })
       .then((num) => responseFn.success(res, {}, responseStr.record_deleted))
       .catch((err) => responseFn.error(res, {}, err.message, 500));
   } catch (error) {
