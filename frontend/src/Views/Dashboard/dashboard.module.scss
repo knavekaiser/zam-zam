@@ -73,9 +73,14 @@
     .links {
       display: grid;
       width: 100%;
-      li {
+      a {
         padding: 1rem 2rem;
-        a {
+        display: block;
+        transition: background 0.2s ease-in-out;
+        &:hover {
+          background: rgba($black1, 0.3);
+        }
+        li {
           z-index: 5;
           display: flex;
           align-items: center;
@@ -89,13 +94,28 @@
             color: $primary-color;
             margin: 0 0.375rem;
             transition: margin 0.25s ease-in-out;
+            position: relative;
+            svg {
+              position: absolute;
+              background: $black2;
+              &.filled {
+                clip-path: circle(0 at center);
+                transition: 0.25s ease-in-out;
+              }
+            }
           }
           .label {
+            transform-origin: left;
             overflow: hidden;
             width: 0;
             opacity: 0;
             transition: 0.15s width ease-in-out, 0.15s opacity ease-in-out;
             flex: 1;
+          }
+        }
+        &:active {
+          .label {
+            transform: scale(0.95);
           }
         }
         position: relative;
@@ -131,6 +151,15 @@
           width: 4rem;
         }
         &.active {
+          li {
+            .icon {
+              svg {
+                &.filled {
+                  clip-path: circle(14px at center);
+                }
+              }
+            }
+          }
           &::before {
             transform: translateY(-50%) scaleX(1);
           }
@@ -174,8 +203,8 @@
         }
       }
       .links {
-        li {
-          a {
+        a {
+          li {
             .icon {
               margin-right: 0.75rem;
               margin-left: 0;
@@ -274,7 +303,7 @@
       .links {
         overflow-y: auto;
         overflow-x: hidden;
-        li {
+        a {
           padding: 1rem calc(2rem - 6px);
         }
       }

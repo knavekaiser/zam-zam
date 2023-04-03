@@ -17,10 +17,22 @@
     z-index: -1;
     object-fit: cover;
   }
-  form {
+  .content {
     width: 100%;
     max-width: 25rem;
     overflow: hidden;
+    grid-template-columns: 1fr;
+    background: linear-gradient(
+      180deg,
+      rgba($black1, 0.85) 0%,
+      rgba($black2, 1) 100%
+    );
+    border: 1px solid $grey3;
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 2rem;
+    display: grid;
+    grid-gap: 2rem;
     .logoContainer {
       display: grid;
       justify-content: center;
@@ -40,16 +52,9 @@
         }
       }
     }
-
-    grid-template-columns: 1fr;
-    background: linear-gradient(
-      180deg,
-      rgba($black1, 0.85) 0%,
-      rgba($black2, 1) 100%
-    );
-    border: 1px solid $grey3;
-    backdrop-filter: blur(10px);
-    border-radius: 1rem;
+  }
+  form {
+    width: 100%;
     .userTypes {
       display: flex;
       margin: auto;
@@ -151,30 +156,27 @@
   .container {
     padding: 0;
     padding-bottom: 0;
-    form {
+    .content {
       margin: auto;
-      border-radius: 0;
       height: 100%;
-      grid-template-columns: 1fr;
+      padding: 1.5rem;
+      border-radius: 0;
       grid-auto-rows: min-content;
-      justify-items: center;
+      align-content: center;
       grid-gap: 1rem;
       max-width: 100%;
-      grid-auto-rows: unset;
-      padding: 1.5rem;
-      & > div {
-        .logoContainer {
-          .logo {
-            font-size: 7vw;
-          }
+      .logoContainer {
+        .logo {
+          font-size: 7vw;
         }
+      }
+    }
+    form {
+      & > div {
         padding: 0;
         margin: auto;
         width: 100%;
       }
-      // & > *:not(.logoContainer) {
-      //   width: 100%;
-      // }
     }
     footer {
       width: 100%;

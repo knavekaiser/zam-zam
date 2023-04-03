@@ -384,9 +384,11 @@
         .milestoneDeposited {
           color: $green;
         }
-        .user {
-          grid-column: 1 / 2;
-          grid-row: 2 / 3;
+        &:not(:has(.role)) {
+          .user {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+          }
         }
         .name {
           grid-column: 1 / 2;
@@ -413,13 +415,16 @@
           margin: 0;
         }
         .role {
-          text-align: right;
+          // text-align: right;
         }
         .actions {
           grid-column: -1 / -2;
           grid-row: 1 / 2;
           justify-content: flex-end;
           padding-top: 0;
+          margin: auto;
+          margin-top: 0.5rem;
+          margin-right: 0;
         }
       }
     }

@@ -9,6 +9,7 @@ import * as yup from "yup";
 import s from "./auth.module.scss";
 import { BsArrowLeft } from "react-icons/bs";
 import { fingerprint } from "helpers";
+import { motion } from "framer-motion";
 
 const validationSchema = yup.object({
   phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
@@ -34,8 +35,12 @@ const Form = ({ userType, setUserType }) => {
   const navigate = useNavigate();
 
   return (
-    <form
-      className="grid gap-1 p-2 m-a"
+    <motion.form
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 100 }}
+      transition={{ duration: 0.5 }}
+      className="grid gap-1 m-a"
       autoComplete="off"
       onSubmit={handleSubmit(async (values) => {
         const number = phone(values.phone, { country: "bangladesh" });
@@ -68,16 +73,6 @@ const Form = ({ userType, setUserType }) => {
       })}
     >
       <div className={"grid gap-2"}>
-        <div
-          className={`flex justify-space-between align-center ${s.logoContainer}`}
-        >
-          <div className={s.logo}>
-            {/* <img src="/assets/Zam-Zam-1.png" /> */}
-            <h1 className="text-center">ZAM-ZAM</h1>
-            <span>TOWER</span>
-          </div>
-        </div>
-
         <div className={s.userTypes}>
           <button
             type="button"
@@ -138,7 +133,7 @@ const Form = ({ userType, setUserType }) => {
           <BsArrowLeft /> Already have an account
         </Link>
       </div>
-    </form>
+    </motion.form>
   );
 };
 

@@ -9,6 +9,7 @@ import { phone } from "phone";
 import * as yup from "yup";
 import s from "./auth.module.scss";
 import { BsArrowLeft } from "react-icons/bs";
+import { motion } from "framer-motion";
 
 const otpSchema = yup.object({
   phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
@@ -74,8 +75,12 @@ const SendOtpForm = ({ userType, onSuccess }) => {
     resolver: useYup(otpSchema),
   });
   return (
-    <form
-      className="grid gap-1 p-2 m-a"
+    <motion.form
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 100 }}
+      transition={{ duration: 0.5 }}
+      className="grid gap-1 m-a"
       onSubmit={handleSubmit((values) => {
         const number = phone(values.phone, { country: "bangladesh" });
         sendOtp({ phone: number.phoneNumber }).then(({ data }) => {
@@ -91,16 +96,6 @@ const SendOtpForm = ({ userType, onSuccess }) => {
       })}
     >
       <div className={"grid gap-2"}>
-        <div
-          className={`flex justify-space-between align-center ${s.logoContainer}`}
-        >
-          <div className={s.logo}>
-            {/* <img src="/assets/Zam-Zam-1.png" /> */}
-            <h1 className="text-center">ZAM-ZAM</h1>
-            <span>TOWER</span>
-          </div>
-        </div>
-
         {/* <h3 className="">Reset Password</h3> */}
         <Input
           label="Phone"
@@ -115,7 +110,7 @@ const SendOtpForm = ({ userType, onSuccess }) => {
           <BsArrowLeft /> Back to Login
         </Link>
       </div>
-    </form>
+    </motion.form>
   );
 };
 

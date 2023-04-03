@@ -43,7 +43,10 @@ const MainApp = () => {
     {
       icon: <BsHouseDoor style={{ fontSize: "1.2em", marginTop: "-0.15em" }} />,
       activeIcon: (
-        <BsHouseDoorFill style={{ fontSize: "1.2em", marginTop: "-0.15em" }} />
+        <BsHouseDoorFill
+          className={s.filled}
+          style={{ fontSize: "1.2em", marginTop: "-0.15em" }}
+        />
       ),
       label: "Home",
       path: paths.home,
@@ -52,7 +55,12 @@ const MainApp = () => {
       ? [
           {
             icon: <BsArrowDownSquare style={{ fontSize: ".96em" }} />,
-            activeIcon: <BsArrowDownSquareFill style={{ fontSize: ".96em" }} />,
+            activeIcon: (
+              <BsArrowDownSquareFill
+                className={s.filled}
+                style={{ fontSize: ".96em" }}
+              />
+            ),
             label: "Deposits",
             path: paths.deposits,
           },
@@ -62,7 +70,12 @@ const MainApp = () => {
       ? [
           {
             icon: <BsArrowUpSquare style={{ fontSize: ".96em" }} />,
-            activeIcon: <BsArrowUpSquareFill style={{ fontSize: ".96em" }} />,
+            activeIcon: (
+              <BsArrowUpSquareFill
+                className={s.filled}
+                style={{ fontSize: ".96em" }}
+              />
+            ),
             label: "Expenses",
             path: paths.expenses,
           },
@@ -73,7 +86,10 @@ const MainApp = () => {
           {
             icon: <BsArrowUpLeftSquare style={{ fontSize: ".96em" }} />,
             activeIcon: (
-              <BsArrowUpLeftSquareFill style={{ fontSize: ".96em" }} />
+              <BsArrowUpLeftSquareFill
+                className={s.filled}
+                style={{ fontSize: ".96em" }}
+              />
             ),
             label: "Withdrawals",
             path: paths.withdrawals,
@@ -84,7 +100,12 @@ const MainApp = () => {
       ? [
           {
             icon: <BsCalendar3Range style={{ fontSize: ".96em" }} />,
-            activeIcon: <BsCalendar3RangeFill style={{ fontSize: ".96em" }} />,
+            activeIcon: (
+              <BsCalendar3RangeFill
+                className={s.filled}
+                style={{ fontSize: ".96em" }}
+              />
+            ),
             label: "Milestones",
             path: paths.milestones,
           },
@@ -94,7 +115,7 @@ const MainApp = () => {
       ? [
           {
             icon: <BsPeople />,
-            activeIcon: <BsPeopleFill />,
+            activeIcon: <BsPeopleFill className={s.filled} />,
             label: "Members",
             path: paths.members,
           },
@@ -104,7 +125,7 @@ const MainApp = () => {
       ? [
           {
             icon: <BsPersonBadge />,
-            activeIcon: <BsPersonBadgeFill />,
+            activeIcon: <BsPersonBadgeFill className={s.filled} />,
             label: "Staffs",
             path: paths.staffs,
           },
@@ -114,7 +135,7 @@ const MainApp = () => {
       ? [
           {
             icon: <BsFileMedical />,
-            activeIcon: <BsFileMedicalFill />,
+            activeIcon: <BsFileMedicalFill className={s.filled} />,
             label: "Roles",
             path: paths.roles,
           },
@@ -150,18 +171,17 @@ const MainApp = () => {
 
         <ul className={s.links}>
           {sidebarItems.current.map((item, i, arr) => (
-            <li
+            <Link
               key={item.path}
+              to={item.path}
+              onClick={() => {
+                if (window.innerWidth <= 480) {
+                  setSidebarOpen(false);
+                }
+              }}
               className={location.pathname === item.path ? s.active : ""}
             >
-              <Link
-                to={item.path}
-                onClick={() => {
-                  if (window.innerWidth <= 480) {
-                    setSidebarOpen(false);
-                  }
-                }}
-              >
+              <li>
                 <span
                   className={s.icon}
                   style={{
@@ -171,9 +191,11 @@ const MainApp = () => {
                     }ms`,
                   }}
                 >
-                  {location.pathname === item.path
+                  {item.icon}
+                  {item.activeIcon}
+                  {/* {location.pathname === item.path
                     ? item.activeIcon
-                    : item.icon}
+                    : item.icon} */}
                 </span>
                 <span
                   className={s.label}
@@ -186,8 +208,8 @@ const MainApp = () => {
                 >
                   {item.label}
                 </span>
-              </Link>
-            </li>
+              </li>
+            </Link>
           ))}
         </ul>
 
