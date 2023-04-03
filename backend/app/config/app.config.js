@@ -72,7 +72,7 @@ module.exports = {
     জম-জম টাওয়ার`,
     money_withdrawed: `প্রিয় {name}, ৳{amount} তোলা হয়েছে।
     জম-জম টাওয়ার`,
-    password_otp: `প্রিয় {name}, আপনার পাসওয়ার্ড রিসেট করতে {otp} ব্যবহার করুন।
+    password_otp: `প্রিয় {name}, আপনার কোড {otp}।
     জম-জম টাওয়ার`,
   },
 

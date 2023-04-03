@@ -80,6 +80,7 @@ exports.login = async (req, res) => {
     return responseFn.error(res, {}, error.message, 500);
   }
 };
+
 exports.forgotPassword = async (req, res) => {
   try {
     const staff = await Staff.findOne({ phone: req.body.phone });
