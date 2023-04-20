@@ -230,16 +230,16 @@ const TimelineItem = ({ item, single, lineStyle, secondToLast, reversed }) => {
         )}
       </div>
       <div className={s.detail}>
-        <img src={item.staff?.photo || "/assets/avatar.webp"} />
+        <img
+          src={item.staff?.photo || "/assets/avatar.webp"}
+          alt="Staff Profile Photo"
+        />
         <div className={s.staffDetail}>
           <p>
             <span className={s.action}>{item.action}</span>{" "}
             <span className={s.by}>by</span>
             <br />
-            <span className={s.staff}>
-              {item.staff?.name}{" "}
-              {/* <img src={item.staff.photo || "/assets/avatar.webp"} /> */}
-            </span>{" "}
+            <span className={s.staff}>{item.staff?.name} </span>
           </p>
           <span className={s.dateTime}>
             <Moment format="MMM dd, yyyy hh:mmaaa">{item.dateTime}</Moment>

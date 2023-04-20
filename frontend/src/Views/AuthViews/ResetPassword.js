@@ -103,7 +103,7 @@ const SendOtpForm = ({ userType, onSuccess }) => {
           {...register("phone")}
           error={errors.phone}
         />
-        <button className="btn" disabled={loading}>
+        <button className="btn" disabled={loading} title="Next">
           Next
         </button>
         <Link to={paths.signIn} className={s.signInLink}>
@@ -169,7 +169,7 @@ const PasswordResetForm = ({
           className={`flex justify-space-between align-center ${s.logoContainer}`}
         >
           <div className={s.logo}>
-            {/* <img src="/assets/Zam-Zam-1.png" /> */}
+            {/* <img src="/assets/Zam-Zam-1.png" alt="Logo" /> */}
             <h1 className="text-center">ZAM-ZAM</h1>
             <span>TOWER</span>
           </div>
@@ -192,6 +192,7 @@ const PasswordResetForm = ({
             </>
           ) : (
             <button
+              title="Resend Code"
               type="button"
               onClick={() => {
                 resendOtp({ phone }).then(({ data }) => {
@@ -230,6 +231,7 @@ const PasswordResetForm = ({
         />
 
         <button
+          title="Submit"
           className="btn"
           type="submit"
           disabled={resendingOtp || resettingPass}

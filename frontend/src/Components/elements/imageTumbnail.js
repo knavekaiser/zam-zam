@@ -29,7 +29,9 @@ export function Images({ images, className }) {
           imgs.length > 1 ? s.multiple : ""
         }`}
       >
-        {mainView && <img src={mainView} onClick={() => setOpen(true)} />}
+        {mainView && (
+          <img src={mainView} onClick={() => setOpen(true)} alt="Main Image" />
+        )}
       </div>
       <Modal
         open={open}
@@ -39,12 +41,13 @@ export function Images({ images, className }) {
         onBackdropClick={() => setOpen(false)}
       >
         <button
+          title="Close"
           className={`btn clear ${s.closeBtn}`}
           onClick={() => setOpen(false)}
         >
           <FaTimes />
         </button>
-        <img className={s.mainImg} src={mainView} />
+        <img className={s.mainImg} src={mainView} alt="Main Image" />
         <div className={s.thumbnails}>
           {imgs.map((src, i) => (
             <img
@@ -52,6 +55,7 @@ export function Images({ images, className }) {
               key={i}
               onClick={() => setMainView(src)}
               className={src === mainView ? s.selected : ""}
+              alt={`Image thumbnail - ${i + 1}`}
             />
           ))}
         </div>

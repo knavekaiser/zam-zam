@@ -101,6 +101,7 @@ export const Modal = forwardRef(
                     className="btn clear"
                     type="button"
                     onClick={() => setOpen(false)}
+                    title="Close"
                   >
                     <BsX />
                   </button>
@@ -193,7 +194,7 @@ export const Prompt = ({ className, type, message, btns, callback }) => {
             className={`prompt ${className || ""}`}
           >
             <div className="content">
-              <button className="clear close" onClick={decline}>
+              <button className="clear close" onClick={decline} title="Close">
                 <BsX />
               </button>
               {type === "confirmation" && (
@@ -241,12 +242,14 @@ export const Prompt = ({ className, type, message, btns, callback }) => {
                         <button
                           className="no btn medium secondary"
                           onClick={decline}
+                          title="No"
                         >
                           No
                         </button>
                         <button
                           className="yes btn secondary medium"
                           onClick={confirm}
+                          title="Yes"
                         >
                           Yes
                         </button>
@@ -255,6 +258,7 @@ export const Prompt = ({ className, type, message, btns, callback }) => {
                       <button
                         className="yes btn secondary medium"
                         onClick={decline}
+                        title="Ok"
                       >
                         Ok
                       </button>

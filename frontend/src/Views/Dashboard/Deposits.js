@@ -34,7 +34,6 @@ export default function Deposits({ setSidebarOpen }) {
         gridTemplateColumns: `6rem 1fr 7rem ${
           user.userType === "staff" ? "8rem" : ""
         } ${actionColumns ? "3rem" : ""}`,
-        // gridTemplateRows: "1fr 1fr 1.5rem",
       }}
       deleteRequest
       columns={[
@@ -53,7 +52,10 @@ export default function Deposits({ setSidebarOpen }) {
             <Moment format="MMM dd, yyyy">{item.date}</Moment>
           </td>
           <td className={s.user}>
-            <img src={item.member.photo || "/assets/avatar.webp"} />
+            <img
+              src={item.member.photo || "/assets/avatar.webp"}
+              alt={`Member Photo - ${item.member?.name}`}
+            />
             <div className={s.detail}>
               <span className={s.name}>{item.member?.name}</span>
               <span className={s.phone}>

@@ -21,7 +21,10 @@ root.render(
         <ErrorBoundary
           onError={
             <div className="deathPage">
-              <img src="/assets/crashpage.webp" />
+              <img
+                src="/assets/crashpage.webp"
+                alt="Illustration of a crashed van"
+              />
               <div className="content">
                 <h2>Oops!</h2>
                 <p>It seems we hit a lamp post.</p>

@@ -120,7 +120,7 @@ export const Form = ({ edit, allPermissions, onSuccess }) => {
         </div>
 
         <div className="btns">
-          <button className="btn" disabled={loading}>
+          <button className="btn" disabled={loading} title="Submit">
             {edit ? "Update" : "Submit"}
           </button>
         </div>
@@ -156,8 +156,11 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
         <Input label="Name" {...register("name")} />
 
         <div className="btns">
-          <button className="btn medium">Submit</button>
+          <button className="btn medium" title="Submit">
+            Submit
+          </button>
           <button
+            title="Clear"
             className="btn clear medium"
             onClick={() => {
               reset({});

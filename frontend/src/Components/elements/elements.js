@@ -256,6 +256,7 @@ export const PasswordInput = ({
               />
               {value && (
                 <button
+                  title="Toggle Visibility"
                   className={s.eye}
                   type="button"
                   onClick={() =>
@@ -344,6 +345,7 @@ export const FileInput = ({
           {files.map((file, i) => {
             const ClearBtn = () => (
               <button
+                title="Clear File"
                 className={`clear ${s.clear}`}
                 type="button"
                 onClick={() =>
@@ -368,7 +370,7 @@ export const FileInput = ({
               return (
                 <li className={s.file} key={i}>
                   <ClearBtn />
-                  <img src={file.name} />
+                  <img src={file.name} alt={`File Preview - ${file.name}`} />
                 </li>
               );
             }
@@ -378,7 +380,7 @@ export const FileInput = ({
               return (
                 <li className={s.file} key={i}>
                   <ClearBtn />
-                  <img src={url} />
+                  <img src={url} alt={`File Preview - ${file.name}`} />
                 </li>
               );
             }
@@ -474,9 +476,9 @@ export const AvatarInput = ({ control, name, formOptions = {}, className }) => {
             <section className={`${s.imgInput} ${className || ""}`}>
               <label htmlFor={name}>
                 {value?.[0] && typeof value[0] === "string" ? (
-                  <img src={value[0]} />
+                  <img src={value[0]} alt="Profile Photo" />
                 ) : blob ? (
-                  <img src={URL.createObjectURL(blob)} />
+                  <img src={URL.createObjectURL(blob)} alt="Profile Photo" />
                 ) : (
                   <BsFilePerson />
                 )}
@@ -517,6 +519,7 @@ export const AvatarInput = ({ control, name, formOptions = {}, className }) => {
               </div>
               <div className={`${s.actions} p-1 flex justify-center`}>
                 <button
+                  title="Cancel"
                   className={`btn clear ${s.cancel}`}
                   type="button"
                   onClick={() => setFile(null)}
@@ -524,6 +527,7 @@ export const AvatarInput = ({ control, name, formOptions = {}, className }) => {
                   Cancel
                 </button>
                 <button
+                  title="Submit"
                   className={`btn ${s.submit}`}
                   type="button"
                   onClick={() => {
@@ -549,100 +553,7 @@ export const AvatarInput = ({ control, name, formOptions = {}, className }) => {
     />
   );
 };
-// export const ImageInput = ({ required, className, onSuccess }) => {
-//   const id = useRef(Math.random().toString(32).substr(-8));
-//   const canvas = useRef();
-//   const [file, setFile] = useState(null);
-//   const [scale, setScale] = useState(1);
-//   const uploadImg = useCallback(
-//     (blob) => {
-//       const formData = new FormData();
-//       formData.append("image", blob);
-//     },
-//     [file]
-//   );
-//   useEffect(() => {
-//     if (file) {
-//       setScale(1);
-//     }
-//   }, [file]);
-//   return (
-//     <>
-//       <section className={`${s.imgInput} ${className || ""}`}>
-//         {!file && (
-//           <label htmlFor={id.current}>
-//             <BsFilePerson />
-//           </label>
-//         )}
-//         <input
-//           style={{ display: "none" }}
-//           id={id.current}
-//           type="file"
-//           required={required}
-//           accept="image/png, image/jpeg, image/jpg, image/webp"
-//           onChange={(e) => setFile(e.target.files[0])}
-//         />
-//       </section>
-//       <Modal open={file} className={s.avatarModal}>
-//         <div
-//           className={s.canvasWrapper}
-//           style={loading ? { pointerEvents: "none" } : {}}
-//         >
-//           <AvatarEditor
-//             ref={canvas}
-//             image={file}
-//             scale={scale}
-//             rotate={0}
-//             height={250}
-//             width={250}
-//             border={3}
-//             color={[255, 255, 255, 0.25]}
-//             borderRadius={350}
-//           />
-//         </div>
-//         <div className={s.range}>
-//           <input
-//             style={loading ? { pointerEvents: "none" } : {}}
-//             type="range"
-//             value={scale}
-//             min={1}
-//             max={4}
-//             step="0.1"
-//             onChange={(e) => setScale(+e.target.value)}
-//           />
-//         </div>
-//         <div
-//           className={`${s.actions} p-1 flex justify-center`}
-//           style={loading ? { pointerEvents: "none" } : {}}
-//         >
-//           <button
-//             className={`btn clear ${s.cancel}`}
-//             type="button"
-//             onClick={() => setFile(null)}
-//           >
-//             Cancel
-//           </button>
-//           <button
-//             className={`btn ${s.submit} ${loading ? s.loading : ""}`}
-//             type="button"
-//             onClick={() => {
-//               // const ctx = canvas.current
-//               //   .getImageScaledToCanvas()
-//               //   .getContext("2d");
-//               // const img = ctx.getImageData(10, 10, 400 - 10, 400 - 10);
-//               // ctx.putImageData(img, 0, 0);
-//               canvas.current.getImageScaledToCanvas().toBlob((blob) => {
-//                 uploadImg(blob);
-//               }, "image/webp");
-//             }}
-//           >
-//             {loading ? <BsCircle className={s.spinner} /> : "Choose"}
-//           </button>
-//         </div>
-//       </Modal>
-//     </>
-//   );
-// };
+
 export const FileInputNew = ({
   label,
   control,
@@ -745,7 +656,10 @@ export const FileInputNew = ({
                   return (
                     <li className={s.file} key={i}>
                       <ClearBtn />
-                      <img src={file.name} />
+                      <img
+                        src={file.name}
+                        alt={`File Preview - ${file.name}`}
+                      />
                     </li>
                   );
                 }
@@ -757,7 +671,7 @@ export const FileInputNew = ({
                   return (
                     <li className={s.file} key={i}>
                       <ClearBtn />
-                      <img src={url} />
+                      <img src={url} alt={`File Preview - ${file.name}`} />
                     </li>
                   );
                 }
@@ -1286,6 +1200,7 @@ export const MobileNumberInput = ({
                       <>
                         <img
                           src={`https://flagcdn.com/w20/${option.iso2.toLowerCase()}.webp`}
+                          alt={`Country Flag - ${option.iso2}`}
                         />
                         <p style={{ marginLeft: "6px", display: "inline" }}>
                           {option.label}
@@ -1299,6 +1214,9 @@ export const MobileNumberInput = ({
                         src={`https://flagcdn.com/w20/${countries
                           .find((c) => c.code === selected)
                           ?.iso2.toLowerCase()}.webp`}
+                        alt={`Country Flag - ${
+                          countries.find((c) => c.code === selected)?.iso2 || ""
+                        }`}
                       />
                     ) : (
                       "No"
@@ -1437,6 +1355,7 @@ export const Chip = ({ label, remove }) => {
     <span className={s.chip}>
       {label}{" "}
       <button
+        title="Clear"
         type="button"
         onClick={() => {
           remove?.();
@@ -1546,6 +1465,7 @@ export const CalendarInput = ({
               {multipleRanges && (
                 <div className={`flex p-1 pt-0 gap-1`}>
                   <button
+                    title="Add Days"
                     className={`btn all-columns`}
                     type="button"
                     onClick={() => {
@@ -1560,6 +1480,7 @@ export const CalendarInput = ({
                     Add Days
                   </button>
                   <button
+                    title="Remove Days"
                     className={`btn all-columns`}
                     type="button"
                     onClick={() => {

@@ -67,6 +67,7 @@ const Form = ({ userType, setUserType }) => {
       <div className={`grid gap-2`}>
         <div className={s.userTypes}>
           <button
+            title="Member"
             type="button"
             disabled={loading}
             className={`btn clear ${userType === "member" ? s.active : ""}`}
@@ -78,6 +79,7 @@ const Form = ({ userType, setUserType }) => {
             Member
           </button>
           <button
+            title="Staff"
             type="button"
             disabled={loading}
             className={`btn clear ${userType === "staff" ? s.active : ""}`}
@@ -120,7 +122,7 @@ const Form = ({ userType, setUserType }) => {
           />
         </section>
 
-        <button className="btn" disabled={loading}>
+        <button className="btn" disabled={loading} title="Sign In">
           Sign In
         </button>
         <Link className={s.signUpLink} to={paths.signUp}>

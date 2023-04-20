@@ -149,7 +149,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
         {fields}
 
         <div className="btns">
-          <button className="btn" disabled={loading}>
+          <button className="btn" disabled={loading} title="Submit">
             {edit ? "Update" : "Submit"}
           </button>
         </div>
@@ -285,9 +285,12 @@ export const Filter = ({
         {fields}
 
         <div className="btns">
-          <button className="btn medium">Submit</button>
+          <button className="btn medium" title="Submit">
+            Submit
+          </button>
           <button
             className="btn clear medium"
+            title="Clear"
             onClick={() => {
               reset({});
               setFilters({});

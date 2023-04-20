@@ -1,10 +1,11 @@
-import { useContext, useRef, useState } from "react";
+import { Suspense, lazy, useContext, useRef, useState } from "react";
 import { SiteContext } from "SiteContext";
 import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import { paths, endpoints } from "config";
 import { useFetch } from "hooks";
 
 import { FaPowerOff } from "react-icons/fa";
+import { Table } from "Components/elements";
 import {
   BsHouseDoor,
   BsHouseDoorFill,
@@ -27,14 +28,72 @@ import {
 import s from "./dashboard.module.scss";
 
 import Home from "./Home";
-import Deposits from "./Deposits";
-import Expenses from "./Expenses";
-import Withdrawals from "./Withdrawals";
-import Members from "./Members";
-import Staffs from "./Staffs";
 import Profile from "./Profile";
-import Roles from "./Roles";
-import Milestones from "./Milestones";
+
+const Deposits = lazy(() => import("./Deposits"));
+const Expenses = lazy(() => import("./Expenses"));
+const Withdrawals = lazy(() => import("./Withdrawals"));
+const Members = lazy(() => import("./Members"));
+const Staffs = lazy(() => import("./Staffs"));
+const Roles = lazy(() => import("./Roles"));
+const Milestones = lazy(() => import("./Milestones"));
+
+const Loading = ({ columns, trStyle, setSidebarOpen }) => {
+  return (
+    <div className={s.wrapper}>
+      <div className={`${s.contentLoading} grid m-a`}>
+        <div className={`${s.head} flex p-1`}>
+          <div
+            className={`flex align-center pointer gap_5`}
+            onClick={() => setSidebarOpen((prev) => !prev)}
+          >
+            <h2 className="skl-loading" />
+          </div>
+          <>
+            <button
+              title="Toggle Filters"
+              className={`btn clear ${s.filterBtn} skl-loading`}
+            />
+          </>
+        </div>
+
+        <Table
+          className={s.data}
+          trStyle={trStyle}
+          columns={Array(columns)
+            .fill(null)
+            .map((item, i) => ({
+              label: (
+                <p
+                  key={i}
+                  className="skl-loading"
+                  style={{ width: `${Math.floor(Math.random() * 41) + 30}%` }}
+                />
+              ),
+            }))}
+        >
+          {Array(3)
+            .fill(null)
+            .map((item, i) => (
+              <tr key={i} style={trStyle}>
+                {Array(columns)
+                  .fill(null)
+                  .map((item, j) => (
+                    <td
+                      key={j}
+                      className="skl-loading"
+                      style={{
+                        width: `${Math.floor(Math.random() * 41) + 30}%`,
+                      }}
+                    />
+                  ))}
+              </tr>
+            ))}
+        </Table>
+      </div>
+    </div>
+  );
+};
 
 const MainApp = () => {
   const { user, setUser, checkPermission } = useContext(SiteContext);
@@ -162,7 +221,10 @@ const MainApp = () => {
             className={`${s.user} ${user.userType === "staff" ? s.staff : ""}`}
           >
             <div className={s.profile}>
-              <img src={user.photo || "/assets/avatar.webp"} />
+              <img
+                src={user.photo || "/assets/avatar.webp"}
+                alt={`Profile Photo - ${user?.name}`}
+              />
             </div>
             <h2 className={"ellipsis l-1"}>{user.name}</h2>
             <p className={s.role}>{user.role?.name}</p>
@@ -214,6 +276,7 @@ const MainApp = () => {
         </ul>
 
         <button
+          title="Log out"
           className={`clear ${s.logoutBtn}`}
           title="Log out"
           onClick={() => {
@@ -248,31 +311,143 @@ const MainApp = () => {
         />
         <Route
           path={paths.deposits}
-          element={<Deposits setSidebarOpen={setSidebarOpen} />}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Deposits setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.expenses}
-          element={<Expenses setSidebarOpen={setSidebarOpen} />}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Expenses setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.withdrawals}
-          element={<Withdrawals setSidebarOpen={setSidebarOpen} />}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Withdrawals setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.milestones}
-          element={<Milestones setSidebarOpen={setSidebarOpen} />}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Milestones setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.members}
-          element={<Members setSidebarOpen={setSidebarOpen} />}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Members setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.staffs}
-          element={<Staffs setSidebarOpen={setSidebarOpen} />}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Staffs setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.roles}
-          element={<Roles setSidebarOpen={setSidebarOpen} />}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Roles setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.profile}

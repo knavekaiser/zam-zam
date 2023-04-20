@@ -53,7 +53,10 @@ export default function Withdrawals({ setSidebarOpen }) {
             <Moment format="MMM dd, yyyy">{item.date}</Moment>
           </td>
           <td className={s.user}>
-            <img src={item.member.photo || "/assets/avatar.webp"} />
+            <img
+              src={item.member.photo || "/assets/avatar.webp"}
+              alt={`Member Photo - ${item.member?.name}`}
+            />
             <div className={s.detail}>
               <span className={s.name}>{item.member?.name}</span>
               <span className={s.phone}>

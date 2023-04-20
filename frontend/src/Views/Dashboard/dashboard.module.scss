@@ -249,10 +249,74 @@
     }
   }
   .content {
-    background: red !important;
+    // background: red !important;
     width: 100%;
     max-width: 60rem;
     grid-template-rows: min-content 1fr;
+  }
+}
+
+.wrapper {
+  container-name: wrapper;
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.contentLoading {
+  background: $black2;
+  color: white;
+  margin: auto;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 60rem;
+  height: 100%;
+  max-height: calc((var(--vh) * 100) - 2rem);
+  grid-template-rows: min-content 1fr;
+  border: 1px solid rgba(#fff, 0.03);
+  position: relative;
+  transition: 0.25s margin ease-in-out, 0.25s border-radius ease-in-out;
+  overflow: hidden;
+  .head {
+    flex-wrap: wrap;
+    grid-gap: 0.5rem;
+    h2 {
+      background: rgba($black1, 0.3);
+      height: 28px;
+      width: 7rem;
+    }
+    .filterBtn {
+      margin: auto;
+      margin-right: 1rem;
+      background: rgba($black1, 0.3);
+      height: 28px;
+      width: 2rem;
+    }
+  }
+  .data {
+    th {
+      p {
+        height: 15px;
+        background: rgba($primary-color, 0.75);
+      }
+    }
+    tr {
+      // grid-template-columns: 6rem 1fr 7rem 8rem 3.5rem;
+      grid-auto-rows: min-content !important;
+      td {
+        height: 20px;
+        background: rgba($black1, 0.3);
+      }
+    }
+  }
+}
+
+@container wrapper (max-width: 980px) {
+  .contentLoading {
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+    max-height: calc((var(--vh) * 100));
+    border: none;
   }
 }
 
@@ -288,6 +352,29 @@
       padding: 0.5rem;
       max-width: 60rem;
       margin: auto;
+    }
+  }
+  .contentLoading {
+    .data {
+      border-top: 1px solid rgba(#fff, 0.03);
+      thead {
+        display: none !important;
+      }
+      tr {
+        border-radius: 0.5rem;
+        margin: 0.5rem;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        border: none !important;
+        grid-gap: 10px;
+        grid-template-columns: 1fr 0.5fr !important;
+        grid-row-gap: 0px;
+        background: $black1;
+        grid-auto-rows: 1fr;
+        td {
+          background: $black2;
+        }
+      }
     }
   }
   footer {

@@ -89,7 +89,7 @@ const Settings = ({ setSidebarOpen }) => {
           />
           <Input label="Email" {...register("email")} error={errors.email} />
 
-          <button className="btn" disabled={loading}>
+          <button className="btn" disabled={loading} title="Save Changes">
             Save Changes
           </button>
         </form>

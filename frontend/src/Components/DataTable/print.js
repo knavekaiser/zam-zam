@@ -39,7 +39,7 @@ const PrintInvoice = forwardRef(({ sale, user }, ref) => {
   return (
     <div className={s.print} ref={ref}>
       <header>
-        {user.logo && <img className={s.logo} src={user.logo} />}
+        {user.logo && <img className={s.logo} src={user.logo} alt="App Logo" />}
         <div>
           <h2>{user.name}</h2>
           {user.motto && <p>{user.motto}</p>}

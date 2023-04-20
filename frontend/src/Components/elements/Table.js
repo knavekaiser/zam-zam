@@ -143,6 +143,7 @@ export const TableActions = ({ actions, className }) => {
   return (
     <td className={`${s.tableActions} ${className || ""}`}>
       <button
+        title="Actions"
         className={s.btn}
         ref={btn}
         data-testid="gear-btn"
@@ -395,7 +396,11 @@ export const ImportExport = ({ importUrl, exportUrl }) => {
     <div className="flex gap-1">
       {importUrl && (
         <>
-          <button className="btn m-a mr-0" onClick={() => setImportOpen(true)}>
+          <button
+            className="btn m-a mr-0"
+            onClick={() => setImportOpen(true)}
+            title="Import Data"
+          >
             Import Data
           </button>
           <Modal
@@ -466,7 +471,7 @@ const ImportForm = ({ url, onSuccess }) => {
         formOptions={{ required: true }}
       />
       <div className="flex mt-1 justify-end">
-        <button className="btn" type="submit" disabled={loading}>
+        <button className="btn" type="submit" disabled={loading} title="Submit">
           Submit
         </button>
       </div>
@@ -504,7 +509,12 @@ const Export = ({ url }) => {
       .catch((err) => Prompt({ type: "error", message: err.message }));
   }, [url]);
   return (
-    <button disabled={loading} className="btn" onClick={fetchData}>
+    <button
+      disabled={loading}
+      className="btn"
+      onClick={fetchData}
+      title="Export Data"
+    >
       {loading ? "Exporting..." : "Export Data"}
     </button>
   );

@@ -74,6 +74,7 @@ const Data = ({
           </div>
           <>
             <button
+              title="Toggle Filters"
               className={`btn clear ${s.filterBtn}`}
               onClick={() => setShowFilter(!showFilter)}
             >
@@ -332,6 +333,7 @@ const Data = ({
           }}
         >
           <button
+            title="Close Detail"
             className="btn clear"
             type="button"
             onClick={() => setView(null)}
@@ -343,6 +345,7 @@ const Data = ({
 
         {checkPermission(`${name}_create`) && (
           <button
+            title={`Add New Item`}
             className={`btn m-a mr-0 ${s.addBtn} ${showAddBtn ? s.show : ""}`}
             onClick={() => setAddData(true)}
           >

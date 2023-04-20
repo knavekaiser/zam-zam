@@ -63,6 +63,7 @@ const Data = ({ setSidebarOpen }) => {
           </div>
           <>
             <button
+              title="Toggle Filters"
               className={`btn clear ${s.filterBtn}`}
               onClick={() => setShowFilter(!showFilter)}
             >
@@ -176,6 +177,7 @@ const Data = ({ setSidebarOpen }) => {
 
         {checkPermission(`role_create`) && (
           <button
+            title="Add Role"
             className={`btn m-a mr-0 ${s.addBtn} ${showAddBtn ? s.show : ""}`}
             onClick={() => setAddRole(true)}
           >

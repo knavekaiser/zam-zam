@@ -6,10 +6,6 @@ import s from "./auth.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import { Spinner } from "Components/elements";
 
-// import Signup from "./Signup";
-// import SignIn from "./Signin";
-// import ResetPassword from "./ResetPassword";
-
 const Signup = lazy(() => import("./Signup"));
 const SignIn = lazy(() => import("./Signin"));
 const ResetPassword = lazy(() => import("./ResetPassword"));
@@ -34,7 +30,7 @@ const Auth = () => {
           className={`flex justify-space-between align-center ${s.logoContainer}`}
         >
           <div className={s.logo}>
-            {/* <img src="/assets/Zam-Zam-1.png" /> */}
+            {/* <img src="/assets/Zam-Zam-1.png" alt="logo" /> */}
             <h1 className="text-center">ZAM-ZAM</h1>
             <span>TOWER</span>
           </div>
@@ -74,6 +70,7 @@ const Auth = () => {
       </motion.div>
       <img
         className={s.background}
+        alt="Background"
         src={`https://images.unsplash.com/photo-1518839283416-0cc546d12a97?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=${window.innerWidth}&h=${window.innerHeight}&q=80`}
       />
       <footer>

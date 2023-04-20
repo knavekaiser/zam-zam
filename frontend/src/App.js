@@ -7,9 +7,6 @@ import { Prompt } from "Components/modal";
 import { useFetch } from "hooks";
 import { Spinner } from "Components/elements";
 
-// import AuthView from "Views/AuthViews";
-// import MainApp from "Views/Dashboard";
-
 const MainApp = lazy(() => import("Views/Dashboard"));
 const AuthView = lazy(() => import("Views/AuthViews"));
 

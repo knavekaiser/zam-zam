@@ -38,7 +38,10 @@ export default function Deposits({ setSidebarOpen }) {
       renderRow={(item, s, status) => (
         <>
           <td className={s.user}>
-            <img src={item.photo || "/assets/avatar.webp"} />
+            <img
+              src={item.photo || "/assets/avatar.webp"}
+              alt={`Member Photo - ${item.name}`}
+            />
             <div className={s.detail}>
               <span className={s.name}>{item.name}</span>
               <span className={s.phone}>

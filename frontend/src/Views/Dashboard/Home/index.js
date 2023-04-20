@@ -25,6 +25,7 @@ const Toggle = ({}) => {
 
   return (
     <button
+      title="Toggle Personal or Group Data"
       className={`${s.selfOnlyToggle} ${selfOnly ? s.selfOnly : ""}`}
       onClick={() => setSelfOnly((prev) => !prev)}
     >
