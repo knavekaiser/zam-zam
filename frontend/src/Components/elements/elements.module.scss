@@ -1103,6 +1103,13 @@
   max-width: calc(100vw - 3rem);
 }
 
+.spinner {
+  margin: auto;
+  svg {
+    display: grid;
+  }
+}
+
 $branch-angle: 35deg;
 
 .fishboneDiagram {

@@ -1,13 +1,17 @@
 import "./App.scss";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, Suspense, lazy } from "react";
 import { SiteContext } from "SiteContext";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
 import { paths, endpoints } from "config";
 import { Prompt } from "Components/modal";
 import { useFetch } from "hooks";
+import { Spinner } from "Components/elements";
 
-import AuthView from "Views/AuthViews";
-import MainApp from "Views/Dashboard";
+// import AuthView from "Views/AuthViews";
+// import MainApp from "Views/Dashboard";
+
+const MainApp = lazy(() => import("Views/Dashboard"));
+const AuthView = lazy(() => import("Views/AuthViews"));
 
 function resizeWindow() {
   let vh = window.innerHeight * 0.01;
@@ -59,14 +63,23 @@ function App() {
   if (!user) {
     return (
       <div className="App">
-        <AuthView />
+        <Suspense fallback={<Spinner size="2rem" />}>
+          <AuthView />
+        </Suspense>
       </div>
     );
   }
   return (
     <div className="App">
       <Routes>
-        <Route path="*" element={<MainApp />} />
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={<Spinner size="2rem" />}>
+              <MainApp />
+            </Suspense>
+          }
+        />
       </Routes>
     </div>
   );

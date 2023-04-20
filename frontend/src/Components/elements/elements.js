@@ -44,6 +44,7 @@ import { Table, TableActions } from "./Table";
 import { useTransitionValue } from "react-transition-value";
 
 import { Combobox } from "./combobox";
+import { motion } from "framer-motion";
 
 export const Input = forwardRef(
   ({ className, label, icon, error, type, required, ...rest }, ref) => {
@@ -1610,4 +1611,81 @@ export const CountUp = ({
     return Math.round(transitionValue).toLocaleString(locale);
   }
   return Math.round(transitionValue);
+};
+
+export const Spinner = ({ size }) => {
+  return (
+    <div className={s.spinner} style={{ fontSize: size || "1rem" }}>
+      <motion.svg
+        version="1.0"
+        xmlns="http://www.w3.org/2000/svg"
+        width="3em"
+        height="3em"
+        viewBox="0 0 1000.000000 1000.000000"
+        preserveAspectRatio="xMidYMid meet"
+        initial={{
+          rotate: 180,
+        }}
+        animate={{
+          rotate: [180, 275, 360, 450, 540],
+        }}
+        transition={{
+          repeat: Infinity,
+          ease: [0.65, 0.04, 0.23, 0.92],
+          duration: 5,
+          times: [1, 1, 1, 1],
+        }}
+      >
+        <defs>
+          <linearGradient
+            id="grad1"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="0%"
+            gradientTransform="rotate(-45)"
+          >
+            <stop
+              offset="0%"
+              style={{
+                stopColor: "var(--primary-color-dark1)",
+                stopOpacity: 0.7,
+              }}
+            />
+            <stop
+              offset="100%"
+              style={{
+                stopColor: "var(--primary-color-dark2)",
+                stopOpacity: 0.7,
+              }}
+            />
+          </linearGradient>
+        </defs>
+        <g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)">
+          <motion.path
+            style={{
+              fill: "url(#grad1)",
+              stroke: "none",
+            }}
+            d="M 0 0 L 10000 0 L 10000 10000 L 0 10000 Z M 4690 9400 L 5300 9400 L 5300 9400 L 5300 9400 L 5300 9400 L 9400 9400 L 9400 3640 L 9400 3640 L 9400 3030 L 9400 3030 L 9400 600 L 5290 600 L 5290 600 L 4680 600 L 4680 600 L 4680 600 L 4680 600 L 600 600 L 600 6370 L 600 6370 L 600 6980 L 600 6980 L 600 9400 L 4690 9400 Z"
+            animate={{
+              d: [
+                "M 0 0 L 10000 0 L 10000 10000 L 0 10000 Z M 4690 9400 L 5300 9400 L 5300 9400 L 5300 9400 L 5300 9400 L 9400 9400 L 9400 3640 L 9400 3640 L 9400 3030 L 9400 3030 L 9400 600 L 5290 600 L 5290 600 L 4680 600 L 4680 600 L 4680 600 L 4680 600 L 600 600 L 600 6370 L 600 6370 L 600 6980 L 600 6980 L 600 9400 L 4690 9400 Z",
+                "M 0 0 L 10000 0 L 10000 10000 L 0 10000 Z M 4690 6360 L 5300 6360 L 5300 6970 L 5300 6970 L 5300 9400 L 9400 9400 L 9400 3640 L 9400 3640 L 9400 3030 L 9400 3030 L 9400 600 L 5290 600 L 5290 3650 L 4680 3650 L 4680 3040 L 4680 3040 L 4680 600 L 600 600 L 600 6370 L 600 6370 L 600 6980 L 600 6980 L 600 9400 L 4690 9400 Z",
+                "M 0 0 L 10000 0 L 10000 10000 L 0 10000 Z M 4690 6360 L 7100 6360 L 7100 6970 L 5300 6970 L 5300 9400 L 9400 9400 L 9400 3640 L 7280 3640 L 7280 3030 L 9400 3030 L 9400 600 L 5290 600 L 5290 3650 L 2890 3650 L 2890 3040 L 4680 3040 L 4680 600 L 600 600 L 600 6370 L 2700 6370 L 2700 6980 L 600 6980 L 600 9400 L 4690 9400 Z",
+                "M 0 0 L 10000 0 L 10000 10000 L 0 10000 Z M 4690 6360 L 5300 6360 L 5300 6970 L 5300 6970 L 5300 9400 L 9400 9400 L 9400 3640 L 9400 3640 L 9400 3030 L 9400 3030 L 9400 600 L 5290 600 L 5290 3650 L 4680 3650 L 4680 3040 L 4680 3040 L 4680 600 L 600 600 L 600 6370 L 600 6370 L 600 6980 L 600 6980 L 600 9400 L 4690 9400 Z",
+                "M 0 0 L 10000 0 L 10000 10000 L 0 10000 Z M 4690 9400 L 5300 9400 L 5300 9400 L 5300 9400 L 5300 9400 L 9400 9400 L 9400 3640 L 9400 3640 L 9400 3030 L 9400 3030 L 9400 600 L 5290 600 L 5290 600 L 4680 600 L 4680 600 L 4680 600 L 4680 600 L 600 600 L 600 6370 L 600 6370 L 600 6980 L 600 6980 L 600 9400 L 4690 9400 Z",
+              ],
+            }}
+            transition={{
+              repeat: Infinity,
+              ease: [0.65, 0.04, 0.23, 0.92],
+              duration: 5,
+              times: [0, 1, 1, 1, 1, 0],
+            }}
+          />
+        </g>
+      </motion.svg>
+    </div>
+  );
 };

@@ -3,7 +3,7 @@ import { phone } from "phone";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import * as yup from "yup";
 
-const XLSX = require("xlsx");
+// const XLSX = require("xlsx");
 
 export const findProperties = function (prop, obj) {
   const arr = [];
@@ -41,6 +41,8 @@ export const parseXLSXtoJSON = (file, cb) => {
   const reader = new FileReader();
   reader.onload = async (evt) => {
     const bstr = evt.target.result;
+
+    const XLSX = await import("xlsx");
 
     const wb = XLSX.read(bstr, { type: "binary" });
     const wsname = wb.SheetNames[0];

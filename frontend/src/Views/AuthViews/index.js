@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Signup from "./Signup";
-import SignIn from "./Signin";
-import ResetPassword from "./ResetPassword";
 import { paths } from "config";
 
 import s from "./auth.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
+import { Spinner } from "Components/elements";
+
+// import Signup from "./Signup";
+// import SignIn from "./Signin";
+// import ResetPassword from "./ResetPassword";
+
+const Signup = lazy(() => import("./Signup"));
+const SignIn = lazy(() => import("./Signin"));
+const ResetPassword = lazy(() => import("./ResetPassword"));
 
 const Auth = () => {
   const location = useLocation();
@@ -38,19 +44,31 @@ const Auth = () => {
           <Routes location={location} key={location.path}>
             <Route
               path={paths.signUp}
-              element={<Signup userType={userType} setUserType={setUserType} />}
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <Signup userType={userType} setUserType={setUserType} />
+                </Suspense>
+              }
             />
             <Route
               path={paths.signIn}
-              element={<SignIn userType={userType} setUserType={setUserType} />}
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <SignIn userType={userType} setUserType={setUserType} />
+                </Suspense>
+              }
             />
             <Route
               path={paths.resetPassword}
               element={
-                <ResetPassword userType={userType} setUserType={setUserType} />
+                <Suspense fallback={<Spinner />}>
+                  <ResetPassword
+                    userType={userType}
+                    setUserType={setUserType}
+                  />
+                </Suspense>
               }
             />
-            {/* <Route path="*" element={<h1>404</h1>} /> */}
           </Routes>
         </AnimatePresence>
       </motion.div>

@@ -1,6 +1,6 @@
 import React, { forwardRef, useRef, useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
+import { BsX } from "react-icons/bs";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import * as ReactDOMClient from "react-dom/client";
@@ -102,7 +102,7 @@ export const Modal = forwardRef(
                     type="button"
                     onClick={() => setOpen(false)}
                   >
-                    <IoClose />
+                    <BsX />
                   </button>
                 </div>
               )}
@@ -194,7 +194,7 @@ export const Prompt = ({ className, type, message, btns, callback }) => {
           >
             <div className="content">
               <button className="clear close" onClick={decline}>
-                <IoClose />
+                <BsX />
               </button>
               {type === "confirmation" && (
                 <div className="label confirmation">
@@ -225,7 +225,7 @@ export const Prompt = ({ className, type, message, btns, callback }) => {
               {type === "error" && (
                 <div className="label _error">
                   <span className="svg">
-                    <IoClose />
+                    <BsX />
                   </span>
                   {
                     // <span className="promptLabel">ERROR</span>

@@ -20,6 +20,11 @@
   }
 }
 
+.App {
+  min-height: calc((var(--vh) * 100));
+  display: grid;
+}
+
 .modalBackdrop {
   height: calc((var(--vh) * 100));
   width: 100vw;

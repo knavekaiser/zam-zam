@@ -11,8 +11,7 @@ import { status } from "config";
 import { cubicBezier, motion } from "framer-motion";
 import { Form, Filter } from "./Form";
 import Detail from "./Detail";
-import { IoClose } from "react-icons/io5";
-import { BsList } from "react-icons/bs";
+import { BsList, BsX } from "react-icons/bs";
 
 const Data = ({
   setSidebarOpen,
@@ -337,7 +336,7 @@ const Data = ({
             type="button"
             onClick={() => setView(null)}
           >
-            <IoClose />
+            <BsX />
           </button>
           <Detail data={view} />
         </Modal>
