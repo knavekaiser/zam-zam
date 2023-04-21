@@ -233,17 +233,18 @@ const MainApp = () => {
 
         <ul className={s.links}>
           {sidebarItems.current.map((item, i, arr) => (
-            <Link
+            <li
               key={item.path}
-              to={item.path}
-              onClick={() => {
-                if (window.innerWidth <= 480) {
-                  setSidebarOpen(false);
-                }
-              }}
               className={location.pathname === item.path ? s.active : ""}
             >
-              <li>
+              <Link
+                to={item.path}
+                onClick={() => {
+                  if (window.innerWidth <= 480) {
+                    setSidebarOpen(false);
+                  }
+                }}
+              >
                 <span
                   className={s.icon}
                   style={{
@@ -270,8 +271,8 @@ const MainApp = () => {
                 >
                   {item.label}
                 </span>
-              </li>
-            </Link>
+              </Link>
+            </li>
           ))}
         </ul>
 
@@ -415,12 +416,8 @@ const MainApp = () => {
             <Suspense
               fallback={
                 <Loading
-                  columns={user.userType === "staff" ? 5 : 3}
-                  trStyle={{
-                    gridTemplateColumns: `6rem 1fr 7rem ${
-                      user.userType === "staff" ? "8rem" : ""
-                    } 3rem`,
-                  }}
+                  columns={4}
+                  trStyle={{ gridTemplateColumns: `1fr 9rem 8rem 3rem` }}
                   setSidebarOpen={setSidebarOpen}
                 />
               }
@@ -435,12 +432,8 @@ const MainApp = () => {
             <Suspense
               fallback={
                 <Loading
-                  columns={user.userType === "staff" ? 5 : 3}
-                  trStyle={{
-                    gridTemplateColumns: `6rem 1fr 7rem ${
-                      user.userType === "staff" ? "8rem" : ""
-                    } 3rem`,
-                  }}
+                  columns={2}
+                  trStyle={{ gridTemplateColumns: `1fr 5rem` }}
                   setSidebarOpen={setSidebarOpen}
                 />
               }

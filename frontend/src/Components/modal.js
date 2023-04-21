@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { BsX } from "react-icons/bs";
 import { createPortal } from "react-dom";
@@ -109,6 +109,7 @@ export const Modal = forwardRef(
               )}
               {children}
             </motion.div>
+            <EscapeHandler setOpen={setOpen} />
           </>
         )}
       </AnimatePresence>,
@@ -116,6 +117,27 @@ export const Modal = forwardRef(
     );
   }
 );
+
+const EscapeHandler = ({ setOpen }) => {
+  const ref = useRef();
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.keyCode === 27) {
+        const list = document.querySelector("#portal");
+        const index = Array.from(list.children).findIndex(
+          (item) => item == ref.current
+        );
+        if (index === list.children.length - 1) {
+          setOpen && setOpen(false);
+        }
+      }
+    };
+    document.addEventListener("keydown", handler);
+
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+  return <div display="hidden" ref={ref} />;
+};
 
 export const Prompt = ({ className, type, message, btns, callback }) => {
   const container = document.querySelector("#prompt");

@@ -59,7 +59,7 @@ export const Input = forwardRef(
           </label>
         )}
         <div className={s.wrapper}>
-          <span className={s.field}>
+          <div className={s.field}>
             <input
               ref={ref}
               type={type || "text"}
@@ -76,7 +76,7 @@ export const Input = forwardRef(
               </label>
             )}
             {icon && icon}
-          </span>
+          </div>
           {error && <span className={s.errMsg}>{error.message}</span>}
         </div>
       </section>

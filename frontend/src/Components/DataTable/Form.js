@@ -186,7 +186,7 @@ export const Filter = ({
     <>
       {schema.some((item) => item.name === "member") && (
         <Select
-          label="Members"
+          placeholder="Members"
           url={endpoints.findMembers}
           control={control}
           name="members"
@@ -204,7 +204,7 @@ export const Filter = ({
       {schema.some((item) => item.name === "milestone") &&
         checkPermission("milestone_read") && (
           <Select
-            label="Milestone"
+            placeholder="Milestone"
             url={endpoints.milestones}
             control={control}
             name="milestones"
@@ -220,15 +220,15 @@ export const Filter = ({
           />
         )}
       {schema.some((item) => item.name === "name") && (
-        <Input label="Name" {...register("name")} />
+        <Input placeholder="Name" {...register("name")} />
       )}
       {schema.some((item) => item.name === "title") && (
-        <Input label="Title" {...register("title")} />
+        <Input placeholder="Title" {...register("title")} />
       )}
 
       {user.userType === "staff" && filterStatus?.length > 0 && (
         <Select
-          label="Status"
+          placeholder="Status"
           control={control}
           name="status"
           multiple
@@ -238,8 +238,12 @@ export const Filter = ({
 
       {schema.some((item) => item.name === "date") && (
         <>
-          <Input label="Start Date" type="date" {...register("from_date")} />
-          <Input label="End Date" type="date" {...register("to_date")} />
+          <Input
+            placeholder="Start Date"
+            type="date"
+            {...register("from_date")}
+          />
+          <Input placeholder="End Date" type="date" {...register("to_date")} />
         </>
       )}
     </>

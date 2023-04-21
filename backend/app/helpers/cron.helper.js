@@ -1,5 +1,6 @@
 const cron = require("node-cron");
 const { firebase } = require(".");
+const { Milestone } = require("../models");
 
 const sendMilestoneReminder = async () => {
   const milestone = await Milestone.aggregate([
@@ -71,19 +72,63 @@ cron.schedule(
   { scheduled: true, timezone: "Asia/Dhaka" }
 );
 
+const updateOlderMilestones = async () => {
+  Milestone.updateMany(
+    { status: "upcoming", startDate: { $gte: new Date() } },
+    { status: "ongoing" }
+  );
+  Milestone.updateMany({}, [
+    { $match: { status: "ongoing", endDate: { $lt: new Date() } } },
+    {
+      $lookup: {
+        from: "deposits",
+        let: { id: "$_id" },
+        as: "deposit",
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$$id", "$milestone"] },
+                  { $eq: ["$status", "approved"] },
+                ],
+              },
+            },
+          },
+          { $group: { _id: null, total: { $sum: "$amount" } } },
+        ],
+      },
+    },
+    { $set: { deposit: { $first: "$deposit.total" } } },
+    {
+      $set: {
+        status: {
+          $cond: {
+            if: { $gt: ["$amount", "$deposit"] },
+            then: "past-due",
+            else: "complete",
+          },
+        },
+      },
+    },
+  ]);
+};
+
 const jobRunner = cron.schedule("* * * * *", () => {
   // runs every minute
   // get all jobs from db and run
+
+  updateOlderMilestones();
 });
 
-const jobRunner_6_hour = cron.schedule("0 */6 * * *", () => {
-  // runs every 6 hours
+// const jobRunner_6_hour = cron.schedule("0 */6 * * *", () => {
+//   // runs every 6 hours
+// });
 
-  backupDatabase();
-});
-
-const jobRunner_24_hour = cron.schedule("0 0 0 * * *", () => {
-  // runs every 24 hours
-
-  Session.update({ status: "expired" }, { where: { status: "active" } });
-});
+const jobRunner_24_hour = cron.schedule(
+  "0 0 0 * * *",
+  () => {
+    updateOlderMilestones();
+  },
+  { scheduled: true, timezone: "Asia/Dhaka" }
+);

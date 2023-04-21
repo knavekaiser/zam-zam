@@ -421,7 +421,9 @@ export const Select = ({
           <div className={s.field}>
             <ReactSelect
               placeholder={
-                url
+                !label
+                  ? placeholder
+                  : url
                   ? "Search..."
                   : !options || !options?.length
                   ? "No options provided"

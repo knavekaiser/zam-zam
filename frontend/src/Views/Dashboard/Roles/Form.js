@@ -141,6 +141,7 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
       className={s.filterWrapper}
     >
       <form
+        tabIndex="-1"
         onSubmit={handleSubmit((values) => {
           setFilters(
             Object.entries(values).reduce((p, [key, value]) => {

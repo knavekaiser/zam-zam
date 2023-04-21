@@ -73,14 +73,14 @@
     .links {
       display: grid;
       width: 100%;
-      a {
+      li {
         padding: 1rem 2rem;
         display: block;
         transition: background 0.2s ease-in-out;
         &:hover {
           background: rgba($black1, 0.3);
         }
-        li {
+        a {
           z-index: 5;
           display: flex;
           align-items: center;
@@ -203,8 +203,8 @@
         }
       }
       .links {
-        a {
-          li {
+        li {
+          a {
             .icon {
               margin-right: 0.75rem;
               margin-left: 0;
@@ -390,7 +390,7 @@
       .links {
         overflow-y: auto;
         overflow-x: hidden;
-        a {
+        li {
           padding: 1rem calc(2rem - 6px);
         }
       }

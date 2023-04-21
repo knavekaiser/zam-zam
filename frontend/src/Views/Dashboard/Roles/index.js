@@ -51,11 +51,9 @@ const Data = ({ setSidebarOpen }) => {
   return (
     <div className={s.wrapper}>
       <div className={`${s.content} grid m-a`}>
-        <div className={`${s.head} flex p-1`}>
+        <div className={`${s.head} flex`}>
           <div
-            className={`flex align-center pointer gap_5 ${
-              window.innerWidth <= 480 ? "ml-1" : ""
-            }`}
+            className={`flex align-center pointer gap_5  ml-1`}
             onClick={() => setSidebarOpen((prev) => !prev)}
           >
             <BsList style={{ fontSize: "1.75rem" }} />

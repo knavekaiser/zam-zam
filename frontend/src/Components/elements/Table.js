@@ -156,13 +156,16 @@ export const TableActions = ({ actions, className }) => {
         style={style}
         className={s.actionModal}
         open={open}
+        setOpen={setOpen}
         onBackdropClick={() => setOpen(false)}
         backdropClass={s.actionBackdrop}
       >
         <div ref={popupContainerRef}>
           {actions.map((action, i) => (
             <button
+              autoFocus={i === 0}
               key={i}
+              tabIndex={i + 1}
               title={action.label}
               className="clear"
               onClick={() => {
