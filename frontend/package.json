@@ -1,6 +1,6 @@
 {
   "name": "zam-zam",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "private": true,
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^3.4.0",

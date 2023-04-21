@@ -369,7 +369,7 @@
   }
   .contentLoading {
     .data {
-      border-top: 1px solid rgba(#fff, 0.03);
+      border-top: 1px solid rgba(var(--font-color), 0.03);
       thead {
         display: none !important;
       }
@@ -378,11 +378,15 @@
         margin: 0.5rem;
         padding: 0.5rem 1rem;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        :global(.light) & {
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+          background: rgba(var(--bg-1), 0.2);
+        }
         border: none !important;
         grid-gap: 10px;
         grid-template-columns: 1fr 0.5fr !important;
         grid-row-gap: 0px;
-        background: rgb(var(--bg-1));
+        background: rgba(var(--bg-1), 0.5);
         grid-auto-rows: 1fr;
         td {
           background: rgb(var(--bg-2));
