@@ -256,9 +256,6 @@ const MainApp = () => {
                 >
                   {item.icon}
                   {item.activeIcon}
-                  {/* {location.pathname === item.path
-                    ? item.activeIcon
-                    : item.icon} */}
                 </span>
                 <span
                   className={s.label}

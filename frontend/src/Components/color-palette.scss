@@ -1,0 +1,49 @@
+// $primary-color: #b77cff;
+// $primary-color-dark1: #8743ff;
+// $primary-color-dark2: #581845;
+// $primary-color-dark3: #2d132c;
+
+// $white: #fff;
+// $grey1: rgb(236, 236, 236);
+// $grey2: rgb(158, 158, 158);
+// $grey3: rgb(57, 57, 57);
+
+// $black1: #19161f;
+// $black2: #221d29;
+// $black3: #321a33;
+// $black4: #38223a;
+
+// $comp-color: #11dbff;
+// $comp-color-dark1: #0fbad8;
+// $comp-color-dark2: #0c8297;
+// $comp-color-dark3: #094d58;
+
+// $green: #04eb77;
+// $red: #f10372;
+// $orange: #fb8433;
+// $yellow: #f6d304;
+// $blue: #0099ff;
+
+// $comp-grey: #f2f2f2;
+
+// :root {
+//   --primary-color: #b77cff;
+//   --primary-color-dark1: #8743ff;
+//   --primary-color-dark2: #581845;
+//   --primary-color-dark3: #2d132c;
+//   --green: #04eb77;
+//   --red: #f10372;
+//   --orange: #fb8433;
+//   --blue: #0099ff;
+// }
+
+$themes: (
+  light: (
+    background: white,
+    font-color: black,
+  ),
+  dark: (
+    background: black,
+    font-color: white,
+  ),
+);

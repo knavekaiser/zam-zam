@@ -29,9 +29,11 @@ const Toggle = ({}) => {
       className={`${s.selfOnlyToggle} ${selfOnly ? s.selfOnly : ""}`}
       onClick={() => setSelfOnly((prev) => !prev)}
     >
-      <div className={s.left}>{selfOnly ? <BsPersonFill /> : <BsPerson />}</div>
+      <div className={s.left}>
+        {selfOnly ? <BsPersonFill className={s.fill} /> : <BsPerson />}
+      </div>
       <div className={s.right}>
-        {!selfOnly ? <BsPeopleFill /> : <BsPeople />}
+        {!selfOnly ? <BsPeopleFill className={s.fill} /> : <BsPeople />}
       </div>
     </button>
   );
@@ -158,7 +160,11 @@ const Card = ({ label, amount, onClick = () => {} }) => {
       <p>
         <span className={s.currencySymbol}>৳</span>
         <span className={s.amount}>
-          <CountUp number={amount} duration={3000} locale="en-IN" />
+          <CountUp
+            number={amount}
+            duration={Math.floor(Math.random() * 1000) + 2000}
+            locale="en-IN"
+          />
         </span>
       </p>
     </div>

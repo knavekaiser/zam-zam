@@ -5,7 +5,7 @@
   grid-template-rows: min-content 1fr;
   .head {
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(#fff, 0.03);
+    border-bottom: 1px solid rgba(var(--font-color), 0.1);
     h2 {
       margin-left: 0.5rem;
       cursor: pointer;
@@ -16,11 +16,11 @@
       padding: 0.4rem 0.4rem;
       // padding-left: 0.4rem;
       grid-gap: 1.25rem;
-      color: white;
-      border: 1px solid $grey3;
+      color: rgb(var(--font-color));
+      border: 1px solid rgba(var(--font-color), 0.3);
       border-radius: 2rem;
       outline: none;
-      background: $black1;
+      background: rgba(var(--bg-1), 0.5);
       position: relative;
       cursor: pointer;
       &::after {
@@ -48,24 +48,28 @@
       }
       svg {
         display: grid;
+        &.fill {
+          color: white;
+        }
       }
     }
   }
-  color: white;
+  // color: white;
   max-width: 60rem;
   width: 100%;
   max-height: calc((var(--vh) * 100));
   .content {
+    padding: 1rem;
     height: 100%;
     overflow-y: auto;
     display: grid;
-    padding: 1rem 0;
     grid-gap: 1rem;
     border-radius: 1rem;
     width: 100%;
     grid-auto-rows: min-content;
     grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
     .milestones {
+      color: white;
       border-radius: 1rem;
       grid-column: 1/-1;
       display: grid;
@@ -233,6 +237,7 @@
       }
     }
     .card {
+      color: white;
       padding: 1rem;
       border-radius: 1rem;
       background: linear-gradient(
@@ -298,7 +303,6 @@
       }
     }
     .content {
-      padding: 1rem;
       border-radius: 0;
       margin: 0;
       grid-template-columns: 1fr;

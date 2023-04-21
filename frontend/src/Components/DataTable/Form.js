@@ -309,12 +309,4 @@ export const Filter = ({
       </form>
     </motion.div>
   );
-
-  // return (
-  //   <AnimatePresence>
-  //     {showFilter && (
-
-  //     )}
-  //   </AnimatePresence>
-  // );
 };

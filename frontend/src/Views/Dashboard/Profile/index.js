@@ -7,12 +7,56 @@ import s from "./profile.module.scss";
 import { useYup, useFetch } from "hooks";
 import { Prompt } from "Components/modal";
 import { endpoints } from "config";
+import { BsMoon, BsMoonFill, BsSun, BsSunFill } from "react-icons/bs";
 
 const profileSchema = yup.object({
   name: yup.string().required(),
   phone: yup.string().phone().required(),
   email: yup.string().email(),
 });
+
+const Toggle = ({}) => {
+  const { theme, setTheme } = useContext(SiteContext);
+
+  return (
+    <button
+      type="button"
+      title="Toggle Light or Dark Theme"
+      className={`${s.themeToggle} ${s[theme]}`}
+      onClick={() =>
+        setTheme((prev) => {
+          if (prev === "light") {
+            return "dark";
+          } else if (prev === "dark") {
+            return "system";
+          } else {
+            return "light";
+          }
+        })
+      }
+    >
+      {theme === "system" ? (
+        <>
+          <div className={s.left}>
+            <BsSun />
+          </div>
+          <div className={s.right}>
+            <BsMoon />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className={s.left}>
+            {theme === "light" ? <BsSunFill className={s.fill} /> : <BsSun />}
+          </div>
+          <div className={s.right}>
+            {theme !== "light" ? <BsMoonFill className={s.fill} /> : <BsMoon />}
+          </div>
+        </>
+      )}
+    </button>
+  );
+};
 
 const Settings = ({ setSidebarOpen }) => {
   const { user, setUser } = useContext(SiteContext);
@@ -73,12 +117,17 @@ const Settings = ({ setSidebarOpen }) => {
             });
           })}
         >
-          <h2 onClick={() => setSidebarOpen((prev) => !prev)}>Profile</h2>
+          <div className="flex justify-space-between">
+            <h2 onClick={() => setSidebarOpen((prev) => !prev)}>Profile</h2>
+            <Toggle />
+          </div>
           <AvatarInput
             label="Photo"
             control={control}
             name="photo"
-            className={s.avatar}
+            className={`${s.avatar} ${
+              user.userType === "staff" ? s.staff : ""
+            }`}
           />
           <Input label="Name" {...register("name")} error={errors.name} />
           <Input

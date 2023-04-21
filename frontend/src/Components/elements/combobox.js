@@ -7,6 +7,7 @@ import { Modal, Prompt } from "../modal";
 import { Controller } from "react-hook-form";
 
 import ReactSelect, { components } from "react-select";
+import { BsX } from "react-icons/bs";
 
 export const Combobox = ({
   control,
@@ -411,85 +412,111 @@ export const Select = ({
       render={({
         field: { onChange, onBlur, value, name, ref },
         fieldState: { invalid, isTouched, isDirty, error },
-      }) => (
-        <section className={`${s.select} ${className || ""}`}>
-          {label && (
-            <label>
-              {label} {formOptions?.required && "*"}
-            </label>
-          )}
-          <div className={s.field}>
-            <ReactSelect
-              placeholder={
-                !label
-                  ? placeholder
-                  : url
-                  ? "Search..."
-                  : !options || !options?.length
-                  ? "No options provided"
-                  : placeholder || "Enter"
-              }
-              components={{
-                DropdownIndicator,
-                ...(renderOption && { Option: renderOption }),
-                ...((readOnly || disabled || hideSearchIcon) && {
-                  DropdownIndicator: () => null,
-                  IndicatorSeparator: () => null,
-                }),
-              }}
-              className={`reactSelect ${s.reactSelect} ${
-                disabled ? "readOnly" : ""
-              } ${error ? "err" : ""} ${className || ""}`}
-              classNamePrefix="reactSelect"
-              isDisabled={url ? false : !options || !options?.length}
-              inputRef={ref}
-              menuPortalTarget={document.querySelector("#portal")}
-              menuPosition="fixed"
-              menuPlacement="auto"
-              options={options || []}
-              value={
-                options?.find((op) => op.value === value) ||
-                options?.filter((op) =>
-                  value?.some?.((item) => item === op.value)
-                ) ||
-                ""
-              }
-              onInputChange={(value) => {
-                if (url) {
-                  setInputValue(value);
+      }) => {
+        const ClearButton = (props) => {
+          return (
+            components.DropdownIndicator && (
+              <components.DropdownIndicator {...props}>
+                <BsX onClick={() => onChange(multiple ? [] : "")} />
+              </components.DropdownIndicator>
+            )
+          );
+        };
+        return (
+          <section className={`${s.select} ${className || ""}`}>
+            {label && (
+              <label>
+                {label} {formOptions?.required && "*"}
+              </label>
+            )}
+            <div className={s.field}>
+              <ReactSelect
+                placeholder={
+                  !label
+                    ? placeholder
+                    : url
+                    ? "Search..."
+                    : !options || !options?.length
+                    ? "No options provided"
+                    : placeholder || "Enter"
                 }
-              }}
-              onChange={(val) => {
-                if (multiple) {
-                  onChange(val.map((item) => item.value));
-                  setSelectedOptions(val);
-                } else {
-                  onChange(val.value);
+                components={{
+                  // DropdownIndicator,
+                  // ...(renderOption && { Option: renderOption }),
+                  // ...((readOnly || disabled || hideSearchIcon) && {
+                  //   DropdownIndicator: () => null,
+                  //   IndicatorSeparator: () => null,
+                  // }),
+                  DropdownIndicator:
+                    (multiple && !value?.length) || (!multiple && !value)
+                      ? DropdownIndicator
+                      : ClearButton,
+                  ...(disabled && {
+                    DropdownIndicator: undefined,
+                  }),
+                  ...(multiple && { DropdownIndicator: undefined }),
+                  ...(renderOption && {
+                    Option: (props) => (
+                      <components.Option {...props}>
+                        {renderOption(props.data)}
+                      </components.Option>
+                    ),
+                  }),
+                }}
+                className={`reactSelect ${s.reactSelect} ${
+                  disabled ? "readOnly" : ""
+                } ${error ? "err" : ""} ${className || ""}`}
+                classNamePrefix="reactSelect"
+                isDisabled={url ? false : !options || !options?.length}
+                inputRef={ref}
+                menuPortalTarget={document.querySelector("#portal")}
+                menuPosition="fixed"
+                menuPlacement="auto"
+                options={options || []}
+                value={
+                  options?.find((op) => op.value === value) ||
+                  options?.filter((op) =>
+                    value?.some?.((item) => item === op.value)
+                  ) ||
+                  ""
                 }
-                _onChange && _onChange(val);
-              }}
-              isMulti={multiple}
-              styles={{
-                option: (provided, state) => ({
-                  ...provided,
-                  background: state.isSelected
-                    ? "#e8e8e8;"
-                    : state.isFocused
-                    ? "#eeeeee"
-                    : "white",
-                  padding: "6px 10px",
-                  color: "black",
-                  fontSize: "0.8rem",
-                }),
-                control: () => ({}),
-                singleValue: (provided, state) => {},
-                menuPortal: (base) => ({ ...base, zIndex: 99999999999 }),
-              }}
-            />
-          </div>
-          {error && <span className={s.errMsg}>{error.message}</span>}
-        </section>
-      )}
+                onInputChange={(value) => {
+                  if (url) {
+                    setInputValue(value);
+                  }
+                }}
+                onChange={(val) => {
+                  if (multiple) {
+                    onChange(val.map((item) => item.value));
+                    setSelectedOptions(val);
+                  } else {
+                    onChange(val.value);
+                  }
+                  _onChange && _onChange(val);
+                }}
+                isMulti={multiple}
+                styles={{
+                  option: (provided, state) => ({
+                    ...provided,
+                    background: state.isSelected
+                      ? "#e8e8e8;"
+                      : state.isFocused
+                      ? "#eeeeee"
+                      : "white",
+                    padding: "6px 10px",
+                    color: "black",
+                    fontSize: "0.8rem",
+                  }),
+                  control: () => ({}),
+                  singleValue: (provided, state) => {},
+                  menuPortal: (base) => ({ ...base, zIndex: 99999999999 }),
+                }}
+              />
+            </div>
+            {error && <span className={s.errMsg}>{error.message}</span>}
+          </section>
+        );
+      }}
     />
   );
 };

@@ -8,28 +8,95 @@
 }
 
 .container {
-  background: $black2;
-  color: white;
+  background: rgb(var(--bg-2));
   margin: 1rem auto;
   padding: 1.5rem;
   border-radius: 1rem;
   max-width: 30rem;
   width: 100%;
   grid-template-rows: min-content 1fr;
-  border: 1px solid rgba(#fff, 0.03);
+  border: 1px solid rgba(var(--font-color), 0.05);
   position: relative;
   transition: 0.25s margin ease-in-out, 0.25s border-radius ease-in-out;
   form {
+    // margin: auto;
+    // max-width: 30rem;
     display: grid;
     justify-items: center;
     & > *:not(.avatar) {
       width: 100%;
     }
+    .staff {
+      label {
+        outline-color: $orange;
+      }
+    }
     width: 100%;
+  }
+  .themeToggle {
+    display: flex;
+    font-size: 1rem;
+    padding: 0.44em 0.44em;
+    grid-gap: 1.25em;
+    color: rgb(var(--font-color));
+    border: 1px solid rgba(var(--font-color), 0.3);
+    border-radius: 2em;
+    outline: none;
+    background: rgba(var(--bg-1), 0.5);
+    position: relative;
+    cursor: pointer;
+    &::after {
+      content: "";
+      position: absolute;
+      display: block;
+      height: 90%;
+      top: 50%;
+      left: 50%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: $primary-color-dark1;
+      transition: transform 0.4s cubic-bezier(0.62, 0.34, 0.24, 1.01);
+      // animation: none;
+    }
+    .left,
+    .right {
+      z-index: 1;
+    }
+    &.light {
+      &::after {
+        transform: translateY(-50%) translateX(-117%) scale(1);
+      }
+    }
+    &.dark {
+      &::after {
+        transform: translateY(-50%) translateX(15%) scale(1) !important;
+      }
+    }
+    &.system {
+      &::after {
+        transform: translateY(-50%) translateX(15%) scale(0);
+        animation: shiftLeft 0s linear forwards 0.4s;
+      }
+    }
+    svg {
+      display: grid;
+      &.fill {
+        color: white;
+      }
+    }
   }
 }
 
-@container wrapper (max-width: 980px) {
+@keyframes shiftLeft {
+  0% {
+    transform: translateY(-50%) translateX(15%) scale(0);
+  }
+  100% {
+    transform: translateY(-50%) translateX(-117%) scale(0);
+  }
+}
+
+@container wrapper (max-width: 520px) {
   .container {
     margin: 0;
     border-radius: 0;

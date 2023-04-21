@@ -23,7 +23,7 @@ export default function Deposits({ setSidebarOpen }) {
       setSidebarOpen={setSidebarOpen}
       endpoint={endpoints.milestones}
       trStyle={{
-        gridTemplateColumns: `1fr 7rem 7rem 7rem 7rem 7rem ${
+        gridTemplateColumns: `1fr 7rem 7rem 7rem 7rem ${
           user.userType === "staff" ? "4rem" : ""
         } ${actionColumns ? "3rem" : ""}`,
       }}
