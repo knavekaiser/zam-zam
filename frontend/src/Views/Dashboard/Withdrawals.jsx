@@ -54,7 +54,7 @@ export default function Withdrawals({ setSidebarOpen }) {
           </td>
           <td className={s.user}>
             <img
-              src={item.member.photo || "/assets/avatar.webp"}
+              src={item.member.photo || "/asst/avatar.webp"}
               alt={`Member Photo - ${item.member?.name}`}
             />
             <div className={s.detail}>

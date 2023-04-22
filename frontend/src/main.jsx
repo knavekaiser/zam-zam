@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           onError={
             <div className="deathPage">
               <img
-                src="/assets/crashpage.webp"
+                src="/asst/crashpage.webp"
                 alt="Illustration of a crashed van"
               />
               <div className="content">

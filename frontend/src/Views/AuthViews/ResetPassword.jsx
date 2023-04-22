@@ -169,7 +169,7 @@ const PasswordResetForm = ({
           className={`flex justify-space-between align-center ${s.logoContainer}`}
         >
           <div className={s.logo}>
-            {/* <img src="/assets/Zam-Zam-1.png" alt="Logo" /> */}
+            {/* <img src="/asst/Zam-Zam-1.png" alt="Logo" /> */}
             <h1 className="text-center">ZAM-ZAM</h1>
             <span>TOWER</span>
           </div>

@@ -38,7 +38,7 @@ export default function Deposits({ setSidebarOpen }) {
         <>
           <td className={`${s.user} ${s.staff}`}>
             <img
-              src={item.photo || "/assets/avatar.webp"}
+              src={item.photo || "/asst/avatar.webp"}
               alt={`Staff Photo - ${item?.name}`}
             />
             <div className={s.detail}>

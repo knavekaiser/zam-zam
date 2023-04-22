@@ -37,27 +37,27 @@ export default defineConfig({
         "apple-mobile-web-app-status-bar-style": "black-translucent",
         icons: [
           {
-            src: "/assets/icons/16.png",
+            src: "/asst/icons/16.png",
             sizes: "16x16",
             type: "image/png",
           },
           {
-            src: "/assets/icons/32.png",
+            src: "/asst/icons/32.png",
             sizes: "32x32",
             type: "image/png",
           },
           {
-            src: "/assets/icons/180.png",
+            src: "/asst/icons/180.png",
             sizes: "180x180",
             type: "image/png",
           },
           {
-            src: "/assets/icons/192.png",
+            src: "/asst/icons/192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/assets/icons/512.png",
+            src: "/asst/icons/512.png",
             sizes: "512x512",
             type: "image/png",
           },
@@ -81,11 +81,11 @@ export default defineConfig({
           },
         ],
       },
-      devOptions: {
-        enabled: true,
-        navigateFallbackAllowlist: [/^index.html$/],
-        /* other options */
-      },
+      // devOptions: {
+      //   enabled: true,
+      //   navigateFallbackAllowlist: [/^index.html$/],
+      //   /* other options */
+      // },
     }),
   ],
   resolve: {
@@ -105,7 +105,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
-      "/assets/uploads": {
+      "/assets": {
         target: "http://localhost:8050",
         changeOrigin: true,
         secure: false,

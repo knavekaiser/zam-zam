@@ -27,7 +27,7 @@ export default function Detail({ data }) {
               originY: "center",
             }}
             transition={{ type: "easeOut", delay: 0.15, duration: 0.5 }}
-            src={data.member?.photo || "/assets/avatar.webp"}
+            src={data.member?.photo || "/asst/avatar.webp"}
           />
           <div className={s.userDetail}>
             <span className={s.name}>{data.member?.name}</span>
@@ -237,7 +237,7 @@ const TimelineItem = ({ item, single, lineStyle, secondToLast, reversed }) => {
       </div>
       <div className={s.detail}>
         <img
-          src={item.staff?.photo || "/assets/avatar.webp"}
+          src={item.staff?.photo || "/asst/avatar.webp"}
           alt="Staff Profile Photo"
         />
         <div className={s.staffDetail}>

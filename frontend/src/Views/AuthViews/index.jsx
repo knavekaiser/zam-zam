@@ -30,7 +30,7 @@ const Auth = () => {
           className={`flex justify-space-between align-center ${s.logoContainer}`}
         >
           <div className={s.logo}>
-            {/* <img src="/assets/Zam-Zam-1.png" alt="logo" /> */}
+            {/* <img src="/asst/Zam-Zam-1.png" alt="logo" /> */}
             <h1 className="text-center">ZAM-ZAM</h1>
             <span>TOWER</span>
           </div>
