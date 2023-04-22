@@ -276,7 +276,6 @@ const MainApp = () => {
         <button
           title="Log out"
           className={`clear ${s.logoutBtn}`}
-          title="Log out"
           onClick={() => {
             logout({
               deviceId: localStorage.getItem("deviceId"),
