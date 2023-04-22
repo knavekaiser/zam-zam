@@ -28,17 +28,18 @@
 .modalBackdrop {
   height: calc((var(--vh) * 100));
   width: 100vw;
-  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
   pointer-events: all;
 }
 .modal {
   pointer-events: all;
   z-index: 10;
-  background: linear-gradient(
-    180deg,
-    rgba(var(--bg-2), 0.8) 0%,
-    rgba(var(--bg-2), 1) 100%
-  );
+  // background: linear-gradient(
+  //   180deg,
+  //   rgba(var(--bg-2), 0.8) 0%,
+  //   rgba(var(--bg-2), 1) 100%
+  // );
   max-height: calc((var(--vh) * 100) - 2rem);
   max-width: calc(100vw - 2rem);
   & ~ .modalBackdrop {
@@ -49,8 +50,8 @@
   }
   position: relative;
   border-radius: 1rem;
-  border: 1px solid rgba(var(--bg-3), 1);
-  backdrop-filter: blur(5px);
+  // border: 1px solid rgba(var(--bg-3), 1);
+  // backdrop-filter: blur(5px);
   display: grid;
   overflow: auto;
   top: auto;
@@ -84,24 +85,22 @@
 
 body.dark {
   .modal {
-    border-color: rgba(white, 0.1);
-    background: linear-gradient(
-      180deg,
-      rgba(var(--bg-2), 0.95) 0%,
-      rgba(var(--bg-2), 1) 100%
-    );
+    // border-color: rgba(var(--font-color), 0.1);
+    // background: linear-gradient(
+    //   180deg,
+    //   rgba(var(--bg-2), 0.95) 0%,
+    //   rgba(var(--bg-2), 1) 100%
+    // );
   }
 }
 
 .promptBackdrop {
   height: calc((var(--vh) * 100));
   width: 100vw;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(25px);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
 }
 .prompt {
-  background: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
   padding: 5px 2rem;
   padding-bottom: 2rem;
   border-radius: 0.5rem;
@@ -135,7 +134,7 @@ body.dark {
         color: rgb(254, 183, 0);
       }
       &.information {
-        color: $blue;
+        color: rgb(var(--blue));
       }
       &.success {
         color: $green;

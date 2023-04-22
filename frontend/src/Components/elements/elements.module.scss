@@ -971,12 +971,9 @@
   width: max-content !important;
   height: min-content !important;
   display: absolute !important;
-  border-radius: 0.5rem;
+  border-radius: 0.5rem !important;
   filter: drop-shadow(0 2px 2px rgba(var(--bg-1), 0.25));
   background: rgba(var(--bg-1), 0.35);
-  border-color: rgba(var(--bg-3), 0.75);
-  // transform-origin: top right;
-  // border: none;
   animation: none;
   opacity: 1;
   div {
@@ -997,7 +994,7 @@
         }
       }
       &:hover {
-        background: rgba(var(--bg-1), 0.5) !important;
+        background: rgba(var(--font-color), 0.05) !important;
       }
       &:disabled,
       &[disabled] {
@@ -1009,73 +1006,9 @@
   }
 }
 .actionBackdrop {
-  backdrop-filter: none;
+  backdrop-filter: none !important;
   background: rgba(0, 0, 0, 0) !important;
   animation: none;
-}
-
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  grid-gap: 3px;
-  a {
-    text-transform: uppercase;
-    background: $primary-color;
-    padding: 6px 15px;
-    font-size: 14px;
-    &:hover {
-      background: $primary-color-dark1;
-    }
-    &.active {
-      color: white;
-      background: $primary-color-dark3;
-      pointer-events: none;
-    }
-    cursor: pointer;
-  }
-  &.secondary {
-    // border: 1px solid #c7ccd1;
-    border-bottom: 2px solid #c7ccd1;
-    // background: rgb(228, 225, 225);
-    .fill,
-    a {
-      background: #f5f5f5;
-    }
-    a {
-      color: black;
-      position: relative;
-      &:hover {
-        background: rgb(223, 219, 219);
-      }
-      &.active {
-        color: $blue;
-        background: white;
-        &::after {
-          display: block;
-          content: "";
-          position: absolute;
-          width: 100%;
-          height: 2px;
-          bottom: 0;
-          background: $blue;
-          left: 0;
-        }
-      }
-    }
-  }
-  &.tertiary {
-    .fill,
-    a {
-      background: #d1e2e7;
-    }
-    a {
-      color: black;
-      &.active {
-        color: white;
-        background: #01b6eb;
-      }
-    }
-  }
 }
 
 .select {
