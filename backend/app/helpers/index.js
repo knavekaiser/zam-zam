@@ -103,4 +103,5 @@ module.exports = {
   smsHelper: require("./sms.helper"),
   fileHelper: require("./file.helper"),
   firebase: require("./firebase.helper"),
+  cronHelper: require('./cron.helper')
 };

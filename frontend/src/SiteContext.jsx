@@ -1,6 +1,6 @@
 import React, { createContext, useState, useCallback, useEffect } from "react";
 
-// import { requestPermission } from "helpers/firebase";
+import { requestPermission } from "helpers/firebase";
 import { useFetch } from "hooks";
 import { endpoints } from "config";
 
@@ -30,7 +30,7 @@ export const Provider = ({ children }) => {
   );
 
   useEffect(() => {
-    // requestPermission(updateDevice, user);
+    requestPermission(updateDevice, user);
     if (user) {
       if (user.userType === "member") {
         setSelfOnly(true);

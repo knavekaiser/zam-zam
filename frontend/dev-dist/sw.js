@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-537d802e'], (function (workbox) { 'use strict';
+define(['./workbox-99a13aae'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -91,6 +91,13 @@ define(['./workbox-537d802e'], (function (workbox) { 'use strict';
     "cacheName": "api-cache",
     plugins: [new workbox.CacheableResponsePlugin({
       statuses: [0, 200]
+    })]
+  }), 'GET');
+  workbox.registerRoute(/.*\.(?:png|jpg|jpeg|svg|gif|webp)/, new workbox.CacheFirst({
+    "cacheName": "offline-image-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 100,
+      maxAgeSeconds: 2592000
     })]
   }), 'GET');
 

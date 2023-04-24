@@ -29,7 +29,6 @@ export default defineConfig({
         description: "Zam-Zam Tower, Kamrangirchar, Dhaka, Bangladesh",
         theme_color: "#b77cff",
         background_color: "#222222",
-        viewport: "width=device-width, initial-scale=1",
         start_url: "/",
         display: "standalone",
         orientation: "portrait",
@@ -79,13 +78,24 @@ export default defineConfig({
               },
             },
           },
+          {
+            urlPattern: /.*\.(?:png|jpg|jpeg|svg|gif|webp)/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "offline-image-cache",
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+            },
+          },
         ],
       },
-      // devOptions: {
-      //   enabled: true,
-      //   navigateFallbackAllowlist: [/^index.html$/],
-      //   /* other options */
-      // },
+      devOptions: {
+        enabled: true,
+        navigateFallbackAllowlist: [/^index.html$/],
+        /* other options */
+      },
     }),
   ],
   resolve: {

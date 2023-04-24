@@ -46,7 +46,12 @@ const notify = async ({ _ids, tokens, message }) => {
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
-    await admin.messaging().send({ ...msg, token });
+    await admin
+      .messaging()
+      .send({ ...msg, token })
+      .catch((err) =>
+        console.log("Firebase notification error: ", err.message)
+      );
   }
 };
 
@@ -104,4 +109,4 @@ exports.validateToken = async (token) => {
   }
 };
 
-module.export = { notify };
+module.exports = { notify };
