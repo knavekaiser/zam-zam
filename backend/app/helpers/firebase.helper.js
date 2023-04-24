@@ -55,7 +55,7 @@ const notify = async ({ _ids, tokens, message }) => {
   }
 };
 
-exports.notifyStaffs = async (role, message) => {
+const notifyStaffs = async (role, message) => {
   const tokens = await Staff.aggregate([
     {
       $lookup: {
@@ -82,7 +82,7 @@ exports.notifyStaffs = async (role, message) => {
   await notify({ tokens, message });
 };
 
-exports.notifyMembers = async (filters, message) => {
+const notifyMembers = async (filters, message) => {
   const tokens = await Member.aggregate([
     { $match: { status: "active", ...filters } },
     {
@@ -100,7 +100,7 @@ exports.notifyMembers = async (filters, message) => {
   await notify({ tokens, message });
 };
 
-exports.validateToken = async (token) => {
+const validateToken = async (token) => {
   try {
     // validate somehow
   } catch (error) {
@@ -109,4 +109,4 @@ exports.validateToken = async (token) => {
   }
 };
 
-module.exports = { notify };
+module.exports = { notify, notifyStaffs, notifyMembers, validateToken };
