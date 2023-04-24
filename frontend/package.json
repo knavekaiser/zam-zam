@@ -1,58 +1,40 @@
 {
   "name": "zam-zam",
-  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@fingerprintjs/fingerprintjs": "^3.4.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "chart.js": "^4.2.1",
-    "date-fns": "^2.29.3",
-    "firebase": "^9.18.0",
-    "framer-motion": "^10.10.0",
-    "phone": "^3.1.20",
-    "react": "^18.1.0",
-    "react-avatar-editor": "^13.0.0",
-    "react-date-range": "^1.4.0",
-    "react-dom": "^18.1.0",
-    "react-hook-form": "^7.32.0",
-    "react-icons": "^4.4.0",
-    "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
-    "react-select": "^5.3.2",
-    "react-textarea-autosize": "^8.4.0",
-    "react-to-print": "^2.14.7",
-    "react-transition-value": "^1.0.7",
-    "sass": "^1.52.3",
-    "sortablejs": "^1.15.0",
-    "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5",
-    "yup": "^0.32.11"
-  },
+  "version": "0.8.9",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^3.4.1",
+    "date-fns": "^2.29.3",
+    "firebase": "^9.20.0",
+    "framer-motion": "^10.12.4",
+    "phone": "^3.1.37",
+    "react": "^18.2.0",
+    "react-avatar-editor": "^13.0.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.9",
+    "react-icons": "^4.8.0",
+    "react-router-dom": "^6.10.0",
+    "react-select": "^5.7.2",
+    "react-textarea-autosize": "^8.4.1",
+    "sass": "^1.62.0",
+    "yup": "^1.1.1"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "proxy": "http://localhost:8050"
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "vite": "^4.3.0",
+    "vite-plugin-pwa": "^0.14.7"
+  }
 }

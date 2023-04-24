@@ -7,8 +7,8 @@
   grid-template-rows: 1fr;
 }
 .content {
-  background: $black2;
-  color: white;
+  background: rgb(var(--bg-2));
+  // color: white;
   margin: auto;
   border-radius: 1rem;
   width: 100%;
@@ -16,14 +16,14 @@
   height: 100%;
   max-height: calc((var(--vh) * 100) - 2rem);
   grid-template-rows: min-content 1fr;
-  border: 1px solid rgba(#fff, 0.03);
+  border: 1px solid rgba(var(--bg-3), 0.3);
   position: relative;
   transition: 0.25s margin ease-in-out, 0.25s border-radius ease-in-out;
   overflow: hidden;
   .head {
     flex-wrap: wrap;
-    grid-gap: 0.5rem;
-    padding-bottom: 0 !important;
+    grid-gap: 0 0.5rem;
+    padding-top: 1rem;
     h2 {
       cursor: pointer;
     }
@@ -50,15 +50,27 @@
     }
     .filterWrapper {
       overflow: hidden;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
       width: 100%;
       .filters {
-        padding: 1rem 0;
+        padding: 1rem;
         flex-basis: 100%;
         display: grid;
         grid-gap: 0.5rem;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        background: linear-gradient(
+          45deg,
+          $primary-color-dark3 0%,
+          $primary-color-dark2 100%
+        );
+        :global(.light) & {
+          background: linear-gradient(
+            45deg,
+            rgba(var(--primary-clr-dark3), 0.25) 0%,
+            rgba(var(--primary-clr-dark2), 0.35) 100%
+          );
+        }
       }
     }
   }
@@ -128,6 +140,18 @@
   max-width: 25rem;
   overflow: visible;
   margin-top: 3rem;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--bg-1), 0.6) 0%,
+    rgba(var(--bg-2), 0.8) 100%
+  );
+  :global(.dark) & {
+    background: linear-gradient(
+      180deg,
+      rgba(var(--bg-1), 0.8) 0%,
+      rgba(var(--bg-2), 0.95) 100%
+    );
+  }
   & > button {
     position: absolute;
     right: 0;
@@ -158,7 +182,7 @@
         justify-items: center;
         .phone {
           font-size: 0.8rem;
-          color: $grey2;
+          color: rgba(var(--font-color), 0.7);
         }
       }
     }
@@ -190,15 +214,23 @@
       align-items: center;
       .zigzag {
         flex: 1;
-        background: linear-gradient(-90deg, rgba(white, 0.5), transparent);
+        background: linear-gradient(
+          -90deg,
+          rgba(var(--font-color), 0.5),
+          transparent
+        );
         &:nth-child(3) {
-          background: linear-gradient(90deg, rgba(white, 0.5), transparent);
+          background: linear-gradient(
+            90deg,
+            rgba(var(--font-color), 0.5),
+            transparent
+          );
         }
       }
       h4 {
         text-align: center;
         line-height: 1em;
-        color: rgba(248, 221, 253, 0.76);
+        color: rgba(var(--font-color), 0.5);
         letter-spacing: 0.2em;
       }
       margin-top: 1rem;
@@ -227,6 +259,7 @@
           top: -0.6rem;
           position: absolute;
           svg {
+            color: white;
             // display: none;
             position: absolute;
             top: 50%;
@@ -270,7 +303,7 @@
           .by {
             font-size: 0.8rem;
             font-style: italic;
-            color: $grey2;
+            color: rgba(var(--font-color), 0.5);
           }
           .staff {
             line-height: 1.5em;
@@ -286,7 +319,13 @@
           .dateTime {
             flex-basis: 100%;
             font-size: 0.8em;
-            color: $grey2;
+            color: rgba(var(--font-color), 0.5);
+          }
+          :global(.light) & {
+            .by,
+            .dateTime {
+              color: rgba(var(--font-color), 0.7);
+            }
           }
         }
       }
@@ -331,21 +370,12 @@
     border-radius: 0;
     margin: 0;
     .head {
-      padding: 1rem 0;
       .filterWrapper {
         border-top: 1px solid rgba(#fff, 0.03);
-        .filters {
-          padding: 1rem;
-          width: 100%;
-          background: linear-gradient(
-            45deg,
-            $primary-color-dark3 0%,
-            $primary-color-dark2 100%
-          );
-        }
       }
     }
     .data {
+      padding: 0.5rem 0;
       margin: 0;
       border: none;
       thead {
@@ -360,7 +390,7 @@
         grid-gap: 10px;
         grid-template-columns: 1fr 0.5fr !important;
         grid-row-gap: 0px;
-        background: $black1;
+        background: rgb(var(--bg-1));
         grid-auto-rows: 1fr;
         .date {
           grid-column: 1 / 2;

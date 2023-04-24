@@ -1,7 +1,7 @@
 @import "Components/variables";
 
 .container {
-  color: white;
+  // color: white;
   padding: 1rem 0;
   min-height: calc((var(--vh) * 100));
   display: grid;
@@ -24,10 +24,17 @@
     grid-template-columns: 1fr;
     background: linear-gradient(
       180deg,
-      rgba($black1, 0.85) 0%,
-      rgba($black2, 1) 100%
+      rgba(var(--bg-1), 0.85) 0%,
+      rgba(var(--bg-2), 1) 100%
     );
-    border: 1px solid $grey3;
+    :global(.light) & {
+      background: linear-gradient(
+        180deg,
+        rgba(var(--bg-1), 0.6) 0%,
+        rgba(var(--bg-2), 1) 100%
+      );
+    }
+    border: 1px solid rgba(var(--font-color), 0.2);
     backdrop-filter: blur(10px);
     border-radius: 1rem;
     padding: 2rem;
@@ -56,6 +63,7 @@
   form {
     width: 100%;
     .userTypes {
+      color: white;
       display: flex;
       margin: auto;
       width: max-content;

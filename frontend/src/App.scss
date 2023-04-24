@@ -20,22 +20,26 @@
   }
 }
 
+.App {
+  min-height: calc((var(--vh) * 100));
+  display: grid;
+}
+
 .modalBackdrop {
   height: calc((var(--vh) * 100));
   width: 100vw;
-  backdrop-filter: blur(5px);
-  // background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
   pointer-events: all;
 }
 .modal {
   pointer-events: all;
   z-index: 10;
-  color: white;
-  background: linear-gradient(
-    0deg,
-    rgba($black1, 0.85) 0%,
-    rgba($black2, 1) 100%
-  );
+  // background: linear-gradient(
+  //   180deg,
+  //   rgba(var(--bg-2), 0.8) 0%,
+  //   rgba(var(--bg-2), 1) 100%
+  // );
   max-height: calc((var(--vh) * 100) - 2rem);
   max-width: calc(100vw - 2rem);
   & ~ .modalBackdrop {
@@ -46,8 +50,8 @@
   }
   position: relative;
   border-radius: 1rem;
-  border: 1px solid $grey3;
-  backdrop-filter: blur(5px);
+  // border: 1px solid rgba(var(--bg-3), 1);
+  // backdrop-filter: blur(5px);
   display: grid;
   overflow: auto;
   top: auto;
@@ -64,7 +68,7 @@
   }
   .head {
     border-radius: 0.5rem 0.5rem 0 0;
-    color: white;
+    // color: white;
     font-weight: 500;
     padding: 2px 10px;
     padding-right: 0;
@@ -72,21 +76,31 @@
     justify-content: space-between;
     align-items: center;
     button {
-      font-size: 1.5rem;
-      color: white;
+      font-size: 2rem;
+      padding: 0.25rem;
+      // color: white;
     }
+  }
+}
+
+body.dark {
+  .modal {
+    // border-color: rgba(var(--font-color), 0.1);
+    // background: linear-gradient(
+    //   180deg,
+    //   rgba(var(--bg-2), 0.95) 0%,
+    //   rgba(var(--bg-2), 1) 100%
+    // );
   }
 }
 
 .promptBackdrop {
   height: calc((var(--vh) * 100));
   width: 100vw;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(25px);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
 }
 .prompt {
-  background: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
   padding: 5px 2rem;
   padding-bottom: 2rem;
   border-radius: 0.5rem;
@@ -120,7 +134,7 @@
         color: rgb(254, 183, 0);
       }
       &.information {
-        color: $blue;
+        color: rgb(var(--blue));
       }
       &.success {
         color: $green;
@@ -153,25 +167,27 @@
     border-color: red;
   }
   &.reactSelect--is-disabled {
-    background: $black2;
+    background: rgb(var(--bg-2));
   }
-  border: 2px solid $black2;
+  border: 2px solid rgb(var(--bg-2));
   border-radius: 1.7em;
   .reactSelect__control {
     display: flex;
     height: min-content;
-    color: white;
+    color: rgb(var(--font-color));
     border-radius: 1.5em;
-    background: $black1 !important;
+    background: rgb(var(--bg-1)) !important;
     .reactSelect__value-container {
       padding: 0.75rem 1rem;
       &:has(.reactSelect__multi-value) {
         padding-right: 0;
       }
       .reactSelect__multi-value {
-        background: $black3;
+        background: rgb(var(--bg-2));
+        border-radius: 6px;
+        overflow: hidden;
         .reactSelect__multi-value__label {
-          color: white;
+          color: rgb(var(--font-color));
         }
       }
     }
@@ -184,14 +200,14 @@
       grid-column: 1/2;
       grid-row: 1/2;
       font-size: 13.5px !important;
-      color: white;
+      color: rgb(var(--font-color));
       min-width: 7rem;
       // max-width: 6rem;
     }
     .reactSelect__indicators {
       margin-right: 6px;
       .reactSelect__indicator {
-        color: white;
+        // color: white;
         padding: 6px;
       }
     }
@@ -202,12 +218,12 @@
       display: none;
     }
     .reactSelect__menu {
-      background: $black3;
+      background: rgb(var(--bg-3));
       .react-select__menu-list {
-        background: $black3;
+        background: rgb(var(--bg-3));
         box-shadow: none;
         .react-select__option {
-          background: $black3;
+          background: rgb(var(--bg-3));
           padding: 10px;
         }
       }
@@ -227,15 +243,15 @@
   }
 }
 .reactSelect__menu {
-  background-color: $black3 !important;
-  // color: white;
+  background: rgba(var(--bg-1), 0.7) !important;
+  border-color: rgba(var(--bg-3), 0.75);
+  backdrop-filter: blur(10px);
   .reactSelect__option {
-    background: $black3;
-    color: white;
+    color: rgb(var(--font-color));
+    background: transparent;
     &:hover,
     &:active {
-      background: $black4;
-      color: white;
+      background: rgba(var(--bg-2), 0.5);
     }
   }
 }
@@ -327,6 +343,19 @@
   }
 }
 
+@media only screen and (min-width: 480px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba($primary-color, 0.2);
+    border-radius: 1rem;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: $primary-color;
+    border-radius: 1rem;
+  }
+}
+
 @media only screen and (max-width: 480px) {
   .modal {
     max-height: calc((var(--vh) * 100));
@@ -360,15 +389,4 @@
       }
     }
   }
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background-color: rgba($primary-color, 0.2);
-  border-radius: 1rem;
-}
-::-webkit-scrollbar-thumb {
-  background-color: $primary-color;
-  border-radius: 1rem;
 }
