@@ -112,7 +112,9 @@ const Dashboard = ({ setSidebarOpen }) => {
           </>
         )}
 
-        {data.milestones?.length && <Milestones milestones={data.milestones} />}
+        {data.milestones?.length > 0 && (
+          <Milestones milestones={data.milestones} />
+        )}
 
         {"currentBalance" in data && (
           <Card label="Current Balance" amount={data.currentBalance} />

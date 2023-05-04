@@ -222,7 +222,7 @@ const MainApp = () => {
           >
             <div className={s.profile}>
               <img
-                src={user.photo || "/asst/avatar.webp"}
+                src={user?.photo || "/asst/avatar.webp"}
                 alt={`Profile Photo - ${user?.name}`}
               />
             </div>
