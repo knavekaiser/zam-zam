@@ -5,8 +5,9 @@ const paths = {
 
   home: "/",
   milestones: "/milestones",
-  deposits: "/deposits",
+  incomes: "/incomes",
   expenses: "/expenses",
+  deposits: "/deposits",
   withdrawals: "/withdrawals",
   members: "/members",
   staffs: "/staffs",

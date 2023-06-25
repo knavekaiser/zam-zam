@@ -20,8 +20,9 @@ const endpoints = {
 
   dashboardData: `${baseApiUrl}/api/dashboard-data`,
   milestones: `${baseApiUrl}/api/milestones`,
-  deposits: `${baseApiUrl}/api/deposits`,
+  incomes: `${baseApiUrl}/api/incomes`,
   expenses: `${baseApiUrl}/api/expenses`,
+  deposits: `${baseApiUrl}/api/deposits`,
   withdrawals: `${baseApiUrl}/api/withdrawals`,
   members: `${baseApiUrl}/api/members`,
   findMembers: `${baseApiUrl}/api/members/find`,

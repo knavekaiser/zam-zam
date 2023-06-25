@@ -23,6 +23,8 @@ import {
   BsFileMedical,
   BsCalendar3Range,
   BsCalendar3RangeFill,
+  BsArrowDownRightSquare,
+  BsArrowDownRightSquareFill,
 } from "react-icons/bs";
 
 import s from "./dashboard.module.scss";
@@ -30,8 +32,9 @@ import s from "./dashboard.module.scss";
 import Home from "./Home";
 import Profile from "./Profile";
 
-const Deposits = lazy(() => import("./Deposits"));
+const Incomes = lazy(() => import("./Incomes"));
 const Expenses = lazy(() => import("./Expenses"));
+const Deposits = lazy(() => import("./Deposits"));
 const Withdrawals = lazy(() => import("./Withdrawals"));
 const Members = lazy(() => import("./Members"));
 const Staffs = lazy(() => import("./Staffs"));
@@ -110,18 +113,13 @@ const MainApp = () => {
       label: "Home",
       path: paths.home,
     },
-    ...(checkPermission("deposit_read")
+    ...(checkPermission("income_read")
       ? [
           {
-            icon: <BsArrowDownSquare style={{ fontSize: ".96em" }} />,
-            activeIcon: (
-              <BsArrowDownSquareFill
-                className={s.filled}
-                style={{ fontSize: ".96em" }}
-              />
-            ),
-            label: "Deposits",
-            path: paths.deposits,
+            icon: <BsArrowDownSquare />,
+            activeIcon: <BsArrowDownSquareFill className={s.filled} />,
+            label: "Incomes",
+            path: paths.incomes,
           },
         ]
       : []),
@@ -137,6 +135,21 @@ const MainApp = () => {
             ),
             label: "Expenses",
             path: paths.expenses,
+          },
+        ]
+      : []),
+    ...(checkPermission("deposit_read")
+      ? [
+          {
+            icon: <BsArrowDownRightSquare style={{ fontSize: ".96em" }} />,
+            activeIcon: (
+              <BsArrowDownRightSquareFill
+                className={s.filled}
+                style={{ fontSize: ".96em" }}
+              />
+            ),
+            label: "Deposits",
+            path: paths.deposits,
           },
         ]
       : []),
@@ -307,7 +320,7 @@ const MainApp = () => {
           element={<Home setSidebarOpen={setSidebarOpen} />}
         />
         <Route
-          path={paths.deposits}
+          path={paths.incomes}
           element={
             <Suspense
               fallback={
@@ -322,7 +335,7 @@ const MainApp = () => {
                 />
               }
             >
-              <Deposits setSidebarOpen={setSidebarOpen} />
+              <Incomes setSidebarOpen={setSidebarOpen} />
             </Suspense>
           }
         />
@@ -343,6 +356,26 @@ const MainApp = () => {
               }
             >
               <Expenses setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
+        />
+        <Route
+          path={paths.deposits}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Deposits setSidebarOpen={setSidebarOpen} />
             </Suspense>
           }
         />

@@ -60,8 +60,9 @@ exports.delete = async (req, res) => {
 exports.getPermissions = async (req, res) => {
   try {
     const basicGroups = [
-      { label: "Deposit", name: "deposit" },
+      { label: "Income", name: "income" },
       { label: "Expense", name: "expense" },
+      { label: "Deposit", name: "deposit" },
       { label: "Withdrawal", name: "withdrawal" },
       { label: "Member", name: "member" },
       { label: "Staff", name: "staff" },

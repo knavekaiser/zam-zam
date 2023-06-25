@@ -172,15 +172,15 @@ const Data = ({ setSidebarOpen }) => {
           />
         </Modal>
 
-        {checkPermission(`role_create`) && (
-          <button
-            title="Add Role"
-            className={`btn m-a mr-0 ${s.addBtn} ${showAddBtn ? s.show : ""}`}
-            onClick={() => setAddRole(true)}
-          >
-            <GoPlus />
-          </button>
-        )}
+        {/* {checkPermission(`role_create`) && ( */}
+        <button
+          title="Add Role"
+          className={`btn m-a mr-0 ${s.addBtn} ${showAddBtn ? s.show : ""}`}
+          onClick={() => setAddRole(true)}
+        >
+          <GoPlus />
+        </button>
+        {/* )} */}
       </div>
     </div>
   );

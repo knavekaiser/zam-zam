@@ -4,6 +4,7 @@ module.exports = function (app) {
   require("./deposit.routes")(app);
   require("./milestone.routes")(app);
   require("./expense.routes")(app);
+  require("./incomes.routes")(app);
   require("./withdrawal.routes")(app);
   require("./role.routes")(app);
   require("./common.routes")(app);

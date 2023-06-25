@@ -119,6 +119,13 @@ const Dashboard = ({ setSidebarOpen }) => {
         {"currentBalance" in data && (
           <Card label="Current Balance" amount={data.currentBalance} />
         )}
+        {"incomes" in data && (
+          <Card
+            label="Total Income"
+            amount={data.incomes.total}
+            onClick={() => navigate(paths.incomes)}
+          />
+        )}
         {"deposits" in data && (
           <Card
             label={
