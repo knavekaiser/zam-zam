@@ -71,4 +71,22 @@ module.exports = {
       address: yup.string(),
     }),
   }),
+
+  sendMessage: yup.object({
+    body: yup.object({
+      members: yup
+        .array()
+        .of(
+          yup
+            .string()
+            .typeError("Please provide a valid member id")
+            .objectId()
+            .required()
+        ),
+      message: yup
+        .string()
+        .required()
+        .max(250, "Enter less than 250 characters"),
+    }),
+  }),
 };

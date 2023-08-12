@@ -26,6 +26,7 @@ const endpoints = {
   withdrawals: `${baseApiUrl}/api/withdrawals`,
   members: `${baseApiUrl}/api/members`,
   findMembers: `${baseApiUrl}/api/members/find`,
+  sendMessageToMembers: `${baseApiUrl}/api/members/send-sms`,
   roles: `${baseApiUrl}/api/roles`,
   staffs: `${baseApiUrl}/api/staffs`,
   permissions: `${baseApiUrl}/api/permissions`,

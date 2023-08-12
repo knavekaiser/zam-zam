@@ -35,6 +35,12 @@ module.exports = function (app) {
   );
 
   //------------------------- Management
+  router.post(
+    "/send-sms",
+    authJwt.verifyToken("member_send_sms"),
+    validate(schema.sendMessage),
+    controller.sendMessage
+  );
   router.post("/", authJwt.verifyToken("member_create"), controller.create);
   router.get("/", authJwt.verifyToken("member_read"), controller.get);
   router.get("/find", authJwt.verifyToken(), controller.find);

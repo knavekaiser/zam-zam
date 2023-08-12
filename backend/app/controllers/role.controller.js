@@ -77,6 +77,9 @@ exports.getPermissions = async (req, res) => {
           ...(!["member"].includes(group.name)
             ? [{ label: `Add`, value: `${group.name}_create` }]
             : []),
+          ...(["member"].includes(group.name)
+            ? [{ label: `Send SMS`, value: `${group.name}_send_sms` }]
+            : []),
           { label: `Update`, value: `${group.name}_update` },
           ...(!["role", "milestone"].includes(group.name)
             ? [{ label: `Approve`, value: `${group.name}_approve` }]

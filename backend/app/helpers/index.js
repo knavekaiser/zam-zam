@@ -93,7 +93,7 @@ Date.prototype.formatBN = function () {
   let date = new Date(this);
   let format = `${months[date.getMonth()]} ${date
     .getDate()
-    .toLocaleString("bn")} ${date
+    .toLocaleString("bn")}, ${date
     .getFullYear()
     .toLocaleString("bn")
     .replace(/,/g, "")}`;

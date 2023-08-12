@@ -320,6 +320,16 @@
   }
 }
 
+.messageFormModal {
+  width: 100%;
+  max-width: 35rem;
+  form {
+    display: grid;
+    grid-gap: 2rem;
+    padding: 1rem;
+  }
+}
+
 @container wrapper (max-width: 980px) {
   .contentLoading {
     margin: 0;

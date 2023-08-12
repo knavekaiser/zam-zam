@@ -7,6 +7,7 @@ const {
   fileHelper,
   firebase,
 } = require("../helpers");
+const { ObjectId } = require("mongodb");
 
 const { Member, Otp, Role, Device } = require("../models");
 
@@ -457,6 +458,36 @@ exports.find = (req, res) => {
       { $project: { __v: 0, password: 0 } },
     ])
       .then((data) => responseFn.success(res, { data }))
+      .catch((err) => responseFn.error(res, {}, err.message));
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
+exports.sendMessage = (req, res) => {
+  try {
+    const conditions = {
+      _id: { $in: req.body.members.map((item) => ObjectId(item)) },
+    };
+    Member.aggregate([
+      { $match: conditions },
+      { $project: { name: 1, phone: 1 } },
+    ])
+      .then((data) => {
+        if (data.length) {
+          smsHelper.sendSms({
+            to: data.map((item) => item.phone),
+            message: req.body.message,
+          });
+          responseFn.success(res, {}, responseStr.success);
+        } else {
+          responseFn.error(
+            res,
+            {},
+            responseStr.record_not_found.replace("Record", "Member")
+          );
+        }
+      })
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);

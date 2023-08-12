@@ -80,6 +80,10 @@
       .profileImg {
         display: none;
       }
+      .msgBtn {
+        display: inline-flex;
+        padding: 0rem;
+      }
       grid-auto-rows: min-content !important;
       .user {
         display: flex;
@@ -102,6 +106,8 @@
           display: grid;
           grid-gap: 0.3rem;
           .phone {
+            grid-gap: 0.5rem;
+            display: flex;
             font-size: 0.8rem;
             color: $grey2;
           }
