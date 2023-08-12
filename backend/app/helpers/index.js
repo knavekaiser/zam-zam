@@ -75,6 +75,31 @@ Date.prototype.add = function (time) {
 
   return date;
 };
+const months = [
+  "জানুয়ারী",
+  "ফেব্রুয়ারী",
+  "মার্চ",
+  "এপ্রিল",
+  "মে",
+  "জুন",
+  "জুলাই",
+  "আগস্ট",
+  "সেপ্টেম্বর",
+  "অক্টোবর",
+  "নভেম্বর",
+  "ডিসেম্বর",
+];
+Date.prototype.formatBN = function () {
+  let date = new Date(this);
+  let format = `${months[date.getMonth()]} ${date
+    .getDate()
+    .toLocaleString("bn")} ${date
+    .getFullYear()
+    .toLocaleString("bn")
+    .replace(/,/g, "")}`;
+
+  return format;
+};
 
 Object.validate = async function (schema) {
   return schema.validate(this);
@@ -103,5 +128,5 @@ module.exports = {
   smsHelper: require("./sms.helper"),
   fileHelper: require("./file.helper"),
   firebase: require("./firebase.helper"),
-  cronHelper: require('./cron.helper')
+  cronHelper: require("./cron.helper"),
 };

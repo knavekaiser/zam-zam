@@ -1,7 +1,7 @@
 const {
   appConfig: { responseFn, responseStr, smsTemplate },
 } = require("../config");
-const { firebase } = require("../helpers");
+const { firebase, smsHelper } = require("../helpers");
 
 const { Milestone, Member } = require("../models");
 
@@ -104,6 +104,15 @@ exports.create = async (req, res) => {
     })
       .save()
       .then(async (data) => {
+        const numbers = await Member.find({}, "phone").then((data) =>
+          data.map((item) => item.phone)
+        );
+        await smsHelper.sendSms({
+          to: numbers,
+          message: smsTemplate.milestone_creation
+            .replace("{amount}", "৳" + data.amount.toLocaleString("bn"))
+            .replace("{date}", new Date(date.endDate).formatBN()),
+        });
         if (data.status === "ongoing") {
           await firebase.notifyMembers(null, {
             title: "New Milestone",

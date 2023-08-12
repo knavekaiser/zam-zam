@@ -67,13 +67,15 @@ module.exports = {
 
   smsTemplate: {
     account_activated: `আপনার অ্যাকাউন্ট অ্যাক্টিভ করা হয়েছে।
-    জম-জম টাওয়ার`,
-    money_deposited: `প্রিয় {name}, ৳{amount} জমা হয়েছে।
-    জম-জম টাওয়ার`,
-    money_withdrawed: `প্রিয় {name}, ৳{amount} তোলা হয়েছে।
-    জম-জম টাওয়ার`,
-    password_otp: `প্রিয় {name}, আপনার কোড {otp}।
-    জম-জম টাওয়ার`,
+জম-জম টাওয়ার`,
+    money_deposited: `জনাব {name}, ৳{amount} জমা হয়েছে।
+জম-জম টাওয়ার`,
+    money_withdrawed: `জনাব {name}, ৳{amount} তোলা হয়েছে।
+জম-জম টাওয়ার`,
+    password_otp: `জনাব {name}, আপনার কোড {otp}।
+জম-জম টাওয়ার`,
+    milestone_creation: `সম্মানিত সদস্যবৃন্দ, পরবর্তী কিস্তির পরিমাণ হল {amount}। অনুগ্রহ করে {date}-এর আগে পরিশোধ করুন। ধন্যবাদ!
+জম-জম টাওয়ার`,
   },
 
   uploadDir: "/assets/uploads",

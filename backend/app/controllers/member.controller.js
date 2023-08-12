@@ -48,6 +48,9 @@ exports.signup = async (req, res) => {
   }
 };
 
+// console.log(appHelper.generateHash("12345678"));
+// $2a$08$gv5nXxwqA3TLXyBgNV3UwOWmJ6jmady8UzHaKT3smsbUfY0ozmxpm
+
 exports.login = async (req, res) => {
   try {
     const user = await Member.findOne({ phone: req.body.phone }).populate(

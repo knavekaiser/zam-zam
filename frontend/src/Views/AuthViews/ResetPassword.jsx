@@ -165,16 +165,6 @@ const PasswordResetForm = ({
       })}
     >
       <div className={"grid gap-2"}>
-        <div
-          className={`flex justify-space-between align-center ${s.logoContainer}`}
-        >
-          <div className={s.logo}>
-            {/* <img src="/asst/Zam-Zam-1.png" alt="Logo" /> */}
-            <h1 className="text-center">ZAM-ZAM</h1>
-            <span>TOWER</span>
-          </div>
-        </div>
-
         <p className={s.note}>
           Please enter the 6 digit code sent to {phone}. <br />
         </p>
