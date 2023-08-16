@@ -4,7 +4,7 @@ import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import { paths, endpoints } from "config";
 import { useFetch } from "hooks";
 
-import { FaPowerOff } from "react-icons/fa";
+import { RxExit } from "react-icons/rx";
 import { Table } from "Components/elements";
 import {
   BsHouseDoor,
@@ -31,6 +31,7 @@ import s from "./dashboard.module.scss";
 
 import Home from "./Home";
 import Profile from "./Profile";
+import { Trans, useTranslation } from "react-i18next";
 
 const Incomes = lazy(() => import("./Incomes"));
 const Expenses = lazy(() => import("./Expenses"));
@@ -99,6 +100,7 @@ const Loading = ({ columns, trStyle, setSidebarOpen }) => {
 };
 
 const MainApp = () => {
+  const { t, i18n } = useTranslation();
   const { user, setUser, checkPermission } = useContext(SiteContext);
   const location = useLocation();
   const sidebarItems = useRef([
@@ -110,7 +112,7 @@ const MainApp = () => {
           style={{ fontSize: "1.2em", marginTop: "-0.15em" }}
         />
       ),
-      label: "Home",
+      label: "Dashboard",
       path: paths.home,
     },
     ...(checkPermission("income_read")
@@ -279,33 +281,44 @@ const MainApp = () => {
                     }ms`,
                   }}
                 >
-                  {item.label}
+                  <Trans>{item.label}</Trans>
                 </span>
               </Link>
             </li>
           ))}
         </ul>
 
-        <button
-          title="Log out"
-          className={`clear ${s.logoutBtn}`}
-          onClick={() => {
-            logout({
-              deviceId: localStorage.getItem("deviceId"),
-            }).then(({ data }) => {
-              if (data.success) {
-                setUser(null);
-                localStorage.removeItem("access_token");
-              }
-            });
-          }}
-        >
-          <FaPowerOff />
-        </button>
+        <div className={`${s.actions} flex gap-1 center`}>
+          <button
+            title={t("Change Language")}
+            className={`clear ${s.logoutBtn}`}
+            onClick={() => {
+              i18n.changeLanguage(i18n.language === "bn" ? "en" : "bn");
+            }}
+          >
+            {i18n.language === "bn" ? "EN" : "বাং"}
+          </button>
+          <button
+            title={t("Log out")}
+            className={`clear ${s.logoutBtn}`}
+            onClick={() => {
+              logout({
+                deviceId: localStorage.getItem("deviceId"),
+              }).then(({ data }) => {
+                if (data.success) {
+                  setUser(null);
+                  localStorage.removeItem("access_token");
+                }
+              });
+            }}
+          >
+            <RxExit />
+          </button>
+        </div>
 
         <footer>
           © {new Date().getFullYear()} Knave Kaiser Lab Works,
-          <br /> All Rights Reserved.
+          <br /> <Trans>All Rights Reserved.</Trans>
         </footer>
       </div>
 

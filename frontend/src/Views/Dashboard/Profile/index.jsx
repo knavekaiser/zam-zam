@@ -1,18 +1,25 @@
 import { useContext, useEffect } from "react";
 import { SiteContext } from "@/SiteContext";
 import { useForm } from "react-hook-form";
-import { Input, AvatarInput } from "Components/elements";
+import { Input, AvatarInput, PasswordInput } from "Components/elements";
 import * as yup from "yup";
 import s from "./profile.module.scss";
 import { useYup, useFetch } from "hooks";
 import { Prompt } from "Components/modal";
 import { endpoints } from "config";
 import { BsMoon, BsMoonFill, BsSun, BsSunFill } from "react-icons/bs";
+import { Trans } from "react-i18next";
 
 const profileSchema = yup.object({
   name: yup.string().required(),
   phone: yup.string().phone().required(),
   email: yup.string().email(),
+  password: yup.string().min(8, "Password must be 8 characters or longer"),
+  oldPassword: yup
+    .string()
+    .when("password", ([password], schema) =>
+      password ? schema.required("Please enter the old password") : schema
+    ),
 });
 
 const Toggle = ({}) => {
@@ -79,6 +86,8 @@ const Settings = ({ setSidebarOpen }) => {
       phone: user.phone || "",
       email: user.email || "",
       address: user.address || "",
+      password: "",
+      oldPassword: "",
     });
   }, [user]);
   return (
@@ -96,10 +105,11 @@ const Settings = ({ setSidebarOpen }) => {
             } else if (!photo) {
               formData.append(`photo`, "");
             }
+            delete values.photo;
 
-            formData.append(`name`, values.name);
-            formData.append(`phone`, values.phone);
-            formData.append(`email`, values.email);
+            Object.entries(values).forEach(([key, value]) => {
+              formData.append(key, value);
+            });
 
             updateProfile(formData).then(({ data }) => {
               if (data.success) {
@@ -107,6 +117,17 @@ const Settings = ({ setSidebarOpen }) => {
                 Prompt({
                   type: "information",
                   message: "Updates have been saved.",
+                  callback: () => {
+                    reset({
+                      photo: user.photo ? [user.photo] : [],
+                      name: user.name || "",
+                      phone: user.phone || "",
+                      email: user.email || "",
+                      address: user.address || "",
+                      password: "",
+                      oldPassword: "",
+                    });
+                  },
                 });
               } else if (data.errors) {
                 Prompt({
@@ -118,28 +139,62 @@ const Settings = ({ setSidebarOpen }) => {
           })}
         >
           <div className="flex justify-space-between">
-            <h2 onClick={() => setSidebarOpen((prev) => !prev)}>Profile</h2>
+            <h2 onClick={() => setSidebarOpen((prev) => !prev)}>
+              <Trans>Profile</Trans>
+            </h2>
             <Toggle />
           </div>
           <AvatarInput
-            label="Photo"
+            label={<Trans>Photo</Trans>}
             control={control}
             name="photo"
             className={`${s.avatar} ${
               user.userType === "staff" ? s.staff : ""
             }`}
           />
-          <Input label="Name" {...register("name")} error={errors.name} />
           <Input
-            label="Phone"
+            label={<Trans>Name</Trans>}
+            {...register("name")}
+            placeholder=" "
+            error={errors.name}
+          />
+          <Input
+            label={<Trans>Phone</Trans>}
             {...register("phone")}
             error={errors.phone}
             disabled
           />
-          <Input label="Email" {...register("email")} error={errors.email} />
+          <Input
+            label={<Trans>Email</Trans>}
+            {...register("email")}
+            placeholder=" "
+            error={errors.email}
+          />
+
+          <div className={s.divider}>
+            <p>
+              <Trans>Change Password</Trans>
+            </p>
+          </div>
+
+          <PasswordInput
+            formOptions={{ required: true }}
+            label={<Trans>Old Password</Trans>}
+            placeholder=" "
+            control={control}
+            name="oldPassword"
+          />
+
+          <PasswordInput
+            formOptions={{ required: true }}
+            label={<Trans>New Password</Trans>}
+            control={control}
+            placeholder=" "
+            name="password"
+          />
 
           <button className="btn" disabled={loading} title="Save Changes">
-            Save Changes
+            <Trans>Save Changes</Trans>
           </button>
         </form>
       </div>

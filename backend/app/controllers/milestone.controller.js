@@ -27,7 +27,7 @@ exports.findAll = async (req, res) => {
     const totalShares = await Member.count({ status: "active" });
     Milestone.aggregate([
       { $match: conditions },
-      { $set: { perMember: { $divide: ["$amount", totalShares] } } },
+      { $set: { perMember: { $divide: ["$amount", totalShares || 1] } } },
       {
         $lookup: {
           from: "deposits",

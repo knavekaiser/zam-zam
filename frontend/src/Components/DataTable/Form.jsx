@@ -8,6 +8,7 @@ import s from "./dataTable.module.scss";
 import { endpoints } from "config";
 import { SiteContext } from "@/SiteContext";
 import { AnimatePresence, motion } from "framer-motion";
+import { Trans, useTranslation } from "react-i18next";
 
 export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   const {
@@ -30,10 +31,17 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
               field = yup.string();
             }
             if (f.type === "number") {
-              field = yup.number().typeError("Please enter a valid number");
+              field = yup
+                .number()
+                .typeError(<Trans>Please enter a valid number</Trans>);
             }
             if (f.fieldType === "phone") {
-              field = yup.string().phn({ country: "bangladesh" });
+              field = yup
+                .string()
+                .phn(
+                  { country: "bangladesh" },
+                  <Trans>Please enter a valid number</Trans>
+                );
             }
             if (f.dataType === "array") {
               field = yup.array();
@@ -43,7 +51,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
             }
             if (f.required) {
               field = field.required(
-                field.errorMessage || `${f.label} is required`
+                field.errorMessage || <Trans>Field is required</Trans>
               );
             }
             return field;
@@ -92,9 +100,10 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
         <Input
           key={item.name}
           type={item.type}
-          label={item.label}
+          label={<Trans>{item.label}</Trans>}
           {...register(item.name)}
           required={item.required}
+          placeholder={item.placeholder || " "}
           error={errors[item.name]}
         />
       );
@@ -105,6 +114,8 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
           control={control}
           disabled={item.disabledOnEdit ? edit?._id : false}
           {...item}
+          placeholder={item.placeholder || " "}
+          label={<Trans>{item.label}</Trans>}
         />
       );
     } else if (item.fieldType === "textarea") {
@@ -112,6 +123,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
         <Textarea
           key={item.name}
           {...item}
+          label={<Trans>{item.label}</Trans>}
           control={control}
           formOptions={{ required: item.required }}
         />
@@ -120,7 +132,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
       return (
         <Input
           required
-          label="Phone"
+          label={<Trans>{item.label}</Trans>}
           {...register("phone")}
           error={errors.phone}
         />
@@ -149,8 +161,12 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
         {fields}
 
         <div className="btns">
-          <button className="btn" disabled={loading} title="Submit">
-            {edit ? "Update" : "Submit"}
+          <button
+            className="btn"
+            disabled={loading}
+            title={<Trans>Submit</Trans>}
+          >
+            <Trans>{edit ? "Update" : "Submit"}</Trans>
           </button>
         </div>
       </form>
@@ -166,6 +182,7 @@ export const Filter = ({
   schema,
   setFilters,
 }) => {
+  const { t } = useTranslation();
   const { selfOnly, user, checkPermission } = useContext(SiteContext);
   const { handleSubmit, control, register, reset } = useForm();
   useEffect(() => {
@@ -204,7 +221,7 @@ export const Filter = ({
       {schema.some((item) => item.name === "milestone") &&
         checkPermission("milestone_read") && (
           <Select
-            placeholder="Milestone"
+            placeholder={t("Milestone")}
             url={endpoints.milestones}
             control={control}
             name="milestones"
@@ -220,15 +237,15 @@ export const Filter = ({
           />
         )}
       {schema.some((item) => item.name === "name") && (
-        <Input placeholder="Name" {...register("name")} />
+        <Input placeholder={t("Name")} {...register("name")} />
       )}
       {schema.some((item) => item.name === "title") && (
-        <Input placeholder="Title" {...register("title")} />
+        <Input placeholder={t("Title")} {...register("title")} />
       )}
 
       {user.userType === "staff" && filterStatus?.length > 0 && (
         <Select
-          placeholder="Status"
+          placeholder={<Trans>Status</Trans>}
           control={control}
           name="status"
           multiple
@@ -239,11 +256,15 @@ export const Filter = ({
       {schema.some((item) => item.name === "date") && (
         <>
           <Input
-            placeholder="Start Date"
+            placeholder={<Trans>Start Date</Trans>}
             type="date"
             {...register("from_date")}
           />
-          <Input placeholder="End Date" type="date" {...register("to_date")} />
+          <Input
+            placeholder={<Trans>End Date</Trans>}
+            type="date"
+            {...register("to_date")}
+          />
         </>
       )}
     </>
@@ -289,12 +310,12 @@ export const Filter = ({
         {fields}
 
         <div className="btns">
-          <button className="btn medium" title="Submit">
-            Submit
+          <button className="btn medium" title={<Trans>Submit</Trans>}>
+            <Trans>Submit</Trans>
           </button>
           <button
             className="btn clear medium"
-            title="Clear"
+            title={<Trans>Clear</Trans>}
             onClick={() => {
               reset({});
               setFilters({});
@@ -303,7 +324,7 @@ export const Filter = ({
               }
             }}
           >
-            Clear
+            <Trans>Clear</Trans>
           </button>
         </div>
       </form>

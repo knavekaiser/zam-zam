@@ -9,8 +9,10 @@ import { Textarea } from "Components/elements";
 import { Modal, Prompt } from "Components/modal";
 import * as yup from "yup";
 import style from "./dashboard.module.scss";
+import { Trans, useTranslation } from "react-i18next";
 
 const Message = ({ s, id }) => {
+  const { i18n } = useTranslation();
   const [formOpen, setFormOpen] = useState(false);
   const { post: sendMessages, loading } = useFetch(
     endpoints.sendMessageToMembers
@@ -20,8 +22,14 @@ const Message = ({ s, id }) => {
       yup.object({
         message: yup
           .string()
-          .required("Field is required")
-          .max(250, "Enter less than 250 characters."),
+          .required(<Trans>Field is required</Trans>)
+          .max(
+            250,
+            <Trans
+              defaults="Enter less than {{num}} characters."
+              values={{ num: (250).toLocaleString(i18n.language) }}
+            />
+          ),
       })
     ),
   });
@@ -35,7 +43,7 @@ const Message = ({ s, id }) => {
       </button>
       <Modal
         head
-        label="Send Message"
+        label={<Trans>Send SMS</Trans>}
         open={formOpen}
         setOpen={setFormOpen}
         className={style.messageFormModal}
@@ -71,7 +79,7 @@ const Message = ({ s, id }) => {
 
           <div className="btns">
             <button className="btn" disabled={loading} title="Submit">
-              Send Message
+              <Trans>Send SMS</Trans>
             </button>
           </div>
         </form>
@@ -80,15 +88,16 @@ const Message = ({ s, id }) => {
   );
 };
 
-export default function Deposits({ setSidebarOpen }) {
+export default function Members({ setSidebarOpen }) {
+  const { i18n } = useTranslation();
   const { user } = useContext(SiteContext);
   const actionColumns = ["approve", "update", "delete"].some((item) =>
     user.role?.permissions?.includes(`member_${item}`)
   );
   const filterStatus = [
-    { label: "Pending Activation", value: "pending-activation" },
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
+    { label: <Trans>Pending Activation</Trans>, value: "pending-activation" },
+    { label: <Trans>Active</Trans>, value: "active" },
+    { label: <Trans>Inactive</Trans>, value: "inactive" },
   ];
   return (
     <DataTable
@@ -103,12 +112,14 @@ export default function Deposits({ setSidebarOpen }) {
         } ${actionColumns ? "3rem" : ""}`,
       }}
       columns={[
-        { label: "Name" },
-        { label: "Deposit", className: "text-right" },
-        { label: "Withdrawal", className: "text-right" },
-        ...(user.userType === "staff" ? [{ label: "Status" }] : []),
+        { label: <Trans>Name</Trans> },
+        { label: <Trans>Deposit</Trans>, className: "text-right" },
+        { label: <Trans>Withdrawal</Trans>, className: "text-right" },
+        ...(user.userType === "staff"
+          ? [{ label: <Trans>Status</Trans> }]
+          : []),
         ...(actionColumns
-          ? [{ label: "Action", className: "text-right" }]
+          ? [{ label: <Trans>Action</Trans>, className: "text-right" }]
           : []),
       ]}
       filterStatus={filterStatus}
@@ -129,14 +140,16 @@ export default function Deposits({ setSidebarOpen }) {
           </td>
           <td className={`text-right ${s.deposit}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.deposit || 0).toLocaleString("en-IN")}
+            {(item.deposit || 0).toLocaleString(i18n.language)}
           </td>
           <td className={`text-right ${s.withdrawal}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.withdrawal || 0).toLocaleString("en-IN")}
+            {(item.withdrawal || 0).toLocaleString(i18n.language)}
           </td>
           {user.userType === "staff" && (
-            <td className={s.status}>{status[item.status] || item.status}</td>
+            <td className={s.status}>
+              <Trans>{status[item.status] || item.status}</Trans>
+            </td>
           )}
         </>
       )}

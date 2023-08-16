@@ -3,17 +3,19 @@ import { Moment } from "Components/elements";
 import { endpoints } from "config";
 import { useContext } from "react";
 import { SiteContext } from "@/SiteContext";
+import { Trans, useTranslation } from "react-i18next";
 
 export default function Deposits({ setSidebarOpen }) {
+  const { i18n } = useTranslation();
   const { user } = useContext(SiteContext);
   const actionColumns = ["update", "delete"].some((item) =>
     user.role?.permissions?.includes(`milestone_${item}`)
   );
   const filterStatus = [
-    { label: "Ongoing", value: "ongoing" },
-    { label: "Upcoming", value: "upcoming" },
-    { label: "Complete", value: "complete" },
-    { label: "Past Due", value: "past-due" },
+    { label: <Trans>Ongoing</Trans>, value: "ongoing" },
+    { label: <Trans>Upcoming</Trans>, value: "upcoming" },
+    { label: <Trans>Complete</Trans>, value: "complete" },
+    { label: <Trans>Past Due</Trans>, value: "past-due" },
   ];
   return (
     <DataTable
@@ -28,14 +30,16 @@ export default function Deposits({ setSidebarOpen }) {
         } ${actionColumns ? "3rem" : ""}`,
       }}
       columns={[
-        { label: "Title" },
-        { label: "Start Date" },
-        { label: "End Date" },
-        { label: "Amount", className: "text-right" },
-        { label: "Deposited", className: "text-right" },
-        ...(user.userType === "staff" ? [{ label: "Status" }] : []),
+        { label: <Trans>Title</Trans> },
+        { label: <Trans>Start Date</Trans> },
+        { label: <Trans>End Date</Trans> },
+        { label: <Trans>Amount</Trans>, className: "text-right" },
+        { label: <Trans>Deposited</Trans>, className: "text-right" },
+        ...(user.userType === "staff"
+          ? [{ label: <Trans>Status</Trans> }]
+          : []),
         ...(actionColumns
-          ? [{ label: "Action", className: "text-right" }]
+          ? [{ label: <Trans>Action</Trans>, className: "text-right" }]
           : []),
       ]}
       filterStatus={filterStatus}
@@ -43,23 +47,25 @@ export default function Deposits({ setSidebarOpen }) {
         <>
           <td className={s.name}>{item.title}</td>
           <td className={s.startDate}>
-            <Moment format="MMM dd, yyyy">{item.startDate}</Moment>
+            <Moment format="MMM dd, yy">{item.startDate}</Moment>
           </td>
           <td className={s.endDate}>
-            <Moment format="MMM dd, yyyy">{item.endDate}</Moment>
+            <Moment format="MMM dd, yy">{item.endDate}</Moment>
           </td>
 
           <td className={`text-right ${s.milestoneAmount}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.amount || 0).toLocaleString("en-IN")}
+            {(item.amount || 0).toLocaleString(i18n.language)}
           </td>
           <td className={`text-right ${s.milestoneDeposited}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.totalDeposited || 0).toLocaleString("en-IN")}
+            {(item.totalDeposited || 0).toLocaleString(i18n.language)}
           </td>
 
           {user.userType === "staff" && (
-            <td className={s.status}>{status[item.status] || item.status}</td>
+            <td className={s.status}>
+              <Trans>{status[item.status] || item.status}</Trans>
+            </td>
           )}
         </>
       )}

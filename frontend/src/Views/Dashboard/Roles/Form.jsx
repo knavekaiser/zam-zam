@@ -7,6 +7,7 @@ import * as yup from "yup";
 import s from "./dataTable.module.scss";
 import { endpoints } from "config";
 import { motion } from "framer-motion";
+import { Trans, useTranslation } from "react-i18next";
 
 export const Form = ({ edit, allPermissions, onSuccess }) => {
   const {
@@ -58,20 +59,25 @@ export const Form = ({ edit, allPermissions, onSuccess }) => {
         className={`grid gap-1`}
       >
         <Input
-          label="Name"
+          label={<Trans>Name</Trans>}
+          placeholder=" "
           {...register("name")}
           required
           error={errors.name}
         />
 
         <div className={s.groups}>
-          <h3>Permissions</h3>
+          <h3>
+            <Trans>Permissions</Trans>
+          </h3>
           {errors.permissions?.message && (
             <p className={s.permissionErr}>{errors.permissions?.message}</p>
           )}
           {allPermissions.map((group) => (
             <div key={group.label} className={s.group}>
-              <label className={s.groupLabel}>{group.label}</label>
+              <label className={s.groupLabel}>
+                <Trans>{group.label}</Trans>
+              </label>
               <div className={s.permissions}>
                 {group.permissions.map((pr) => (
                   <Checkbox
@@ -111,7 +117,7 @@ export const Form = ({ edit, allPermissions, onSuccess }) => {
                         ]);
                       }
                     }}
-                    label={pr.label}
+                    label={<Trans>{pr.label}</Trans>}
                   />
                 ))}
               </div>
@@ -121,7 +127,7 @@ export const Form = ({ edit, allPermissions, onSuccess }) => {
 
         <div className="btns">
           <button className="btn" disabled={loading} title="Submit">
-            {edit ? "Update" : "Submit"}
+            <Trans>{edit ? "Update" : "Submit"}</Trans>
           </button>
         </div>
       </form>
@@ -130,6 +136,7 @@ export const Form = ({ edit, allPermissions, onSuccess }) => {
 };
 
 export const Filter = ({ showFilter, filters = {}, setFilters }) => {
+  const { t } = useTranslation();
   const { handleSubmit, register, reset } = useForm();
   useEffect(() => {
     reset(filters);
@@ -154,21 +161,25 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
         })}
         className={s.filters}
       >
-        <Input label="Name" {...register("name")} />
+        <Input
+          // label={<Trans>Name</Trans>}
+          placeholder={t("Name")}
+          {...register("name")}
+        />
 
         <div className="btns">
-          <button className="btn medium" title="Submit">
-            Submit
+          <button className="btn medium" title={<Trans>Submit</Trans>}>
+            <Trans>Submit</Trans>
           </button>
           <button
-            title="Clear"
+            title={<Trans>Clear</Trans>}
             className="btn clear medium"
             onClick={() => {
               reset({});
               setFilters({});
             }}
           >
-            Clear
+            <Trans>Clear</Trans>
           </button>
         </div>
       </form>

@@ -10,16 +10,23 @@ import * as yup from "yup";
 import s from "./auth.module.scss";
 import { BsArrowLeft } from "react-icons/bs";
 import { motion } from "framer-motion";
+import { Trans } from "react-i18next";
 
 const otpSchema = yup.object({
-  phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
+  phone: yup
+    .string()
+    .phn(
+      { country: "bangladesh" },
+      <Trans>Please enter a valid phone number</Trans>
+    )
+    .required(<Trans>Field is required</Trans>),
 });
 const passwordResetSchema = yup.object({
-  code: yup.string().required("Required"),
+  code: yup.string().required(<Trans>Field is required</Trans>),
   password: yup
     .string()
-    .min(8, "Password must be 8 characters or longer")
-    .required("Required"),
+    .min(8, <Trans>Password must be 8 characters or longer</Trans>)
+    .required(<Trans>Field is required</Trans>),
 });
 
 const Form = ({ userType, setUserType }) => {
@@ -98,16 +105,17 @@ const SendOtpForm = ({ userType, onSuccess }) => {
       <div className={"grid gap-2"}>
         {/* <h3 className="">Reset Password</h3> */}
         <Input
-          label="Phone"
+          label={<Trans>Phone</Trans>}
           required
           {...register("phone")}
           error={errors.phone}
+          placeholder=" "
         />
         <button className="btn" disabled={loading} title="Next">
-          Next
+          <Trans>Next</Trans>
         </button>
         <Link to={paths.signIn} className={s.signInLink}>
-          <BsArrowLeft /> Back to Login
+          <BsArrowLeft /> <Trans>Back to Login</Trans>
         </Link>
       </div>
     </motion.form>
@@ -166,14 +174,22 @@ const PasswordResetForm = ({
     >
       <div className={"grid gap-2"}>
         <p className={s.note}>
-          Please enter the 6 digit code sent to {phone}. <br />
+          <Trans
+            defaults="Please enter the 6 digit code sent to {{ phone }}."
+            values={{ phone }}
+          />
         </p>
 
         <p className={s.resend}>
-          Didn't recieve the Code?{" "}
+          <Trans>Didn't recieve the Code?</Trans>{" "}
           {timeout ? (
             <>
-              Please wait{" "}
+              <Trans
+                defaults="Please wait {{time}}"
+                values={{
+                  time: "",
+                }}
+              />
               <Countdown
                 time={new Date().setSeconds(new Date().getSeconds() + timeout)}
                 format={"mm:ss"}
@@ -182,7 +198,7 @@ const PasswordResetForm = ({
             </>
           ) : (
             <button
-              title="Resend Code"
+              title={<Trans>Resend Code</Trans>}
               type="button"
               onClick={() => {
                 resendOtp({ phone }).then(({ data }) => {
@@ -199,37 +215,39 @@ const PasswordResetForm = ({
               }}
               disabled={resendingOtp}
             >
-              Resend
+              <Trans>Resend</Trans>
             </button>
           )}
         </p>
 
         <Input
           type="number"
-          label="Code"
+          label={<Trans>Code</Trans>}
           required
           {...register("code")}
           error={errors.code}
+          placeholder=" "
         />
 
         <PasswordInput
           formOptions={{ required: true }}
-          label="New Password"
+          label={<Trans>New Password</Trans>}
           control={control}
           name="password"
           autoComplete="new-password"
+          placeholder=" "
         />
 
         <button
-          title="Submit"
+          title={<Trans>Submit</Trans>}
           className="btn"
           type="submit"
           disabled={resendingOtp || resettingPass}
         >
-          Submit
+          <Trans>Submit</Trans>
         </button>
         <a onClick={() => setStep(1)} className={s.signInLink}>
-          <BsArrowLeft /> Back
+          <BsArrowLeft /> <Trans>Back</Trans>
         </a>
       </div>
     </form>

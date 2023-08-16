@@ -6,6 +6,7 @@ import { Prompt } from "Components/modal";
 import { useFetch } from "hooks";
 import { Spinner } from "Components/elements";
 import "./App.scss";
+import "./helpers/i18n";
 
 const MainApp = lazy(() => import("Views/Dashboard"));
 const AuthView = lazy(() => import("Views/AuthViews"));

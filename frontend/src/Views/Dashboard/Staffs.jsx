@@ -2,6 +2,7 @@ import DataTable from "Components/DataTable";
 import { endpoints } from "config";
 import { useContext } from "react";
 import { SiteContext } from "@/SiteContext";
+import { Trans } from "react-i18next";
 
 export default function Deposits({ setSidebarOpen }) {
   const { user } = useContext(SiteContext);
@@ -9,9 +10,9 @@ export default function Deposits({ setSidebarOpen }) {
     user.role?.permissions?.includes(`staff_${item}`)
   );
   const filterStatus = [
-    { label: "Pending Activation", value: "pending-activation" },
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
+    { label: <Trans>Pending Activation</Trans>, value: "pending-activation" },
+    { label: <Trans>Active</Trans>, value: "active" },
+    { label: <Trans>Inactive</Trans>, value: "inactive" },
   ];
   return (
     <DataTable
@@ -27,11 +28,13 @@ export default function Deposits({ setSidebarOpen }) {
       }}
       filterStatus={filterStatus}
       columns={[
-        { label: "Name" },
-        { label: "Role" },
-        ...(user.userType === "staff" ? [{ label: "Status" }] : []),
+        { label: <Trans>Name</Trans> },
+        { label: <Trans>Role</Trans> },
+        ...(user.userType === "staff"
+          ? [{ label: <Trans>Status</Trans> }]
+          : []),
         ...(actionColumns
-          ? [{ label: "Action", className: "text-right" }]
+          ? [{ label: <Trans>Action</Trans>, className: "text-right" }]
           : []),
       ]}
       renderRow={(item, s, status) => (

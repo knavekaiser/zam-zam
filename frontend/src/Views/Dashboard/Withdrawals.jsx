@@ -3,8 +3,10 @@ import { Moment } from "Components/elements";
 import { endpoints } from "config";
 import { useContext } from "react";
 import { SiteContext } from "@/SiteContext";
+import { Trans, useTranslation } from "react-i18next";
 
 export default function Withdrawals({ setSidebarOpen }) {
+  const { i18n } = useTranslation();
   const { user } = useContext(SiteContext);
   const actionColumns = ["approve", "update", "delete"].some((item) =>
     user.role?.permissions?.includes(`withdrawal_${item}`)
@@ -13,14 +15,14 @@ export default function Withdrawals({ setSidebarOpen }) {
     ...(["withdrawal_create", "withdrawal_update", "withdrawal_approve"].some(
       (item) => user.role.permissions?.includes(item)
     )
-      ? [{ label: "Pending Approval", value: "pending-approval" }]
+      ? [{ label: <Trans>Pending Approval</Trans>, value: "pending-approval" }]
       : []),
-    { label: "Approved", value: "approved" },
+    { label: <Trans>Approved</Trans>, value: "approved" },
     ...(user.role.permissions?.includes("withdrawal_delete")
-      ? [{ label: "Pending Delete", value: "pending-delete" }]
+      ? [{ label: <Trans>Pending Delete</Trans>, value: "pending-delete" }]
       : []),
     ...(user.role.name === "Manager"
-      ? [{ label: "Deleted", value: "deleted" }]
+      ? [{ label: <Trans>Deleted</Trans>, value: "deleted" }]
       : []),
   ];
   return (
@@ -39,18 +41,20 @@ export default function Withdrawals({ setSidebarOpen }) {
       viewDetail={user.userType === "staff"}
       filterStatus={filterStatus}
       columns={[
-        { label: "Date" },
-        { label: "Member" },
-        { label: "Amount", className: "text-right" },
-        ...(user.userType === "staff" ? [{ label: "Status" }] : []),
+        { label: <Trans>Date</Trans> },
+        { label: <Trans>Member</Trans> },
+        { label: <Trans>Amount</Trans>, className: "text-right" },
+        ...(user.userType === "staff"
+          ? [{ label: <Trans>Status</Trans> }]
+          : []),
         ...(actionColumns
-          ? [{ label: "Action", className: "text-right" }]
+          ? [{ label: <Trans>Action</Trans>, className: "text-right" }]
           : []),
       ]}
       renderRow={(item, s, status) => (
         <>
           <td className={s.date}>
-            <Moment format="MMM dd, yyyy">{item.date}</Moment>
+            <Moment format="MMM dd, yy">{item.date}</Moment>
           </td>
           <td className={s.user}>
             <img
@@ -66,10 +70,12 @@ export default function Withdrawals({ setSidebarOpen }) {
           </td>
           <td className={`text-right`}>
             <span className={s.currencySymbol}>৳</span>
-            {item.amount.toLocaleString("en-IN")}
+            {item.amount.toLocaleString(i18n.language)}
           </td>
           {user.userType === "staff" && (
-            <td className={s.status}>{status[item.status] || item.status}</td>
+            <td className={s.status}>
+              <Trans>{status[item.status] || item.status}</Trans>
+            </td>
           )}
         </>
       )}

@@ -12,7 +12,7 @@ const { Staff, Otp, Device } = require("../models");
 
 exports.signup = async (req, res) => {
   try {
-    req.body.password = appHelper.generateHash(req.body.password);
+    req.body.password = appHelper.generateHash(req.body.password.toString());
 
     if (
       req.body.deviceId &&
@@ -54,7 +54,10 @@ exports.login = async (req, res) => {
       "name permissions"
     );
 
-    if (!staff || !appHelper.compareHash(req.body.password, staff.password)) {
+    if (
+      !staff ||
+      !appHelper.compareHash(req.body.password.toString(), staff.password)
+    ) {
       return responseFn.error(res, {}, responseStr.invalid_cred);
     }
     if (staff.status === "pending-activation") {
@@ -152,7 +155,7 @@ exports.resetPassword = async (req, res) => {
     if (appHelper.compareHash(req.body.code, otpRec.code)) {
       await Staff.updateOne(
         { _id: staff._id },
-        { password: appHelper.generateHash(req.body.password) }
+        { password: appHelper.generateHash(req.body.password.toString()) }
       );
       await Otp.deleteOne({ _id: otpRec._id });
       return responseFn.success(res, {}, responseStr.password_reset_successful);
@@ -234,7 +237,18 @@ exports.updateProfile = async (req, res) => {
       fileHelper.deleteFiles(req.authUser.photo);
     }
     const update = {};
-    ["name", "email", "photo"].forEach((key) => {
+    if (req.body.password) {
+      if (
+        !appHelper.compareHash(
+          req.body.oldPassword.toString(),
+          req.authUser.password
+        )
+      ) {
+        return responseFn.error(res, {}, responseStr.invalid_cred);
+      }
+      update.password = appHelper.generateHash(req.body.password.toString());
+    }
+    [("name", "email", "photo")].forEach((key) => {
       if (key in req.body) {
         update[key] = req.body[key];
       }

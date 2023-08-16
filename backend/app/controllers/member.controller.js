@@ -13,7 +13,7 @@ const { Member, Otp, Role, Device } = require("../models");
 
 exports.signup = async (req, res) => {
   try {
-    req.body.password = appHelper.generateHash(req.body.password);
+    req.body.password = appHelper.generateHash(req.body.password.toString());
 
     const role = await Role.findOne({ name: "Member" });
     if (
@@ -59,7 +59,10 @@ exports.login = async (req, res) => {
       "name permissions"
     );
 
-    if (!user || !appHelper.compareHash(req.body.password, user.password)) {
+    if (
+      !user ||
+      !appHelper.compareHash(req.body.password.toString(), user.password)
+    ) {
       return responseFn.error(res, {}, responseStr.invalid_cred);
     }
     if (user.status === "pending-activation") {
@@ -156,7 +159,7 @@ exports.resetPassword = async (req, res) => {
     if (appHelper.compareHash(req.body.code, otpRec.code)) {
       await Member.updateOne(
         { _id: user._id },
-        { password: appHelper.generateHash(req.body.password) }
+        { password: appHelper.generateHash(req.body.password.toString()) }
       );
       await Otp.deleteOne({ _id: otpRec._id });
       return responseFn.success(res, {}, responseStr.password_reset_successful);
@@ -235,11 +238,23 @@ exports.updateProfile = async (req, res) => {
       fileHelper.deleteFiles(req.authUser.photo);
     }
     const update = {};
+    if (req.body.password) {
+      if (
+        !appHelper.compareHash(
+          req.body.oldPassword.toString(),
+          req.authUser.password
+        )
+      ) {
+        return responseFn.error(res, {}, responseStr.invalid_cred);
+      }
+      update.password = appHelper.generateHash(req.body.password.toString());
+    }
     ["name", "email", "photo"].forEach((key) => {
       if (key in req.body) {
         update[key] = req.body[key];
       }
     });
+
     Member.findOneAndUpdate({ _id: req.authUser._id }, update, { new: true })
       .populate("role", "name permissions")
       .then((data) => {
@@ -360,7 +375,7 @@ exports.get = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    req.body.password = appHelper.generateHash(req.body.password);
+    req.body.password = appHelper.generateHash(req.body.password.toString());
 
     const role = await Role.findOne({ name: "Member" });
     new Member({

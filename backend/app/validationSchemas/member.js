@@ -68,6 +68,11 @@ module.exports = {
       //   User.findOne({ phone: v }).then((user) => !user)
       // ),
       password: commonYup.password,
+      oldPassword: yup
+        .string()
+        .when("password", (password, schema) =>
+          password ? schema.required("Please enter the old password") : schema
+        ),
       address: yup.string(),
     }),
   }),

@@ -12,6 +12,7 @@ import { cubicBezier } from "framer-motion";
 import { Form, Filter } from "./Form";
 import Detail from "./Detail";
 import { BsList, BsX } from "react-icons/bs";
+import { Trans, useTranslation } from "react-i18next";
 
 const Data = ({
   setSidebarOpen,
@@ -34,6 +35,7 @@ const Data = ({
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [view, setView] = useState(null);
+  const { t } = useTranslation();
 
   const { get: getData, loading } = useFetch(endpoint);
   const { remove: deleteItem, loading: deletingItem } = useFetch(
@@ -68,7 +70,9 @@ const Data = ({
             onClick={() => setSidebarOpen((prev) => !prev)}
           >
             <BsList style={{ fontSize: "1.75rem" }} />
-            <h2>{title}</h2>
+            <h2>
+              <Trans>{title}</Trans>
+            </h2>
           </div>
           <>
             <button
@@ -270,7 +274,7 @@ const Data = ({
         <Modal
           open={addData}
           head
-          label={`${edit ? "View / Update" : "Add"} ${title}`}
+          label={<Trans>{`${edit ? "View / Update" : "Add"} ${name}`}</Trans>}
           className={s.addDataFormModal}
           setOpen={() => {
             setEdit(null);
@@ -343,7 +347,7 @@ const Data = ({
 
         {checkPermission(`${name}_create`) && (
           <button
-            title={`Add New Item`}
+            title={t(`Add New ${name}`)}
             className={`btn m-a mr-0 ${s.addBtn} ${showAddBtn ? s.show : ""}`}
             onClick={() => setAddData(true)}
           >

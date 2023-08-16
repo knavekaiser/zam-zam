@@ -8,6 +8,7 @@ import { Controller } from "react-hook-form";
 
 import ReactSelect, { components } from "react-select";
 import { BsX } from "react-icons/bs";
+import { Trans } from "react-i18next";
 
 export const Combobox = ({
   control,
@@ -330,8 +331,6 @@ export const Select = ({
   placeholder,
   renderOption,
   disabled,
-  readOnly,
-  hideSearchIcon,
   onChange: _onChange,
 }) => {
   const firstRender = useRef(true);
@@ -431,13 +430,15 @@ export const Select = ({
             <div className={s.field}>
               <ReactSelect
                 placeholder={
-                  !label
-                    ? placeholder
-                    : url
-                    ? "Search..."
-                    : !options || !options?.length
-                    ? "No options provided"
-                    : placeholder || "Enter"
+                  <Trans>
+                    {!label
+                      ? placeholder
+                      : url
+                      ? "Search..."
+                      : !options || !options?.length
+                      ? "No options provided"
+                      : placeholder || "Enter"}
+                  </Trans>
                 }
                 components={{
                   // DropdownIndicator,

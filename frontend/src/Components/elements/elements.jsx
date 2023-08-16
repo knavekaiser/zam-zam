@@ -25,6 +25,7 @@ import { animate } from "framer-motion";
 
 import { Combobox } from "./combobox";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export const Input = forwardRef(
   ({ className, label, icon, error, type, required, ...rest }, ref) => {
@@ -673,19 +674,15 @@ export const CountUp = ({
   duration = 5000,
   offset = 1000,
   ease,
-  locale,
 }) => {
+  const { i18n } = useTranslation();
   const nodeRef = useRef();
   useEffect(() => {
     const node = nodeRef.current;
     const controls = animate(Math.max(number - offset, 0), number, {
       duration: duration / 1000,
       onUpdate(value) {
-        if (locale) {
-          node.textContent = Math.round(value).toLocaleString(locale);
-          return;
-        }
-        node.textContent = Math.round(value);
+        node.textContent = Math.round(value).toLocaleString(i18n.language);
       },
     });
 

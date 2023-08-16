@@ -15,6 +15,7 @@ import {
   BsPerson,
   BsPersonFill,
 } from "react-icons/bs";
+import { Trans, useTranslation } from "react-i18next";
 
 const Toggle = ({}) => {
   const { user, selfOnly, setSelfOnly } = useContext(SiteContext);
@@ -68,7 +69,9 @@ const Dashboard = ({ setSidebarOpen }) => {
           onClick={() => setSidebarOpen((prev) => !prev)}
         >
           <BsList style={{ fontSize: "1.75rem" }} />
-          <h2>Dashboard</h2>
+          <h2>
+            <Trans>Dashboard</Trans>
+          </h2>
         </div>
 
         <Toggle />
@@ -117,11 +120,14 @@ const Dashboard = ({ setSidebarOpen }) => {
         )}
 
         {"currentBalance" in data && (
-          <Card label="Current Balance" amount={data.currentBalance} />
+          <Card
+            label={<Trans>Current Balance</Trans>}
+            amount={data.currentBalance}
+          />
         )}
         {"incomes" in data && (
           <Card
-            label="Total Income"
+            label={<Trans>Total Income</Trans>}
             amount={data.incomes.total}
             onClick={() => navigate(paths.incomes)}
           />
@@ -129,9 +135,11 @@ const Dashboard = ({ setSidebarOpen }) => {
         {"deposits" in data && (
           <Card
             label={
-              user.userType === "member" && selfOnly
-                ? "My Deposit"
-                : "Total Deposit"
+              <Trans>
+                {user.userType === "member" && selfOnly
+                  ? "My Deposit"
+                  : "Total Deposit"}
+              </Trans>
             }
             amount={data.deposits.total}
             onClick={() => navigate(paths.deposits)}
@@ -139,7 +147,7 @@ const Dashboard = ({ setSidebarOpen }) => {
         )}
         {"expenses" in data && (
           <Card
-            label="Total Expense"
+            label={<Trans>Total Expense</Trans>}
             amount={data.expenses.total}
             onClick={() => navigate(paths.expenses)}
           />
@@ -147,9 +155,11 @@ const Dashboard = ({ setSidebarOpen }) => {
         {"withdrawals" in data && (
           <Card
             label={
-              user.userType === "member" && selfOnly
-                ? "My Withdrawals"
-                : "Total Withdrawals"
+              <Trans>
+                {user.userType === "member" && selfOnly
+                  ? "My Withdrawal"
+                  : "Total Withdrawal"}
+              </Trans>
             }
             amount={data.withdrawals.total}
             onClick={() => navigate(paths.withdrawals)}
@@ -172,7 +182,6 @@ const Card = ({ label, amount, onClick = () => {} }) => {
           <CountUp
             number={amount}
             duration={Math.floor(Math.random() * 1000) + 2000}
-            locale="en-IN"
           />
         </span>
       </p>
@@ -251,6 +260,7 @@ const Card = ({ label, amount, onClick = () => {} }) => {
 const Milestones = ({ milestones }) => {
   const { user } = useContext(SiteContext);
   const [view, setView] = useState(milestones.length - 1);
+  const { i18n } = useTranslation();
   return (
     <div className={s.milestones}>
       <div className={s.milestoneInfoWrapper}>
@@ -281,7 +291,6 @@ const Milestones = ({ milestones }) => {
                           : item.totalDeposited
                       }
                       offset={50}
-                      locale="en-IN"
                     />
                   </span>
 
@@ -291,15 +300,15 @@ const Milestones = ({ milestones }) => {
                       (user.userType === "member"
                         ? item.perMember
                         : item.amount) || 0
-                    ).toLocaleString("en-IN")}
+                    ).toLocaleString(i18n.language)}
                   </span>
                 </div>
                 <div className={s.dates}>
-                  <Moment className={s.startDate} format="MMM dd yy">
+                  <Moment className={s.startDate} format="MMM dd, yy">
                     {item.startDate}
                   </Moment>{" "}
                   -{" "}
-                  <Moment format="MMM dd yy" className={s.endDate}>
+                  <Moment format="MMM dd, yy" className={s.endDate}>
                     {item.endDate}
                   </Moment>
                 </div>

@@ -9,13 +9,16 @@ import { Prompt } from "Components/modal";
 import { phone } from "phone";
 import * as yup from "yup";
 import s from "./auth.module.scss";
-import { BsArrowRight } from "react-icons/bs";
 import { motion } from "framer-motion";
 import { fingerprint } from "helpers";
+import { Trans } from "react-i18next";
 
 const validationSchema = yup.object({
-  phone: yup.string().phn({ country: "bangladesh" }).required("Required"),
-  password: yup.string().required("Required"),
+  phone: yup
+    .string()
+    .phn({ country: "bangladesh" }, <Trans>Please enter a valid number</Trans>)
+    .required(<Trans>Field is required</Trans>),
+  password: yup.string().required(<Trans>Field is required</Trans>),
 });
 
 const Form = ({ userType, setUserType }) => {
@@ -76,7 +79,7 @@ const Form = ({ userType, setUserType }) => {
               setUserType("member");
             }}
           >
-            Member
+            <Trans>Member</Trans>
           </button>
           <button
             title="Staff"
@@ -88,7 +91,7 @@ const Form = ({ userType, setUserType }) => {
               setUserType("staff");
             }}
           >
-            Staff
+            <Trans>Staff</Trans>
           </button>
           <span
             style={
@@ -104,30 +107,32 @@ const Form = ({ userType, setUserType }) => {
           <p className="error">{invalidCred || "Invalid credentials"}</p>
         )}
         <Input
-          label="Phone"
+          label={<Trans>Phone</Trans>}
           required
           {...register("phone")}
           error={errors.phone}
+          placeholder=" "
         />
 
         <section className={s.passField}>
           <Link className={s.resetPasswordLink} to={paths.resetPassword}>
-            Forgot Password?
+            <Trans>Forgot Password?</Trans>
           </Link>
           <PasswordInput
+            label={<Trans>Password</Trans>}
             formOptions={{ required: true }}
-            label="Password"
             control={control}
             name="password"
+            placeholder=" "
           />
         </section>
 
         <button className="btn" disabled={loading} title="Sign In">
-          Sign In
+          <Trans>Sign In</Trans>
         </button>
-        <Link className={s.signUpLink} to={paths.signUp}>
+        {/* <Link className={s.signUpLink} to={paths.signUp}>
           Create New Account <BsArrowRight />
-        </Link>
+        </Link> */}
       </div>
     </motion.form>
   );

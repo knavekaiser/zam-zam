@@ -11,8 +11,10 @@ import { useFetch } from "hooks";
 import { Form, Filter } from "./Form";
 import { endpoints } from "config";
 import { BsList } from "react-icons/bs";
+import { Trans, useTranslation } from "react-i18next";
 
 const Data = ({ setSidebarOpen }) => {
+  const { t } = useTranslation();
   const { user, checkPermission } = useContext(SiteContext);
   const [allPermissions, setAllPermissions] = useState([]);
   const [filters, setFilters] = useState({});
@@ -56,7 +58,9 @@ const Data = ({ setSidebarOpen }) => {
             onClick={() => setSidebarOpen((prev) => !prev)}
           >
             <BsList style={{ fontSize: "1.75rem" }} />
-            <h2>Roles</h2>
+            <h2>
+              <Trans>Roles</Trans>
+            </h2>
           </div>
           <>
             <button
@@ -77,8 +81,8 @@ const Data = ({ setSidebarOpen }) => {
           loading={loading}
           className={s.data}
           columns={[
-            { label: "Name" },
-            { label: "Action", className: "text-right" },
+            { label: <Trans>Name</Trans> },
+            { label: <Trans>Action</Trans>, className: "text-right" },
           ]}
           onScroll={(dir) => {
             if (dir === "down") {
@@ -99,7 +103,7 @@ const Data = ({ setSidebarOpen }) => {
                     ? [
                         {
                           icon: <BiEditAlt />,
-                          label: "Edit",
+                          label: <Trans>Edit</Trans>,
                           callBack: () => {
                             setEdit(item);
                             setAddRole(true);
@@ -111,12 +115,16 @@ const Data = ({ setSidebarOpen }) => {
                     ? [
                         {
                           icon: <FaRegTrashAlt />,
-                          label: "Delete",
+                          label: <Trans>Delete</Trans>,
                           disabled: deletingRole,
                           callBack: () =>
                             Prompt({
                               type: "confirmation",
-                              message: `Are you sure you want to remove this role?`,
+                              message: (
+                                <Trans>
+                                  Are you sure you want to remove this role?
+                                </Trans>
+                              ),
                               callback: () => {
                                 deleteRole(
                                   {},
@@ -146,7 +154,7 @@ const Data = ({ setSidebarOpen }) => {
         <Modal
           open={addRole}
           head
-          label={`${edit ? "View / Update" : "Add"} Role`}
+          label={<Trans>{`${edit ? "View / Update" : "Add"} Role`}</Trans>}
           className={s.addFormModal}
           setOpen={() => {
             setEdit(null);
@@ -174,7 +182,7 @@ const Data = ({ setSidebarOpen }) => {
 
         {/* {checkPermission(`role_create`) && ( */}
         <button
-          title="Add Role"
+          title={t("Add Role")}
           className={`btn m-a mr-0 ${s.addBtn} ${showAddBtn ? s.show : ""}`}
           onClick={() => setAddRole(true)}
         >

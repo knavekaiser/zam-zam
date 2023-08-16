@@ -172,14 +172,19 @@
         }
       }
     }
-    .logoutBtn {
-      font-size: 1.2em;
-      color: $primary-color;
-      :global(.light) & {
-        color: $primary-color-dark1;
-      }
+    .actions {
       transition: transform 0.25s ease-in-out;
       transform: translateY(2.5rem);
+      button {
+        margin: auto;
+      }
+      .logoutBtn {
+        font-size: 1.2em;
+        color: $primary-color;
+        :global(.light) & {
+          color: $primary-color-dark1;
+        }
+      }
     }
 
     footer {
@@ -228,7 +233,7 @@
           }
         }
       }
-      .logoutBtn {
+      .actions {
         transform: translateY(0);
       }
       footer {

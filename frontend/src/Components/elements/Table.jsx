@@ -3,6 +3,7 @@ import s from "./elements.module.scss";
 import { FaCircleNotch } from "react-icons/fa";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { Modal } from "../modal";
+import { Trans } from "react-i18next";
 
 export const Table = ({
   columns,
@@ -67,13 +68,13 @@ export const Table = ({
             {children.flat().filter((item) => item).length === 1 &&
               children[0]?.props?.className?.includes("inlineForm") && (
                 <tr className={s.placeholder}>
-                  <td>{placeholder || "Nothing yet..."}</td>
+                  <td>{placeholder || <Trans>Nothing yet...</Trans>}</td>
                 </tr>
               )}
           </>
         ) : (
           <tr className={s.placeholder}>
-            <td>{placeholder || "Nothing yet..."}</td>
+            <td>{placeholder || <Trans>Nothing yet...</Trans>}</td>
           </tr>
         )}
       </tbody>

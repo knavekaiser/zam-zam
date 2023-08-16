@@ -6,7 +6,7 @@ import s from "./auth.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import { Spinner } from "Components/elements";
 
-const Signup = lazy(() => import("./Signup"));
+// const Signup = lazy(() => import("./Signup"));
 const SignIn = lazy(() => import("./Signin"));
 const ResetPassword = lazy(() => import("./ResetPassword"));
 
@@ -38,14 +38,14 @@ const Auth = () => {
 
         <AnimatePresence>
           <Routes location={location} key={location.path}>
-            <Route
+            {/* <Route
               path={paths.signUp}
               element={
                 <Suspense fallback={<Spinner />}>
                   <Signup userType={userType} setUserType={setUserType} />
                 </Suspense>
               }
-            />
+            /> */}
             <Route
               path={paths.signIn}
               element={

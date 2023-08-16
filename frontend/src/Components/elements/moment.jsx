@@ -1,9 +1,33 @@
 import { useRef, useState, useEffect } from "react";
 import { format } from "date-fns";
+import { enUS, bn } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 
+const localizedDigits = {
+  0: "০",
+  1: "১",
+  2: "২",
+  3: "৩",
+  4: "৪",
+  5: "৫",
+  6: "৬",
+  7: "৭",
+  8: "৮",
+  9: "৯",
+};
+function localizeNumber(number) {
+  return number.toString().replace(/\d/g, (digit) => localizedDigits[digit]);
+}
 export const moment = (time, _format) => {
+  const { i18n } = useTranslation();
   if (isNaN(new Date(time).getTime())) {
     return time;
+  }
+  if (i18n.language === "bn") {
+    return format(new Date(time), _format, { locale: bn }).replace(
+      /\d+/g,
+      (match) => localizeNumber(match)
+    );
   }
   return format(new Date(time), _format);
 };

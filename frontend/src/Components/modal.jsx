@@ -4,6 +4,7 @@ import { BsX } from "react-icons/bs";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import * as ReactDOMClient from "react-dom/client";
+import { Trans } from "react-i18next";
 
 export const Modal = forwardRef(
   (
@@ -268,23 +269,23 @@ export const Prompt = ({ className, type, message, btns, callback }) => {
                           onClick={decline}
                           title="No"
                         >
-                          No
+                          <Trans>No</Trans>
                         </button>
                         <button
                           className="yes btn secondary medium"
                           onClick={confirm}
-                          title="Yes"
+                          title={<Trans>Yes</Trans>}
                         >
-                          Yes
+                          <Trans>Yes</Trans>
                         </button>
                       </>
                     ) : (
                       <button
                         className="yes btn secondary medium"
                         onClick={decline}
-                        title="Ok"
+                        title={<Trans>Ok</Trans>}
                       >
-                        Ok
+                        <Trans>Ok</Trans>
                       </button>
                     )}
                   </>
