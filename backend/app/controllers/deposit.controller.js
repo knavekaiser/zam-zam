@@ -167,11 +167,14 @@ exports.approve = async (req, res) => {
                 .replace("{name}", data.member.name)
                 .replace("{amount}", data.amount.toLocaleString("bn-BD")),
             });
-            await firebase.notify(data.member._id, null, {
-              title: "জমজম টাওয়ার",
-              body: smsTemplate.money_deposited
-                .replace("{name}", data.member.name)
-                .replace("{amount}", data.amount.toLocaleString("bn-BD")),
+            await firebase.notify({
+              _ids: [data.member._id],
+              message: {
+                title: "জমজম টাওয়ার",
+                body: smsTemplate.money_deposited
+                  .replace("{name}", data.member.name)
+                  .replace("{amount}", data.amount.toLocaleString("bn-BD")),
+              },
             });
           }
           if (data.milestone) {
