@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { format } from "date-fns";
 import { enUS, bn } from "date-fns/locale";
-import { useTranslation } from "react-i18next";
+import i18n from "helpers/i18n";
 
 const localizedDigits = {
   0: "০",
@@ -18,12 +18,11 @@ const localizedDigits = {
 function localizeNumber(number) {
   return number.toString().replace(/\d/g, (digit) => localizedDigits[digit]);
 }
-export const moment = (time, _format) => {
-  const { i18n } = useTranslation();
+export const moment = (time, _format, locale) => {
   if (isNaN(new Date(time).getTime())) {
     return time;
   }
-  if (i18n.language === "bn") {
+  if ((locale || i18n.language) === "bn") {
     return format(new Date(time), _format, { locale: bn }).replace(
       /\d+/g,
       (match) => localizeNumber(match)
@@ -84,7 +83,7 @@ export const getAllDates = ({ startDate, endDate, format }) => {
   const dates = [];
   let currDate = startDate;
   while (currDate <= endDate) {
-    dates.push(moment(currDate, format || "YYYY-MM-DD"));
+    dates.push(moment(currDate, format || "YYYY-MM-DD", "en"));
     currDate = currDate.add("0 0 0 1");
   }
   return dates;

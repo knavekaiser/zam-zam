@@ -115,7 +115,10 @@ const Data = ({
             <tr key={item._id} style={trStyle}>
               {renderRow(item, s, status)}
 
-              {columns.some((item) => item.label === "Action") && (
+              {columns.some(
+                (item) =>
+                  (item.label?.props?.children || item.label) === "Action"
+              ) && (
                 <TableActions
                   className={s.actions}
                   actions={[
@@ -123,7 +126,7 @@ const Data = ({
                       ? [
                           {
                             icon: <BiDetail />,
-                            label: "View Detail",
+                            label: <Trans>View Detail</Trans>,
                             callBack: () => {
                               setView({ ...item, type: title.slice(0, -1) });
                             },
@@ -139,7 +142,7 @@ const Data = ({
                       ? [
                           {
                             icon: <BiCheckDouble />,
-                            label: "Approve",
+                            label: <Trans>Approve</Trans>,
                             disabled: approvingItem,
                             callBack: () =>
                               Prompt({
@@ -174,7 +177,7 @@ const Data = ({
                       ? [
                           {
                             icon: <BiEditAlt />,
-                            label: "Edit",
+                            label: <Trans>Edit</Trans>,
                             callBack: () => {
                               setEdit(item);
                               setAddData(true);
@@ -189,7 +192,7 @@ const Data = ({
                       ? [
                           {
                             icon: <FaRegTrashAlt />,
-                            label: "Request Delete",
+                            label: <Trans>Request Delete</Trans>,
                             disabled: requestingDelete,
                             callBack: () =>
                               Prompt({
@@ -235,7 +238,7 @@ const Data = ({
                       ? [
                           {
                             icon: <FaRegTrashAlt />,
-                            label: "Delete",
+                            label: <Trans>Delete</Trans>,
                             disabled: deletingItem,
                             callBack: () =>
                               Prompt({

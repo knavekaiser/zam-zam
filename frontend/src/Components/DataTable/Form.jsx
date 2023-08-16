@@ -77,7 +77,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
         if (["input", "textarea"].includes(field.fieldType)) {
           if (field.type === "date") {
             _edit[field.name] = edit[field.name]
-              ? moment(edit[field.name], "yyyy-MM-dd")
+              ? moment(edit[field.name], "yyyy-MM-dd", "en")
               : "";
           } else {
             _edit[field.name] = edit[field.name] || "";
@@ -94,8 +94,8 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
     }
   }, [edit]);
 
-  const fields = schema.map((item) => {
-    if (item.fieldType === "input") {
+  const fields = schema.map(({ fieldType, ...item }) => {
+    if (fieldType === "input") {
       return (
         <Input
           key={item.name}
@@ -107,7 +107,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
           error={errors[item.name]}
         />
       );
-    } else if (item.fieldType === "select") {
+    } else if (fieldType === "select") {
       return (
         <Select
           key={item.name}
@@ -118,7 +118,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
           label={<Trans>{item.label}</Trans>}
         />
       );
-    } else if (item.fieldType === "textarea") {
+    } else if (fieldType === "textarea") {
       return (
         <Textarea
           key={item.name}
@@ -128,7 +128,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
           formOptions={{ required: item.required }}
         />
       );
-    } else if (item.fieldType === "phone") {
+    } else if (fieldType === "phone") {
       return (
         <Input
           required

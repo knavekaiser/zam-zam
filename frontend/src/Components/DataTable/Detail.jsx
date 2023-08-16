@@ -5,6 +5,7 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import { motion } from "framer-motion";
 import s from "./dataTable.module.scss";
 import { status } from "config";
+import { Trans, useTranslation } from "react-i18next";
 
 export default function Detail({ data }) {
   return (
@@ -41,12 +42,7 @@ export default function Detail({ data }) {
       <p className={s.amount}>
         <span className={s.currencySymbol}>৳</span>
         <span className={s.number}>
-          <CountUp
-            number={data.amount}
-            offset={10000}
-            duration={1000}
-            locale="en-IN"
-          />
+          <CountUp number={data.amount} offset={10000} duration={1000} />
         </span>
       </p>
 
@@ -55,8 +51,14 @@ export default function Detail({ data }) {
           <Moment format="MMM dd, yyyy" className={s.date}>
             {data.date}
           </Moment>
-          • <span>{data.type}</span> •{" "}
-          <span>{status[data.status] || data.status}</span>
+          •{" "}
+          <span>
+            <Trans>{data.type}</Trans>
+          </span>{" "}
+          •{" "}
+          <span>
+            <Trans>{status[data.status] || data.status}</Trans>
+          </span>
         </p>
         <p className={s.remark}>{data.remark || data.description}</p>
       </div>
@@ -71,7 +73,9 @@ const Timeline = ({ timeline, reversed }) => {
     <>
       <div className={s.timeline}>
         <div className={s.zigzag} />
-        <h4>Timeline</h4>
+        <h4>
+          <Trans>Timeline</Trans>
+        </h4>
         <div className={s.zigzag} />
       </div>
       <ul
@@ -161,6 +165,7 @@ const Timeline = ({ timeline, reversed }) => {
 };
 
 const TimelineItem = ({ item, single, lineStyle, secondToLast, reversed }) => {
+  const { t } = useTranslation();
   const liRef = useRef();
   const lineRef = useRef();
   useEffect(() => {
@@ -242,8 +247,32 @@ const TimelineItem = ({ item, single, lineStyle, secondToLast, reversed }) => {
         />
         <div className={s.staffDetail}>
           <p>
-            <span className={s.action}>{item.action}</span>{" "}
-            <span className={s.by}>by</span>
+            {item.action === "Created" && (
+              <Trans i18nKey="createdBy">
+                <span className={s.action}>{item.action}</span>{" "}
+                <span className={s.by}>by</span>
+              </Trans>
+            )}
+            {item.action === "Approved" && (
+              <Trans i18nKey="approvedBy">
+                <span className={s.action}>{item.action}</span>{" "}
+                <span className={s.by}>by</span>
+              </Trans>
+            )}
+            {item.action === "Delete Requested" && (
+              <Trans i18nKey="deleteRequestedBy">
+                <span className={s.action}>{item.action}</span>{" "}
+                <span className={s.by}>by</span>
+              </Trans>
+            )}
+            {item.action === "Deleted" && (
+              <Trans i18nKey="deletedBy">
+                <span className={s.action}>{item.action}</span>{" "}
+                <span className={s.by}>by</span>
+              </Trans>
+            )}
+            {/* <span className={s.action}>{item.action}</span>{" "}
+            <span className={s.by}>by</span> */}
             <br />
             <span className={s.staff}>{item.staff?.name} </span>
           </p>
