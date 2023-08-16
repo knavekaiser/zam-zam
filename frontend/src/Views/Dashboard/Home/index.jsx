@@ -304,11 +304,11 @@ const Milestones = ({ milestones }) => {
                   </span>
                 </div>
                 <div className={s.dates}>
-                  <Moment className={s.startDate} format="MMM dd, yy">
+                  <Moment className={s.startDate} format="MMM dd, yyyy">
                     {item.startDate}
                   </Moment>{" "}
                   -{" "}
-                  <Moment format="MMM dd, yy" className={s.endDate}>
+                  <Moment format="MMM dd, yyyy" className={s.endDate}>
                     {item.endDate}
                   </Moment>
                 </div>

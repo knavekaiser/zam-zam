@@ -155,7 +155,7 @@ exports.approve = async (req, res) => {
       },
       { new: true }
     )
-      .populate("member", "name email photo phone")
+      .populate("member", "_id name email photo phone")
       .populate("milestone", "title startDate endDate amount status")
       .populate("timeline.staff", "name email photo phone")
       .then(async (data) => {
@@ -164,6 +164,12 @@ exports.approve = async (req, res) => {
             smsHelper.sendSms({
               to: data.member.phone,
               message: smsTemplate.money_deposited
+                .replace("{name}", data.member.name)
+                .replace("{amount}", data.amount.toLocaleString("bn-BD")),
+            });
+            await firebase.notify(data.member._id, null, {
+              title: "জমজম টাওয়ার",
+              body: smsTemplate.money_deposited
                 .replace("{name}", data.member.name)
                 .replace("{amount}", data.amount.toLocaleString("bn-BD")),
             });
