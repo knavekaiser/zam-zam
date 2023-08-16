@@ -69,6 +69,7 @@ export default {
   "Add Role": "Add Role",
   "View / Update Role": "View / Update Role",
 
+  Title: "Title",
   Status: "Status",
   Description: "Description",
   Amount: "Amount",
@@ -76,7 +77,9 @@ export default {
   Date: "Date",
   Action: "Action",
   "Start Date": "Start Date",
+  Start: "Start",
   "End Date": "End Date",
+  End: "End",
 
   Timeline: "Timeline",
   "Created At": "Created At",

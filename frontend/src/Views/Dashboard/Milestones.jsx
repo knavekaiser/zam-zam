@@ -47,9 +47,15 @@ export default function Deposits({ setSidebarOpen }) {
         <>
           <td className={s.name}>{item.title}</td>
           <td className={s.startDate}>
+            <span className={s.cardLabel}>
+              <Trans>Start</Trans>:
+            </span>{" "}
             <Moment format="MMM dd, yy">{item.startDate}</Moment>
           </td>
           <td className={s.endDate}>
+            <span className={s.cardLabel}>
+              <Trans>End</Trans>:
+            </span>{" "}
             <Moment format="MMM dd, yy">{item.endDate}</Moment>
           </td>
 

@@ -113,6 +113,9 @@
           }
         }
       }
+      .cardLabel {
+        display: none;
+      }
       .currencySymbol {
         font-family: "Times New Roman", Times, serif;
       }
@@ -403,6 +406,10 @@
           grid-row: 1 / 2;
           padding-bottom: 0;
           font-size: 1em;
+        }
+        .cardLabel {
+          display: inline-block;
+          color: rgba(var(--font-color), 0.5);
         }
         .startDate {
           grid-column: 1 / 2;

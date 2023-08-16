@@ -69,12 +69,15 @@ export default {
   "Add Role": "ভূমিকা যোগ করুন",
   "View / Update Role": "ভূমিকা দেখুন / আপডেট করুন",
 
+  Title: "শিরোনাম",
   Status: "অবস্থা",
   Description: "বিবরণ",
   Amount: "পরিমাণ",
   Remark: "মন্তব্য",
   Date: "তারিখ",
   Action: "ক্রিয়া",
+  Start: "শুরু",
+  End: "শেষ",
   "Start Date": "শুরুর তারিখ",
   "End Date": "শেষ তারিখ",
 

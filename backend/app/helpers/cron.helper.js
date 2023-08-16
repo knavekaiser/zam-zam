@@ -103,11 +103,11 @@ cron.schedule(
 );
 
 const updateOlderMilestones = async () => {
-  Milestone.updateMany(
+  await Milestone.updateMany(
     { status: "upcoming", startDate: { $lte: new Date() } },
     { status: "ongoing" }
-  );
-  Milestone.aggregate([
+  ).then((data) => {});
+  await Milestone.aggregate([
     { $match: { status: "ongoing", endDate: { $lt: new Date() } } },
     {
       $lookup: {
