@@ -8,27 +8,36 @@ import { useYup, useFetch } from "hooks";
 import { Prompt } from "Components/modal";
 import { endpoints } from "config";
 import { BsMoon, BsMoonFill, BsSun, BsSunFill } from "react-icons/bs";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 const profileSchema = yup.object({
   name: yup.string().required(),
   phone: yup.string().phone().required(),
-  email: yup.string().email(),
-  password: yup.string().min(8, "Password must be 8 characters or longer"),
+  email: yup.string().email(<Trans>Please enter a valid email</Trans>),
+  password: yup.string().when("address", ([val], schema) => {
+    if (val?.length > 0) {
+      return schema
+        .min(5, <Trans>Password must be 8 characters or longer</Trans>)
+        .required(<Trans>Field is required</Trans>);
+    } else {
+      return schema;
+    }
+  }),
   oldPassword: yup
     .string()
     .when("password", ([password], schema) =>
-      password ? schema.required("Please enter the old password") : schema
+      password ? schema.required(<Trans>Field is required</Trans>) : schema
     ),
 });
 
 const Toggle = ({}) => {
+  const { t } = useTranslation();
   const { theme, setTheme } = useContext(SiteContext);
 
   return (
     <button
       type="button"
-      title="Toggle Light or Dark Theme"
+      title={t("Toggle Light or Dark Theme")}
       className={`${s.themeToggle} ${s[theme]}`}
       onClick={() =>
         setTheme((prev) => {
@@ -97,6 +106,11 @@ const Settings = ({ setSidebarOpen }) => {
           className="grid gap-1"
           onSubmit={handleSubmit((values) => {
             let photo = values.photo;
+
+            if (!values.password) {
+              delete values.password;
+              delete values.oldPassword;
+            }
 
             const formData = new FormData();
 

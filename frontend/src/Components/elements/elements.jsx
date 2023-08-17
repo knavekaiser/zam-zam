@@ -25,7 +25,7 @@ import { animate } from "framer-motion";
 
 import { Combobox } from "./combobox";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 export const Input = forwardRef(
   ({ className, label, icon, error, type, required, ...rest }, ref) => {
@@ -323,7 +323,7 @@ export const AvatarInput = ({ control, name, formOptions = {}, className }) => {
                   type="button"
                   onClick={() => setFile(null)}
                 >
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </button>
                 <button
                   title="Submit"
@@ -342,7 +342,7 @@ export const AvatarInput = ({ control, name, formOptions = {}, className }) => {
                     setFile(null);
                   }}
                 >
-                  Submit
+                  <Trans>Submit</Trans>
                 </button>
               </div>
             </Modal>

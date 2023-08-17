@@ -4,8 +4,8 @@ const {
 const {
   smsHelper,
   appHelper: { genId, ...appHelper },
-  fileHelper,
   firebase,
+  cdnHelper,
 } = require("../helpers");
 const { ObjectId } = require("mongodb");
 
@@ -235,7 +235,7 @@ exports.profile = (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     if (req.files?.photo?.length && req.authUser.photo) {
-      fileHelper.deleteFiles(req.authUser.photo);
+      cdnHelper.deleteFiles(req.authUser.photo);
     }
     const update = {};
     if (req.body.password) {

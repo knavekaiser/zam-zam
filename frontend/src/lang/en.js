@@ -1,6 +1,7 @@
 export default {
   Name: "Name",
   Phone: "Phone",
+  Email: "Email",
   Password: "Password",
   "Change Password": "Change Password",
   "New Password": "New Password",
@@ -82,19 +83,10 @@ export default {
   End: "End",
 
   Timeline: "Timeline",
-  "Created At": "Created At",
-  "Updated At": "Updated At",
   createdBy: "<3>Created</3> <2>by</2>",
   approvedBy: "<3>Approved</3> <2>by</2>",
   deleteRequestedBy: "<3>Delete Requested</3> <2>by</2>",
   deletedBy: "<3>Deleted</3> <2>by</2>",
-  "Paid By": "Paid By",
-  "Updated By": "Updated By",
-  "Activated On": "Activated On",
-  "Approved On": "Approved On",
-  "Submitted On": "Submitted On",
-  "Collected On": "Collected On",
-  "Closed On": "Closed On",
 
   View: "View",
   "View Detail": "View Detail",
@@ -143,8 +135,10 @@ export default {
   "Please enter a valid number": "Please enter a valid number",
   "Password must be 8 characters or longer":
     "Password must be 8 characters or longer",
+  "Please enter a valid email": "Please enter a valid email",
 
-  Permissions: "অনুমতি",
+  Permissions: "Permissions",
+  "Toggle Light or Dark Theme": "Toggle Light or Dark Theme",
   "All Rights Reserved.": "All Rights Reserved.",
 
   "Are you sure you want to remove this role?":

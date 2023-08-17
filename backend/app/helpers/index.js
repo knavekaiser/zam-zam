@@ -129,4 +129,5 @@ module.exports = {
   fileHelper: require("./file.helper"),
   firebase: require("./firebase.helper"),
   cronHelper: require("./cron.helper"),
+  cdnHelper: require("./cdn.helper"),
 };

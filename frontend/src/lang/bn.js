@@ -1,8 +1,9 @@
 export default {
   Name: "নাম",
   Phone: "ফোন",
+  Email: "ইমেইল",
   Password: "পাসওয়ার্ড",
-  "Change Password": "পাসওয়ার্ড পরিবর্তন করুন",
+  "Change Password": "পাসওয়ার্ড পরিবর্তন",
   "New Password": "নতুন পাসওয়ার্ড",
   "Old Password": "পুরাতন পাসওয়ার্ড",
   Address: "ঠিকানা",
@@ -82,19 +83,10 @@ export default {
   "End Date": "শেষ তারিখ",
 
   Timeline: "টাইমলাইন",
-  "Created At": "তৈরি করা হয়েছে",
-  "Updated At": "আপডেট করা হয়েছে",
   createdBy: "<3>তৈরি</3> <2>করেছেন</2>",
   approvedBy: "<3>অনুমোদন</3> <2>করেছেন</2>",
   deleteRequestedBy: "<3>মুছে ফেলার অনুরোধ</3> <2>করেছেন</2>",
   deletedBy: "<3>মুছে</3> <2>ফেলেছেন</2>",
-  "Paid By": "পরিশোধকৃত ব্যক্তি",
-  "Updated By": "আপডেট করেছেন",
-  "Activated On": "সক্রিয় হয়েছে",
-  "Approved On": "অনুমোদিত হয়েছে",
-  "Submitted On": "জমা দেওয়া হয়েছে",
-  "Collected On": "সংগ্রহ করা হয়েছে",
-  "Closed On": "বন্ধের তারিখ",
 
   View: "দেখা",
   "View Detail": "বিস্তারিত দেখুন",
@@ -127,7 +119,7 @@ export default {
   Ok: "ঠিক আছে",
   Yes: "হ্যাঁ",
   No: "না",
-  "Save Changes": "পরিবর্তনগুলো সংরক্ষন",
+  "Save Changes": "পরিবর্তনগুলো সংরক্ষন করুন",
 
   "Forgot Password?": "পাসওয়ার্ড ভুলে গেছেন?",
   "Sign In": "সাইন ইন করুন",
@@ -143,8 +135,10 @@ export default {
   "Please enter a valid number": "একটি সঠিক নম্বর প্রবেশ করুন",
   "Password must be 8 characters or longer":
     "পাসওয়ার্ড ৮ অক্ষর বা তার বেশি হতে হবে",
+  "Please enter a valid email": "সঠিক ইমেইল প্রবেশ করুন",
 
   Permissions: "অনুমতি",
+  "Toggle Light or Dark Theme": "লাইট বা ডার্ক থিম",
   "All Rights Reserved.": "সর্বস্বত্ব সংরক্ষিত",
 
   "Are you sure you want to remove this role?":

@@ -6,6 +6,7 @@ const {
   smsHelper,
   fileHelper,
   firebase,
+  cdnHelper,
 } = require("../helpers");
 
 const { Staff, Otp, Device } = require("../models");
@@ -231,10 +232,16 @@ exports.profile = (req, res) => {
   }
 };
 
+// setTimeout(() => {
+//   cdnHelper.deleteFiles([
+//     "https://cdn.zz.9m.wtf/64ddfabde348c539e3016f4f.webp",
+//   ]);
+// }, 2000);
+
 exports.updateProfile = async (req, res) => {
   try {
     if (req.files?.photo?.length && req.authUser.photo) {
-      fileHelper.deleteFiles(req.authUser.photo);
+      cdnHelper.deleteFiles(req.authUser.photo);
     }
     const update = {};
     if (req.body.password) {

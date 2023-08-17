@@ -289,15 +289,17 @@ const MainApp = () => {
         </ul>
 
         <div className={`${s.actions} flex gap-1 center`}>
-          <button
-            title={t("Change Language")}
-            className={`clear ${s.logoutBtn}`}
-            onClick={() => {
-              i18n.changeLanguage(i18n.language === "bn" ? "en" : "bn");
-            }}
-          >
-            {i18n.language === "bn" ? "EN" : "বাং"}
-          </button>
+          {sidebarOpen && (
+            <button
+              title={t("Change Language")}
+              className={`clear ${s.logoutBtn}`}
+              onClick={() => {
+                i18n.changeLanguage(i18n.language === "bn" ? "en" : "bn");
+              }}
+            >
+              {i18n.language === "bn" ? "EN" : "বাং"}
+            </button>
+          )}
           <button
             title={t("Log out")}
             className={`clear ${s.logoutBtn}`}
