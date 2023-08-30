@@ -29,6 +29,7 @@ export default {
 
   Dashboard: "Dashboard",
   Profile: "প্রোফাইল",
+  Latest: "Latest",
   Income: "Income",
   Incomes: "Incomes",
   "Add New income": "Add New income",

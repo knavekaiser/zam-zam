@@ -21,4 +21,6 @@ module.exports = {
   Milestone: require("./milestone.model"),
   Device: require("./device.model"),
   BugReport: require("./bugReport.model"),
+  FeedPost: require("./feedPost.model"),
+  Comment: require("./comment.model"),
 };

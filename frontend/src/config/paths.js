@@ -4,6 +4,7 @@ const paths = {
   resetPassword: "/reset-password",
 
   home: "/",
+  latest: "/latest",
   milestones: "/milestones",
   incomes: "/incomes",
   expenses: "/expenses",
@@ -14,17 +15,6 @@ const paths = {
   roles: "/roles",
 
   profile: "/profile",
-
-  settings: {
-    baseUrl: "/settings/*",
-    businessInformation: "business-information",
-    bankDetails: "bank-details",
-    ownerDetails: "owner-details",
-    termsAndConditions: "terms-and-conditions",
-    config: "config",
-    collections: "collections",
-    siteConfig: "site-config",
-  },
 };
 
 export default paths;

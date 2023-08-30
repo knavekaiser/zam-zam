@@ -28,37 +28,40 @@ export const useFetch = (url, { headers: hookHeaders } = {}) => {
         ).toString()}`;
       }
       setLoading(true);
-      return fetch(_url, {
-        method: method,
-        headers: {
-          ...(!(typeof payload?.append === "function") && {
-            "Content-Type": "application/json",
+      return new Promise((resolve, reject) => {
+        return fetch(_url, {
+          method: method,
+          headers: {
+            ...(!(typeof payload?.append === "function") && {
+              "Content-Type": "application/json",
+            }),
+            "x-access-token": localStorage.getItem("access_token"),
+            ...hookHeaders,
+            ...headers,
+          },
+          ...(["POST", "PUT", "PATCH", "DELETE"].includes(method) && {
+            body:
+              typeof payload?.append === "function"
+                ? payload
+                : JSON.stringify(payload),
           }),
-          "x-access-token": localStorage.getItem("access_token"),
-          ...hookHeaders,
-          ...headers,
-        },
-        ...(["POST", "PUT", "PATCH", "DELETE"].includes(method) && {
-          body:
-            typeof payload?.append === "function"
-              ? payload
-              : JSON.stringify(payload),
-        }),
-        signal: controller.current.signal,
-      })
-        .then(async (res) => {
-          let data = await res.json();
-          setLoading(false);
-          return { res, data };
+          signal: controller.current.signal,
         })
-        .catch((err) => {
-          setLoading(false);
-          if (["The user aborted a request."].includes(err?.message)) {
-            return { data: {} };
-          }
-          setError(err);
-          throw err;
-        });
+          .then(async (res) => {
+            let data = await res.json();
+            setLoading(false);
+            return resolve({ res, data });
+          })
+          .catch((err) => {
+            setLoading(false);
+            if (["The user aborted a request."].includes(err?.message)) {
+              // return { data: {} };
+              return;
+            }
+            setError(err);
+            reject(err);
+          });
+      });
     },
     [url]
   );

@@ -64,3 +64,59 @@ yup.addMethod(
     });
   }
 );
+
+export const resizeImg = async (file, imgOptions) => {
+  return new Promise((res, rej) => {
+    try {
+      const maxDim = imgOptions?.maxDim || 1200;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = async function () {
+          let w = this.width,
+            h = this.height,
+            aspectRatio = h / w;
+
+          if (w > maxDim || h > maxDim) {
+            if (h > w) {
+              const newHeight = Math.min(maxDim, h);
+              const newWidth = Math.round(newHeight / aspectRatio);
+              h = newHeight;
+              w = newWidth;
+            } else {
+              const newWidth = Math.min(maxDim, w);
+              const newHeight = Math.round(newWidth * aspectRatio);
+              h = newHeight;
+              w = newWidth;
+            }
+          }
+
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          canvas.width = w;
+          canvas.height = h;
+
+          const bitmap = await createImageBitmap(file);
+
+          ctx.drawImage(bitmap, 0, 0, w, h);
+          canvas.toBlob(
+            (blob) =>
+              res(
+                new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webp", {
+                  type: blob.type,
+                })
+              ),
+            "image/webp",
+            0.8
+          );
+        };
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      rej(err);
+    }
+  });
+};

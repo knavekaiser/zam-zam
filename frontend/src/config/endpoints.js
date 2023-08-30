@@ -30,6 +30,10 @@ const endpoints = {
   roles: `${baseApiUrl}/api/roles`,
   staffs: `${baseApiUrl}/api/staffs`,
   permissions: `${baseApiUrl}/api/permissions`,
+  feed: `${baseApiUrl}/api/feed`,
+  likePost: `${baseApiUrl}/api/feed/_id/like`,
+  unlikePost: `${baseApiUrl}/api/feed/_id/unlike`,
+  feedComments: `${baseApiUrl}/api/feed/post_id/comments`,
 
   devices: `${baseApiUrl}/api/devices`,
 };

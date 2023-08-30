@@ -9,6 +9,8 @@ import { Table } from "Components/elements";
 import {
   BsHouseDoor,
   BsHouseDoorFill,
+  BsFilePost,
+  BsFilePostFill,
   BsArrowDownSquareFill,
   BsArrowDownSquare,
   BsArrowUpSquareFill,
@@ -33,6 +35,7 @@ import Home from "./Home";
 import Profile from "./Profile";
 import { Trans, useTranslation } from "react-i18next";
 
+const Latest = lazy(() => import("./Latest"));
 const Incomes = lazy(() => import("./Incomes"));
 const Expenses = lazy(() => import("./Expenses"));
 const Deposits = lazy(() => import("./Deposits"));
@@ -114,6 +117,12 @@ const MainApp = () => {
       ),
       label: "Dashboard",
       path: paths.home,
+    },
+    {
+      icon: <BsFilePostFill />,
+      activeIcon: <BsFilePost className={s.filled} />,
+      label: "Latest",
+      path: paths.latest,
     },
     ...(checkPermission("income_read")
       ? [
@@ -333,6 +342,26 @@ const MainApp = () => {
         <Route
           path={paths.home}
           element={<Home setSidebarOpen={setSidebarOpen} />}
+        />
+        <Route
+          path={paths.latest}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={user.userType === "staff" ? 5 : 3}
+                  trStyle={{
+                    gridTemplateColumns: `6rem 1fr 7rem ${
+                      user.userType === "staff" ? "8rem" : ""
+                    } 3rem`,
+                  }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Latest setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
         />
         <Route
           path={paths.incomes}

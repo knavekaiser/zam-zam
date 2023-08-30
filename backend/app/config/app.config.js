@@ -50,6 +50,7 @@ module.exports = {
     records_created: "{num} records created successfully",
     records_updated: "{num} record updated successfully",
     records_deleted: "{num} records has been deleted successfully",
+    record_not_deleted: "Could not delete record",
 
     field_required: "{field} is required",
     fields_required: "{fields} are required",

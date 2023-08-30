@@ -39,6 +39,26 @@ export const Moment = ({ format, children, ...rest }) => {
   );
 };
 
+export const TimeElapsed = ({ time }) => {
+  const elapsed = (new Date() - new Date(time)) / 1000;
+  if (elapsed < 60) {
+    return <time>{Math.floor(elapsed)}s</time>;
+  }
+  if (elapsed / 60 < 60) {
+    return <time>{Math.floor(elapsed / 60)}m</time>;
+  }
+  if (elapsed / 60 / 60 < 24) {
+    return <time>{Math.floor(elapsed / 60 / 60)}h</time>;
+  }
+  if (elapsed / 60 / 60 / 24 < 30) {
+    return <time>{Math.floor(elapsed / 60 / 60 / 24)}D</time>;
+  }
+  if (elapsed / 60 / 60 / 24 / 30 / 12 < 12) {
+    return <time>{Math.floor(elapsed / 60 / 60 / 24 / 30)}M</time>;
+  }
+  return <time>{Math.floor(elapsed / 60 / 60 / 24 / 30 / 12)}Y</time>;
+};
+
 export const Countdown = ({ time, onEnd, format }) => {
   const time_ref = useRef(new Date(time).getTime() - new Date().getTime());
   const [t, setT] = useState({ day: 0, hour: 0, minute: 0, second: 0 });

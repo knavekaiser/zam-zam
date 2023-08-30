@@ -50,7 +50,11 @@ const upload = (fields, pathname, options) => {
     },
   });
 
-  upload = upload.fields(Array.isArray(fields) ? fields : [fields]);
+  if (!Array.isArray(fields)) {
+    fields = [fields];
+  }
+
+  upload = upload.fields(fields);
 
   return (req, res, next) => {
     upload(req, res, async (err) => {
@@ -64,10 +68,15 @@ const upload = (fields, pathname, options) => {
 
       if (Object.entries(req.files || {}).length) {
         Object.entries(req.files).forEach(([fieldname, files]) => {
+          files = files.map((item) => ({
+            ...item,
+            url: getPath(item),
+          }));
+          req.files[fieldname] = files;
           files.forEach((file) => {
-            const multiple =
-              fields.length &&
-              fields.find((item) => item.name === fieldname).multiple;
+            const multiple = fields?.find(
+              (item) => item.name === fieldname
+            ).multiple;
             if (fieldname.includes(".")) {
               fieldname.split(".").reduce((p, c, i, arr) => {
                 if (i < arr.length - 1) {
@@ -77,16 +86,16 @@ const upload = (fields, pathname, options) => {
                     ? [
                         ...(req.body[fieldname] || []),
                         ...(p[c] || []),
-                        getPath(file),
+                        file.url,
                       ]
-                    : getPath(file);
+                    : file.url;
                 }
                 return p[c];
               }, req.body);
             } else {
               req.body[fieldname] = multiple
-                ? [...(req.body[fieldname] || []), getPath(file)]
-                : getPath(file);
+                ? [...(req.body[fieldname] || []), file.url]
+                : file.url;
             }
           });
 

@@ -127,7 +127,7 @@ const Data = ({
                           {
                             icon: <BiDetail />,
                             label: <Trans>View Detail</Trans>,
-                            callBack: () => {
+                            onClick: () => {
                               setView({ ...item, type: title.slice(0, -1) });
                             },
                           },
@@ -144,7 +144,7 @@ const Data = ({
                             icon: <BiCheckDouble />,
                             label: <Trans>Approve</Trans>,
                             disabled: approvingItem,
-                            callBack: () =>
+                            onClick: () =>
                               Prompt({
                                 type: "confirmation",
                                 message: `Are you sure you want to approve this ${name}?`,
@@ -178,7 +178,7 @@ const Data = ({
                           {
                             icon: <BiEditAlt />,
                             label: <Trans>Edit</Trans>,
-                            callBack: () => {
+                            onClick: () => {
                               setEdit(item);
                               setAddData(true);
                             },
@@ -194,7 +194,7 @@ const Data = ({
                             icon: <FaRegTrashAlt />,
                             label: <Trans>Request Delete</Trans>,
                             disabled: requestingDelete,
-                            callBack: () =>
+                            onClick: () =>
                               Prompt({
                                 type: "confirmation",
                                 message: `Are you sure you want to request deletion of this ${title}?`,
@@ -240,7 +240,7 @@ const Data = ({
                             icon: <FaRegTrashAlt />,
                             label: <Trans>Delete</Trans>,
                             disabled: deletingItem,
-                            callBack: () =>
+                            onClick: () =>
                               Prompt({
                                 type: "confirmation",
                                 message: `Are you sure you want to remove this ${title}?`,

@@ -7,4 +7,5 @@ module.exports = {
   role: require("./role"),
   milestone: require("./milestone"),
   common: require("./common"),
+  feed: require("./feed"),
 };

@@ -97,6 +97,7 @@ exports.create = async (req, res) => {
     ) {
       status = "ongoing";
     }
+    const totalMembers = await Member.count({ status: "active" });
     new Milestone({
       ...req.body,
       addedBy: req.authUser.id,
@@ -110,7 +111,10 @@ exports.create = async (req, res) => {
         await smsHelper.sendSms({
           to: numbers,
           message: smsTemplate.milestone_creation
-            .replace("{amount}", "৳" + (data.amount / 32).toLocaleString("bn"))
+            .replace(
+              "{amount}",
+              "৳" + (data.amount / totalMembers).toLocaleString("bn")
+            )
             .replace("{date}", new Date(data.endDate).formatBN()),
         });
         if (data.status === "ongoing") {

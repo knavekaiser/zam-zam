@@ -104,7 +104,7 @@ const Data = ({ setSidebarOpen }) => {
                         {
                           icon: <BiEditAlt />,
                           label: <Trans>Edit</Trans>,
-                          callBack: () => {
+                          onClick: () => {
                             setEdit(item);
                             setAddRole(true);
                           },
@@ -117,7 +117,7 @@ const Data = ({ setSidebarOpen }) => {
                           icon: <FaRegTrashAlt />,
                           label: <Trans>Delete</Trans>,
                           disabled: deletingRole,
-                          callBack: () =>
+                          onClick: () =>
                             Prompt({
                               type: "confirmation",
                               message: (

@@ -4,7 +4,7 @@ module.exports = mongoose.model(
   "Otp",
   new Schema(
     {
-      user: { type: Schema.Types.String, required: true, unique: true },
+      user: { type: Schema.Types.ObjectId, required: true, unique: true },
       code: { type: Schema.Types.String, required: true },
       expireAt: {
         type: Schema.Types.Date,

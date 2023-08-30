@@ -29,6 +29,7 @@ export default {
 
   Dashboard: "ড্যাশবোর্ড",
   Profile: "প্রোফাইল",
+  Latest: "সর্বশেষ",
   Income: "আয়",
   Incomes: "আয়",
   "Add New income": "নতুন আয় যোগ করুন",

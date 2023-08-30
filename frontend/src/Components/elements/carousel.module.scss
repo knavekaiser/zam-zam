@@ -1,0 +1,24 @@
+@import "../variables";
+
+.outerWrapper {
+  // border: 2px dashed red;
+  overflow: hidden;
+  height: max-content;
+  .innerWrapper {
+    // border: 2px dashed orange;
+    display: flex;
+    overflow: hidden;
+    &:not(.active) {
+      transition: height 0.4s ease-in-out, transform 0.4s ease-in-out;
+    }
+    &:active {
+      cursor: grabbing;
+    }
+    .item {
+      img {
+        width: 100%;
+      }
+      height: min-content;
+    }
+  }
+}
