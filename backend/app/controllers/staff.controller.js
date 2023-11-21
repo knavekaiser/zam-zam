@@ -318,7 +318,7 @@ exports.activate = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const update = {};
-    ["name", "role", "email", "status", "address"].forEach((key) => {
+    ["name", "role", "email", "phone", "status", "address"].forEach((key) => {
       if (req.body[key]) {
         update[key] = req.body[key];
       }
