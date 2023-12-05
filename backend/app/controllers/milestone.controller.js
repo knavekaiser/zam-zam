@@ -16,6 +16,8 @@ exports.findAll = async (req, res) => {
     }
     if (req.query.status) {
       conditions.status = { $in: req.query.status.split(",") };
+    } else {
+      conditions.status = { $ne: "deleted" };
     }
 
     if (req.query.from_date && req.query.to_date) {

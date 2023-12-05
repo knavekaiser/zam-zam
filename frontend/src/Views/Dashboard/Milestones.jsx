@@ -16,6 +16,7 @@ export default function Deposits({ setSidebarOpen }) {
     { label: <Trans>Upcoming</Trans>, value: "upcoming" },
     { label: <Trans>Complete</Trans>, value: "complete" },
     { label: <Trans>Past Due</Trans>, value: "past-due" },
+    { label: <Trans>Deleted</Trans>, value: "deleted" },
   ];
   return (
     <DataTable
