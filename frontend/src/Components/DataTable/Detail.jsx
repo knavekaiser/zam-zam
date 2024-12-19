@@ -1,70 +1,120 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CountUp, Moment } from "Components/elements";
-import { FaPlus, FaCheck, FaTimes } from "react-icons/fa";
+import { FaPlus, FaCheck, FaTimes, FaRegEye } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { motion } from "framer-motion";
 import s from "./dataTable.module.scss";
 import { status } from "config";
 import { Trans, useTranslation } from "react-i18next";
+import { Modal } from "Components/modal";
 
 export default function Detail({ data }) {
+  const [viewFile, setViewFile] = useState(null);
   return (
-    <div className={`grid gap-1 p-1 ${s.detailWrapper}`}>
-      {"member" in data && (
-        <div className={s.user}>
-          <motion.img
-            initial={{
-              rotate: 30,
-              y: 20,
-              opacity: 0,
-              originX: "center",
-              originY: "center",
-            }}
-            animate={{
-              rotate: 0,
-              y: 0,
-              opacity: 1,
-              originX: "center",
-              originY: "center",
-            }}
-            transition={{ type: "easeOut", delay: 0.15, duration: 0.5 }}
-            src={data.member?.photo || "/asst/avatar.webp"}
-          />
-          <div className={s.userDetail}>
-            <span className={s.name}>{data.member?.name}</span>
-            <span className={s.phone}>
-              <a href={`tel:${data.member?.phone}`}>{data.member.phone}</a>
-            </span>
+    <>
+      <div className={`grid gap-1 p-1 ${s.detailWrapper}`}>
+        {"member" in data && (
+          <div className={s.user}>
+            <motion.img
+              initial={{
+                rotate: 30,
+                y: 20,
+                opacity: 0,
+                originX: "center",
+                originY: "center",
+              }}
+              animate={{
+                rotate: 0,
+                y: 0,
+                opacity: 1,
+                originX: "center",
+                originY: "center",
+              }}
+              transition={{ type: "easeOut", delay: 0.15, duration: 0.5 }}
+              src={data.member?.photo || "/asst/avatar.webp"}
+            />
+            <div className={s.userDetail}>
+              <span className={s.name}>{data.member?.name}</span>
+              <span className={s.phone}>
+                <a href={`tel:${data.member?.phone}`}>{data.member.phone}</a>
+              </span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <p className={s.amount}>
-        <span className={s.currencySymbol}>৳</span>
-        <span className={s.number}>
-          <CountUp number={data.amount} offset={10000} duration={1000} />
-        </span>
-      </p>
-
-      <div className={s.trDetail}>
-        <p className={s.summary}>
-          <Moment format="MMM dd, yyyy" className={s.date}>
-            {data.date}
-          </Moment>
-          •{" "}
-          <span>
-            <Trans>{data.type}</Trans>
-          </span>{" "}
-          •{" "}
-          <span>
-            <Trans>{status[data.status] || data.status}</Trans>
+        <p className={s.amount}>
+          <span className={s.currencySymbol}>৳</span>
+          <span className={s.number}>
+            <CountUp number={data.amount} offset={10000} duration={1000} />
           </span>
         </p>
-        <p className={s.remark}>{data.remark || data.description}</p>
+
+        <div className={s.trDetail}>
+          <p className={s.summary}>
+            <Moment format="MMM dd, yyyy" className={s.date}>
+              {data.date}
+            </Moment>
+            •{" "}
+            <span>
+              <Trans>{data.type}</Trans>
+            </span>{" "}
+            •{" "}
+            <span>
+              <Trans>{status[data.status] || data.status}</Trans>
+            </span>
+          </p>
+          <p className={s.remark}>{data.remark || data.description}</p>
+        </div>
+
+        {data?.documents?.length > 0 && (
+          <ul className={s.files}>
+            {data.documents.map((doc, i) => (
+              <li key={doc._id}>
+                <p className="ellipsis">{doc.name}</p>
+                <div className={s.actions}>
+                  {doc.mime?.startsWith("image") ? (
+                    <button
+                      className="btn clear iconOnly"
+                      onClick={() => setViewFile(doc)}
+                    >
+                      <FaRegEye />
+                    </button>
+                  ) : (
+                    <a
+                      target="_blank"
+                      href={import.meta.env.VITE_R2_PUBLIC_URL + doc.url}
+                    >
+                      <button className="btn clear iconOnly">
+                        <FaRegEye />
+                      </button>
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {data.timeline?.length > 0 && <Timeline timeline={data.timeline} />}
       </div>
 
-      {data.timeline?.length > 0 && <Timeline timeline={data.timeline} />}
-    </div>
+      <Modal
+        open={viewFile}
+        head
+        label={"File"}
+        className={s.fileViwerModal}
+        setOpen={() => {
+          setViewFile(null);
+        }}
+      >
+        <div className={s.fileViewer}>
+          <img
+            src={import.meta.env.VITE_R2_PUBLIC_URL + viewFile?.url}
+            alt={viewFile?.name}
+          />
+        </div>
+      </Modal>
+    </>
   );
 }
 
@@ -79,6 +129,7 @@ const Timeline = ({ timeline, reversed }) => {
         <div className={s.zigzag} />
       </div>
       <ul
+        className={s.timelineSteps}
         style={
           timeline.length === 1
             ? {

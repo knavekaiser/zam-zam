@@ -9,20 +9,30 @@ module.exports = function (app) {
   router.post(
     "/",
     authJwt.verifyToken(),
-    file.upload({ name: "media", multiple: true }, "feed_media", {
-      fileSize: appConfig.supportedImageSizes,
-      fileTypes: appConfig.supportedImageTypes,
-    }),
+    file.upload([
+      {
+        name: "media",
+        multiple: true,
+        pathname: "feed_media/",
+        mimetype: appConfig.supportedImageSizes,
+        size: appConfig.supportedImageTypes,
+      },
+    ]),
     validate(schema.addPost),
     controller.post
   );
   router.put(
     "/:_id",
     authJwt.verifyToken(),
-    file.upload({ name: "media", multiple: true }, "feed_media", {
-      fileSize: appConfig.supportedImageSizes,
-      fileTypes: appConfig.supportedImageTypes,
-    }),
+    file.upload([
+      {
+        name: "media",
+        multiple: true,
+        pathname: "feed_media/",
+        mimetype: appConfig.supportedImageSizes,
+        size: appConfig.supportedImageTypes,
+      },
+    ]),
     validate(schema.addPost),
     controller.updatePost
   );
@@ -39,10 +49,15 @@ module.exports = function (app) {
   router.post(
     "/:parent_id/comments",
     authJwt.verifyToken(),
-    file.upload({ name: "media", multiple: true }, "feed_media", {
-      fileSize: appConfig.supportedImageSizes,
-      fileTypes: appConfig.supportedImageTypes,
-    }),
+    file.upload([
+      {
+        name: "media",
+        multiple: true,
+        pathname: "feed_comments/",
+        mimetype: appConfig.supportedImageSizes,
+        size: appConfig.supportedImageTypes,
+      },
+    ]),
     controller.postComment
   );
 

@@ -38,7 +38,15 @@ button {
   font-family: "Roboto", "SolaimanLipi", -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
+  &:not(.clear) {
+    svg {
+      font-size: 1.25em;
+    }
+  }
   &.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     border-radius: 2rem;
     font-weight: 600;
     font-size: 1rem;
@@ -117,6 +125,10 @@ button {
       border: 1px solid $grey2;
       border-radius: 4px;
     }
+  }
+  &:disabled {
+    opacity: 0.75;
+    filter: saturate(0);
   }
 }
 
@@ -499,27 +511,30 @@ body {
     .glass {
       background: linear-gradient(
         180deg,
-        rgba(var(--bg-1), 0.2) 0%,
-        rgba(var(--bg-1), 0.5) 100%
+        rgba(var(--bg-1), 0.7) 0%,
+        rgba(var(--bg-1), 0.9) 100%
       );
-      border: 1px solid rgba(white, 0.2);
+      outline: 1px solid rgba(white, 0.05);
+      outline-offset: -1px;
     }
   }
   &.dark {
     .glass {
       background: linear-gradient(
         180deg,
-        rgba(var(--bg-1), 0.4) 0%,
-        rgba(var(--bg-1), 0.98) 100%
+        rgba(var(--bg-1), 0.7) 0%,
+        rgba(var(--bg-1), 0.9) 100%
       );
-      border: 1px solid rgba(white, 0.03);
+      outline: 1px solid rgba(white, 0.05);
+      outline-offset: -1px;
     }
   }
 }
 
 .glass {
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(white, 0.1);
+  outline: 1px solid rgba(white, 0.05);
+  outline-offset: -1px;
 }
 
 @keyframes loading {
@@ -528,5 +543,18 @@ body {
   }
   100% {
     left: 100%;
+  }
+}
+
+.spin {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

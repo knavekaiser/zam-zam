@@ -132,6 +132,14 @@ export default function Deposits({ setSidebarOpen }) {
           name: "remark",
           label: "Remark",
         },
+        {
+          fieldType: "fileInput",
+          name: "documents",
+          multiple: 5,
+          dataType: "array",
+          label: "Documents",
+          accept: "image/*,application/pdf",
+        },
       ]}
     />
   );

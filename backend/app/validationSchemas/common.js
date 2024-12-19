@@ -1,5 +1,4 @@
 const yup = require("yup");
-const { Member } = require("../models");
 
 module.exports = {
   addDevice: yup.object({

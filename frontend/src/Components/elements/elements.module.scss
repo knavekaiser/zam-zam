@@ -218,53 +218,26 @@
 }
 .fileInput {
   .label {
+    font-size: 0.8rem;
+    white-space: nowrap;
     margin-bottom: 0.2rem;
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    font-weight: 600;
-    span {
-      cursor: pointer;
-      text-decoration: underline;
-      color: $primary-color;
-    }
-  }
-  .inputField {
-    border-radius: 4px;
-    border: 1px solid #b7b7b7;
-    label {
-      cursor: pointer;
-      display: grid;
-      grid-template-columns: 1fr max-content;
-      align-items: center;
-      font-size: 13.5px;
-      .fileNames {
-        padding: 0 6px;
-        color: #747474;
-        max-width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .btn {
-        border-radius: 0 3px 3px 0;
-        padding: 5px 8px;
-        background: $primary-color;
-        // color: white;
-      }
+    color: var(--text-color-1);
+    .req {
+      color: red;
     }
   }
   .files {
-    border: 1px solid $grey2;
+    border: 1px solid rgb(var(--font-color), 0.3);
     border-radius: 0.5rem;
     padding: 1rem;
     display: flex;
     flex-wrap: wrap;
     grid-gap: 1rem;
     li {
-      border: 1px solid $grey2;
+      overflow: hidden;
+      border: 1px solid rgb(var(--font-color), 0.3);
       border-radius: 0.5rem;
-      background: white;
+      background: rgb(var(--bg-1));
       height: 120px;
       width: 120px;
       overflow: hidden;
@@ -272,36 +245,148 @@
       place-items: center;
       position: relative;
       .clear {
-        background: rgba(255, 255, 255, 0.5);
+        background: rgba(var(--bg-1), 0.5);
         border-radius: 0.5rem;
-        color: $red;
         font-size: 2rem;
         top: 0rem;
         right: 0rem;
         position: absolute;
+        z-index: 10;
+        padding: 0;
       }
       &.file {
-        img {
-          max-width: 100%;
-          max-height: 100%;
+        position: relative;
+        .videoIcon {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: rgba(255, 255, 255, 0.719);
+          font-size: 3rem;
+        }
+        img,
+        video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
         }
       }
-      &.fileInput {
+      &.fileInputUploadBtn {
         label {
           display: grid;
-          color: $grey3;
           font-size: 1.6rem;
           width: 100%;
           height: 100%;
           cursor: pointer;
+          background: rgb(250, 251, 252);
+          color: rgb(155, 155, 155);
           &:hover {
-            background: $grey1;
+            background: rgb(245, 246, 248);
           }
           svg {
             display: block;
             margin: auto;
+            &.spinner {
+              font-size: 2rem;
+              animation: spin 1.5s linear infinite;
+            }
           }
         }
+      }
+    }
+    &.avatar {
+      padding: 0;
+      border: none;
+      li {
+        height: 150px;
+        width: 150px;
+        margin: auto;
+        border-radius: 50%;
+        button {
+          top: unset;
+          bottom: 0;
+          right: unset;
+          width: 100%;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+  .inputField {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    label {
+      border: 2px dashed rgb(var(--font-color), 0.1);
+      cursor: pointer;
+      display: grid;
+      aspect-ratio: 3.5;
+      font-size: 13.5px;
+      background: rgb(var(--bg-1));
+      color: rgb(var(--font-color), 0.4);
+      place-items: center;
+      &:hover {
+        background: rgb(var(--bg-1), 0.5);
+      }
+      &.dragOver {
+        border-color: rgb(var(--font-color), 0.2);
+        background: rgb(var(--primary-color-rgb), 0.025);
+      }
+      .wrapper {
+        pointer-events: none;
+        place-items: center;
+        display: grid;
+      }
+      .downlaod {
+        path:nth-child(2) {
+          animation: updown 0.5s cubic-bezier(0.04, 0.34, 0.65, 0.88) infinite
+            alternate;
+        }
+      }
+      .icon {
+        margin: auto;
+        font-size: 2rem;
+        border-radius: 0 0.5rem 0.5rem 0;
+        padding: 0.7rem 1rem;
+      }
+      .hint {
+        margin: auto;
+      }
+    }
+  }
+  &:has(.inputField) {
+    .files {
+      border-bottom: none;
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+  }
+  &:has(.files) {
+    .inputField {
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+  }
+  .fileTable {
+    table {
+      width: 100%;
+      border: 1px solid rgb(var(--font-color), 0.2);
+      margin-top: 0.5rem;
+      border-radius: 0.5rem;
+
+      tr {
+        td {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .tableActions {
+          margin: auto;
+          margin-right: 0;
+          button {
+            color: gray;
+            font-size: 1.25rem;
+          }
+        }
+        grid-template-columns: 1fr 3.5rem;
       }
     }
   }
@@ -311,37 +396,6 @@
     }
     .files {
       border-color: red;
-    }
-    .errMsg {
-      font-size: 10pt;
-      color: red;
-      text-align: left;
-      display: block;
-    }
-  }
-}
-.switchInput {
-  display: grid;
-  label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-bottom: 0.2rem;
-  }
-  .btns {
-    border: 1px solid rgb(29, 103, 145);
-    width: max-content;
-    border-radius: 5px;
-    overflow: hidden;
-    cursor: pointer;
-    span {
-      font-size: 0.9rem;
-      display: inline-block;
-      padding: 6px 20px;
-      background-color: rgb(231, 245, 254);
-    }
-    .active {
-      background: #3f5183;
-      // color: white;
     }
   }
 }
@@ -398,44 +452,6 @@
     font-size: 10pt;
     text-align: left;
     flex-basis: 100%;
-  }
-}
-.customRadio {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  grid-gap: 1rem;
-  input {
-    display: none;
-  }
-  .options {
-    display: flex;
-    grid-gap: 0.75rem;
-    flex-wrap: wrap;
-    .option {
-      -webkit-user-select: none; /* Safari */
-      -ms-user-select: none; /* IE 10 and IE 11 */
-      user-select: none; /* Standard syntax */
-      padding: 0.25rem 0.75rem;
-      border: 1px solid $grey3;
-      background: white;
-      min-height: 25px;
-      min-width: 25px;
-      display: grid;
-      place-items: center;
-      font-size: 14px;
-      border-radius: 5px;
-      &.disabled {
-        pointer-events: none;
-        opacity: 0.5;
-      }
-      cursor: pointer;
-      &.selected {
-        // color: white;
-        background: $primary-color-dark2;
-      }
-    }
   }
 }
 .toggle {
@@ -637,24 +653,6 @@
   background: rgba(0, 0, 0, 0) !important;
 }
 
-.fileInputModal {
-  .container {
-    max-width: 30rem;
-    padding: 10px;
-    table {
-      width: 100%;
-      tr {
-        td {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        grid-template-columns: 1fr 4rem;
-      }
-    }
-  }
-}
-
 .imgInput {
   font-size: 2rem;
   label {
@@ -692,51 +690,6 @@
   }
   .actions {
     padding-top: 0;
-  }
-}
-
-.calendarInput {
-  display: grid;
-  label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 0.2rem;
-    white-space: nowrap;
-  }
-  .calendarWrapper {
-    overflow: hidden;
-    border-radius: 4px;
-    width: max-content;
-    border: 1px solid #b7b7b7;
-    .selected {
-      font-weight: bold;
-      position: relative;
-      &::before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        border-radius: 6px;
-        transform: translate(-50%, -50%);
-        height: 2.85em;
-        width: 3.5em;
-        margin: auto;
-        background: rgba($primary-color, 0.3);
-        z-index: -1;
-      }
-    }
-    .actions {
-      padding: 8px;
-      padding-top: 0;
-      display: flex;
-      grid-gap: 12px;
-    }
-  }
-  &:focus-within {
-    .calendarWrapper {
-      border-color: $primary-color;
-    }
   }
 }
 

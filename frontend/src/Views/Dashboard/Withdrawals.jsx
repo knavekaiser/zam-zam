@@ -115,6 +115,14 @@ export default function Withdrawals({ setSidebarOpen }) {
           name: "remark",
           label: "Remark",
         },
+        {
+          fieldType: "fileInput",
+          name: "documents",
+          multiple: 5,
+          dataType: "array",
+          label: "Documents",
+          accept: "image/*,application/pdf",
+        },
       ]}
     />
   );

@@ -25,11 +25,15 @@ module.exports = function (app) {
   router.put(
     "/profile",
     authJwt.verifyToken(),
-    file.upload({ name: "photo" }, "profile_photo", {
-      fileSize: appConfig.supportedImageSizes,
-      fileTypes: appConfig.supportedImageTypes,
-      override: true,
-    }),
+    file.upload([
+      {
+        name: "photo",
+        store: "keyOnly",
+        pathname: "member_profile/",
+        mimetype: appConfig.supportedImageSizes,
+        size: appConfig.supportedImageTypes,
+      },
+    ]),
     validate(schema.update),
     controller.updateProfile
   );

@@ -255,14 +255,21 @@ exports.updateProfile = async (req, res) => {
       }
       update.password = appHelper.generateHash(req.body.password.toString());
     }
-    [("name", "email", "photo")].forEach((key) => {
+    ["name", "email", "photo"].forEach((key) => {
       if (key in req.body) {
         update[key] = req.body[key];
       }
     });
+    const filesToDelete = [];
+    if (req.authUser.photo && req.files?.photo?.length) {
+      filesToDelete.push(req.authUser.photo);
+    }
     Staff.findOneAndUpdate({ _id: req.authUser._id }, update, { new: true })
       .populate("role", "name permissions")
-      .then((data) =>
+      .then(async (data) => {
+        if (filesToDelete.length) {
+          cdnHelper.deleteFiles(filesToDelete);
+        }
         responseFn.success(
           res,
           {
@@ -275,8 +282,8 @@ exports.updateProfile = async (req, res) => {
             },
           },
           responseStr.record_updated
-        )
-      )
+        );
+      })
       .catch((error) => responseFn.error(res, {}, error.message, 500));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);

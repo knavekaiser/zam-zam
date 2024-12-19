@@ -16,6 +16,14 @@ module.exports = mongoose.model(
         default: "pending-approval",
         required: true,
       },
+      documents: [
+        new Schema({
+          name: { type: Schema.Types.String, required: true },
+          url: { type: Schema.Types.String, required: true },
+          mime: { type: Schema.Types.String, required: true },
+          size: { type: Schema.Types.Number, required: true },
+        }),
+      ],
       timeline: [
         new Schema({
           action: { type: Schema.Types.String, required: true },

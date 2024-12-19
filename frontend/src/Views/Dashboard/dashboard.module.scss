@@ -8,10 +8,10 @@
   grid-template-columns: 6rem 1fr;
   grid-template-rows: 1fr;
   transition: grid-template-columns 0.5s cubic-bezier(0.6, 0.15, 0.37, 1.01);
-  &:has(.header.open) {
+  &:has(.sidebar.open) {
     grid-template-columns: 15rem 1fr;
   }
-  .header {
+  .sidebar {
     z-index: 100;
     background: rgb(var(--bg-2));
     // color: white;
@@ -73,6 +73,8 @@
     .links {
       display: grid;
       width: 100%;
+      overflow-y: auto;
+      overflow-x: clip;
       li {
         display: block;
         transition: background 0.2s ease-in-out;
@@ -347,7 +349,7 @@
 
 @media only screen and (max-width: 1220px) {
   .container {
-    .header {
+    .sidebar {
       border-right: 1px solid rgba(white, 0.1);
       :global(.light) & {
         border-color: rgba(black, 0.1);
@@ -359,14 +361,14 @@
 @media only screen and (max-width: 480px) {
   .container {
     grid-template-columns: 1fr !important;
-    &:has(.header.open) {
+    &:has(.sidebar.open) {
       .sidebarBackdrop {
         backdrop-filter: blur(5px);
         // background: rgba(black, 0.2);
         pointer-events: all;
       }
     }
-    .header {
+    .sidebar {
       position: absolute;
       height: calc((var(--vh) * 100));
       width: 70%;
@@ -417,11 +419,12 @@
 
 @media only screen and (max-height: 700px) {
   .container {
-    .header {
+    .sidebar {
       grid-gap: 0.5rem;
       .links {
         overflow-y: auto;
         overflow-x: hidden;
+        max-height: 75dvh;
         a {
           padding: 1rem calc(2rem - 6px);
         }
@@ -432,13 +435,14 @@
 
 @media only screen and (max-height: 480px) {
   .container {
-    .header {
+    .sidebar {
       &:not(.open) {
         .user {
           transform: scale(0);
           margin-bottom: -8rem;
         }
-        padding-bottom: 2rem;
+        grid-gap: 0;
+        // padding-bottom: 2rem;
         .logoutBtn {
           transform: translateY(0.5rem);
         }

@@ -255,10 +255,18 @@ exports.updateProfile = async (req, res) => {
       }
     });
 
+    const filesToDelete = [];
+    if (req.authUser.photo && req.files?.photo?.length) {
+      filesToDelete.push(req.authUser.photo);
+    }
+
     Member.findOneAndUpdate({ _id: req.authUser._id }, update, { new: true })
       .populate("role", "name permissions")
-      .then((data) => {
+      .then(async (data) => {
         if (data) {
+          if (filesToDelete.length) {
+            await cdnHelper.deleteFiles(filesToDelete);
+          }
           return responseFn.success(
             res,
             {
@@ -397,7 +405,7 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const update = {};
-    ["name", "role", "email", 'phone', "status", "address"].forEach((key) => {
+    ["name", "role", "email", "phone", "status", "address"].forEach((key) => {
       if (req.body[key]) {
         update[key] = req.body[key];
       }
@@ -426,8 +434,18 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
+    const member = await Member.findOne({ _id: req.params._id });
+    const filesToDelete = [];
+    if (member.photo) {
+      filesToDelete.push(member.photo);
+    }
     Member.deleteOne({ _id: req.params._id })
-      .then((data) => responseFn.success(res, {}, responseStr.record_deleted))
+      .then(async (data) => {
+        if (filesToDelete.length) {
+          await cdnHelper.deleteFiles(filesToDelete);
+        }
+        return responseFn.success(res, {}, responseStr.record_deleted);
+      })
       .catch((error) => responseFn.error(res, {}, error.message, 500));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);

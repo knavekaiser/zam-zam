@@ -89,6 +89,14 @@ export default function Deposits({ setSidebarOpen }) {
           label: "Description",
           required: true,
         },
+        {
+          fieldType: "fileInput",
+          name: "documents",
+          multiple: 5,
+          dataType: "array",
+          label: "Documents",
+          accept: "image/*,application/pdf",
+        },
       ]}
     />
   );

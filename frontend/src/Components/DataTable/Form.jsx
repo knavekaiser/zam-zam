@@ -1,6 +1,12 @@
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Input, Textarea, moment, Select } from "Components/elements";
+import {
+  Input,
+  Textarea,
+  moment,
+  Select,
+  FileInput,
+} from "Components/elements";
 import { useYup, useFetch } from "hooks";
 import { Prompt } from "Components/modal";
 import * as yup from "yup";
@@ -9,6 +15,7 @@ import { endpoints } from "config";
 import { SiteContext } from "@/SiteContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { Trans, useTranslation } from "react-i18next";
+import { CgSpinner } from "react-icons/cg";
 
 export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   const {
@@ -29,6 +36,9 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
               ["textarea", "input", "combobox", "select"].includes(f.fieldType)
             ) {
               field = yup.string();
+            }
+            if (f.fieldType === "fileInput") {
+              field = f.multiple ? yup.array().of(yup.mixed()) : yup.mixed();
             }
             if (f.type === "number") {
               field = yup
@@ -71,8 +81,8 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   } = useFetch(endpoint + `/${edit?._id || ""}`);
 
   useEffect(() => {
+    const _edit = {};
     if (edit?._id) {
-      const _edit = {};
       schema.forEach((field) => {
         if (["input", "textarea"].includes(field.fieldType)) {
           if (field.type === "date") {
@@ -88,10 +98,18 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
           } else {
             _edit[field.name] = edit[field.name] || "";
           }
+        } else if (field.fieldType === "fileInput") {
+          _edit[field.name] = edit[field.name] || (field.multiple ? [] : null);
         }
       });
-      reset(_edit);
+    } else {
+      schema.forEach((field) => {
+        if (field.type === "date") {
+          _edit[field.name] = moment(new Date(), "yyyy-MM-dd");
+        }
+      });
     }
+    reset(_edit);
   }, [edit]);
 
   const fields = schema.map(({ fieldType, ...item }) => {
@@ -137,6 +155,8 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
           error={errors.phone}
         />
       );
+    } else if (fieldType === "fileInput") {
+      return <FileInput key={item.name} control={control} {...item} />;
     }
     return null;
   });
@@ -145,10 +165,36 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
     <div className={`grid gap-1 p-1 ${s.addDataForm}`}>
       <form
         onSubmit={handleSubmit((values) => {
-          (edit ? updateInvoice : saveInvoice)({
-            ...values,
-            // status: values.status,
-          }).then(({ data }) => {
+          let payload = {};
+          if (schema.some((item) => item.fieldType === "fileInput")) {
+            payload = new FormData();
+            const json = {};
+            schema.forEach((field) => {
+              if (field.fieldType === "fileInput") {
+                if (field.multiple) {
+                  (values[field.name] || []).forEach((file) => {
+                    payload.append(
+                      field.name,
+                      file?.url ? JSON.stringify(file) : file
+                    );
+                  });
+                } else {
+                  const file = values[field.name];
+                  payload.append(
+                    field.name,
+                    file?.url ? JSON.stringify(file) : file
+                  );
+                }
+              } else {
+                json[field.name] = values[field.name];
+              }
+            });
+            payload.append("json", JSON.stringify(json));
+          } else {
+            payload = values;
+          }
+
+          (edit ? updateInvoice : saveInvoice)(payload).then(({ data }) => {
             if (data.errors) {
               return Prompt({ type: "error", message: data.message });
             } else if (data.success) {
@@ -166,6 +212,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
             disabled={loading}
             title={<Trans>Submit</Trans>}
           >
+            {loading && <CgSpinner className="spin" />}{" "}
             <Trans>{edit ? "Update" : "Submit"}</Trans>
           </button>
         </div>

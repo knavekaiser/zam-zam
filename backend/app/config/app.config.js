@@ -13,7 +13,7 @@ module.exports = {
       res,
       errors = {},
       message = "Some error occurred. Please try again later.",
-      statusCode = 200
+      statusCode = 500
     ) => {
       return res.status(statusCode).send({
         success: false,
@@ -82,8 +82,11 @@ module.exports = {
   uploadDir: "/assets/uploads",
   otpTimeout: 120, //in seconds
   passwordResetOtpAttepts: 5,
-  supportedImageSizes: 5, // 5MB
+  supportedImageSizes: 2, // 5MB
   supportedImageTypes: /jpeg|jpg|png|svg|ico|css|webp/,
   supportedFileSizes: 10, // 10MB
-  supportedFileTypes: /jpeg|jpg|png|svg|pdf|ico|css/,
+  supportedFileTypes: /webp|jpeg|jpg|png|svg|pdf|ico|css/,
+
+  supportedDocTypes: /webp|jpeg|jpg|png|pdf|docx/,
+  supportedDocSize: 10, // 10MB
 };

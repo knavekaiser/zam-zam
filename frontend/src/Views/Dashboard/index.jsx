@@ -118,12 +118,12 @@ const MainApp = () => {
       label: "Dashboard",
       path: paths.home,
     },
-    {
-      icon: <BsFilePostFill />,
-      activeIcon: <BsFilePost className={s.filled} />,
-      label: "Latest",
-      path: paths.latest,
-    },
+    // {
+    //   icon: <BsFilePostFill />,
+    //   activeIcon: <BsFilePost className={s.filled} />,
+    //   label: "Latest",
+    //   path: paths.latest,
+    // },
     ...(checkPermission("income_read")
       ? [
           {
@@ -239,7 +239,7 @@ const MainApp = () => {
 
   return (
     <div className={s.container}>
-      <div className={`${s.header} ${sidebarOpen ? s.open : ""}`}>
+      <div className={`${s.sidebar} ${sidebarOpen ? s.open : ""}`}>
         <Link to={paths.profile} onClick={() => setSidebarOpen(false)}>
           <div
             className={`${s.user} ${user.userType === "staff" ? s.staff : ""}`}
@@ -343,7 +343,7 @@ const MainApp = () => {
           path={paths.home}
           element={<Home setSidebarOpen={setSidebarOpen} />}
         />
-        <Route
+        {/* <Route
           path={paths.latest}
           element={
             <Suspense
@@ -362,7 +362,7 @@ const MainApp = () => {
               <Latest setSidebarOpen={setSidebarOpen} />
             </Suspense>
           }
-        />
+        /> */}
         <Route
           path={paths.incomes}
           element={

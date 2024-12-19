@@ -1,7 +1,7 @@
 const {
   appConfig: { responseFn, responseStr, smsTemplate },
 } = require("../config");
-const { smsHelper, firebase } = require("../helpers");
+const { smsHelper, firebase, cdnHelper } = require("../helpers");
 
 const { Deposit, Milestone } = require("../models");
 
@@ -85,8 +85,16 @@ exports.create = async (req, res) => {
         });
         return responseFn.success(res, { data });
       })
-      .catch((err) => responseFn.error(res, {}, err.message));
+      .catch((err) => {
+        if (req.files?.length) {
+          cdnHelper.deleteFiles(req.files.map((file) => file.path));
+        }
+        return responseFn.error(res, {}, err.message);
+      });
   } catch (error) {
+    if (req.files?.length) {
+      cdnHelper.deleteFiles(req.files.map((file) => file.path));
+    }
     return responseFn.error(res, {}, error.message, 500);
   }
 };
@@ -97,19 +105,25 @@ exports.update = async (req, res) => {
       delete req.body[item];
     });
     const deposit = await Deposit.findOne({ _id: req.params._id });
+
+    const filesToDelete = [];
+    if (req.body.documents) {
+      deposit.documents?.forEach((doc) => {
+        if (!req.body.documents.find((d) => d.url === doc.url)) {
+          filesToDelete.push(doc.url);
+        }
+      });
+    }
+
     Deposit.findOneAndUpdate(
       { _id: req.params._id },
       {
         ...req.body,
-        status: "pending-update",
         $push: {
           timeline: {
             $each: [
               {
-                action:
-                  deposit.status === "pending-update"
-                    ? "Update Approved"
-                    : "Updated",
+                action: "Updated",
                 staff: req.authUser._id,
                 dateTime: new Date(),
               },
@@ -127,10 +141,19 @@ exports.update = async (req, res) => {
           body: `A Deposit has been updated. Approve or Disapprove`,
           click_action: `${process.env.SITE_URL}/deposits`,
         });
+        await cdnHelper.deleteFiles(filesToDelete);
         return responseFn.success(res, { data }, responseStr.record_updated);
       })
-      .catch((err) => responseFn.error(res, {}, err.message));
+      .catch((err) => {
+        if (req.files?.length) {
+          cdnHelper.deleteFiles(req.files.map((file) => file.path));
+        }
+        return responseFn.error(res, {}, err.message);
+      });
   } catch (error) {
+    if (req.files?.length) {
+      cdnHelper.deleteFiles(req.files.map((file) => file.path));
+    }
     return responseFn.error(res, {}, error.message, 500);
   }
 };
@@ -253,7 +276,9 @@ exports.delete = async (req, res) => {
         },
       }
     )
-      .then((num) => responseFn.success(res, {}, responseStr.record_deleted))
+      .then(async (num) => {
+        return responseFn.success(res, {}, responseStr.record_deleted);
+      })
       .catch((err) => responseFn.error(res, {}, err.message, 500));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);

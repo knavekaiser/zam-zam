@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-export const useFetch = (url, { headers: hookHeaders } = {}) => {
+export const useFetch = (url) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const controller = useRef();
@@ -23,20 +23,19 @@ export const useFetch = (url, { headers: hookHeaders } = {}) => {
         });
       }
       if (query) {
-        _url += `${_url.includes("?") ? "" : "?"}&${new URLSearchParams(
-          query
+        _url += `${_url.includes("?") ? "&" : "?"}${new URLSearchParams(
+          JSON.parse(JSON.stringify(query))
         ).toString()}`;
       }
       setLoading(true);
       return new Promise((resolve, reject) => {
-        return fetch(_url, {
-          method: method,
+        fetch(_url, {
+          method,
           headers: {
             ...(!(typeof payload?.append === "function") && {
               "Content-Type": "application/json",
             }),
             "x-access-token": localStorage.getItem("access_token"),
-            ...hookHeaders,
             ...headers,
           },
           ...(["POST", "PUT", "PATCH", "DELETE"].includes(method) && {
@@ -48,18 +47,36 @@ export const useFetch = (url, { headers: hookHeaders } = {}) => {
           signal: controller.current.signal,
         })
           .then(async (res) => {
-            let data = await res.json();
+            let data = null;
+            try {
+              data = await res.json();
+            } catch (err) {
+              throw new Error("Network Error");
+            }
             setLoading(false);
-            return resolve({ res, data });
+            resolve({ res, data });
           })
           .catch((err) => {
             setLoading(false);
-            if (["The user aborted a request."].includes(err?.message)) {
-              // return { data: {} };
-              return;
+            if (err?.message === "Network Error") {
+              reject(new Error("Network error. Please try again later."));
+            } else if (["Failed to fetch"].includes(err?.message)) {
+              reject(
+                new Error(
+                  "Request failed. Make sure you are connected to the internet."
+                )
+              );
+            } else if (
+              [
+                "The user aborted a request.",
+                "signal is aborted without reason",
+              ].includes(err?.message)
+            ) {
+              // user aborted
+            } else {
+              setError(err);
+              reject(err);
             }
-            setError(err);
-            reject(err);
           });
       });
     },
