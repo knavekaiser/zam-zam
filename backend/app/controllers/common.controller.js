@@ -63,6 +63,7 @@ exports.dashboardData = async (req, res) => {
           },
         },
       },
+      { $sort: { _id: -1 } },
     ];
     const processData = (data) =>
       data.reduce(
@@ -72,7 +73,7 @@ exports.dashboardData = async (req, res) => {
             ...c.data.map((item) => item.y),
           ].splice(-12);
 
-          p.total = c.data.reduce((sum, item) => sum + item.y, 0);
+          p.total += c.data.reduce((sum, item) => sum + item.y, 0);
 
           return p;
         },
