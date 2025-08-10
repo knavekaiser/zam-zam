@@ -59,7 +59,7 @@ export default function Deposits({ setSidebarOpen }) {
           <td className={s.description}>{item.description}</td>
           <td className={`text-right`}>
             <span className={s.currencySymbol}>৳</span>
-            {item.amount.toLocaleString(i18n.language)}
+            {item.amount.fix(0, i18n.language)}
           </td>
           {user.userType === "staff" && (
             <td className={s.status}>

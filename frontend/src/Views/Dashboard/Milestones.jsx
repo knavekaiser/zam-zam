@@ -62,11 +62,11 @@ export default function Deposits({ setSidebarOpen }) {
 
           <td className={`text-right ${s.milestoneAmount}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.amount || 0).toLocaleString(i18n.language)}
+            {(item.amount || 0).fix(0, i18n.language)}
           </td>
           <td className={`text-right ${s.milestoneDeposited}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.totalDeposited || 0).toLocaleString(i18n.language)}
+            {(item.totalDeposited || 0).fix(0, i18n.language)}
           </td>
 
           {user.userType === "staff" && (

@@ -27,7 +27,7 @@ const Message = ({ s, id }) => {
             250,
             <Trans
               defaults="Enter less than {{num}} characters."
-              values={{ num: (250).toLocaleString(i18n.language) }}
+              values={{ num: (250).fix(0, i18n.language) }}
             />
           ),
       })
@@ -140,11 +140,11 @@ export default function Members({ setSidebarOpen }) {
           </td>
           <td className={`text-right ${s.deposit}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.deposit || 0).toLocaleString(i18n.language)}
+            {(item.deposit || 0).fix(0, i18n.language)}
           </td>
           <td className={`text-right ${s.withdrawal}`}>
             <span className={s.currencySymbol}>৳</span>
-            {(item.withdrawal || 0).toLocaleString(i18n.language)}
+            {(item.withdrawal || 0).fix(0, i18n.language)}
           </td>
           {user.userType === "staff" && (
             <td className={s.status}>

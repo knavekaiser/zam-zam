@@ -181,7 +181,7 @@ const Card = ({ label, amount, onClick = () => {} }) => {
         <span className={s.amount}>
           <CountUp
             number={amount}
-            duration={Math.floor(Math.random() * 1000) + 2000}
+            duration={Math.floor(Math.random() * 1000) + 700}
           />
         </span>
       </p>
@@ -300,7 +300,7 @@ const Milestones = ({ milestones }) => {
                       (user.userType === "member"
                         ? item.perMember
                         : item.amount) || 0
-                    ).toLocaleString(i18n.language)}
+                    ).fix(0, i18n.language)}
                   </span>
                 </div>
                 <div className={s.dates}>

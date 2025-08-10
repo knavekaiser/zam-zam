@@ -1042,7 +1042,7 @@ export const CountUp = ({
     const controls = animate(Math.max(number - offset, 0), number, {
       duration: duration / 1000,
       onUpdate(value) {
-        node.textContent = Math.round(value).toLocaleString(i18n.language);
+        node.textContent = Math.round(value).fix(0, i18n.language);
       },
     });
 

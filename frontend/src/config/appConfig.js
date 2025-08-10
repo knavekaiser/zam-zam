@@ -5,9 +5,14 @@ Number.prototype.percent = function (n) {
   return (this / 100) * n;
 };
 Number.prototype.fix = function (n, locale) {
-  const decimal = this.toFixed(n).replace(/.*\./, "");
+  const formatted = this.toFixed(n);
+  const decimal = formatted.includes(".") ? formatted.replace(/.*\./, "") : "";
   if (locale) {
-    return parseInt(this).toLocaleString(locale) + "." + decimal;
+    const loc = locale === "en-US" ? "en-IN" : locale;
+    return (
+      parseInt(this).toLocaleString(loc) +
+      (decimal ? "." + (+decimal || 0).toLocaleString(loc) : "")
+    );
   }
   return +this.toFixed(n);
 };
