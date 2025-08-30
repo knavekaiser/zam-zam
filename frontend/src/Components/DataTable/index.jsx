@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { SiteContext } from "@/SiteContext";
 import { Table, TableActions } from "Components/elements";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -25,11 +25,13 @@ const Data = ({
   deleteRequest,
   endpoint,
   schema,
+  prefillValues,
+  parseValues,
   filterStatus,
 }) => {
-  const { user, checkPermission } = useContext(SiteContext);
+  const tableRef = useRef();
+  const { checkPermission } = useContext(SiteContext);
   const [filters, setFilters] = useState({});
-  const [data, setData] = useState([]);
   const [edit, setEdit] = useState(null);
   const [addData, setAddData] = useState(false);
   const [showAddBtn, setShowAddBtn] = useState(true);
@@ -37,7 +39,6 @@ const Data = ({
   const [view, setView] = useState(null);
   const { t } = useTranslation();
 
-  const { get: getData, loading } = useFetch(endpoint);
   const { remove: deleteItem, loading: deletingItem } = useFetch(
     endpoint + "/{ID}"
   );
@@ -49,18 +50,6 @@ const Data = ({
       `/{ID}/${["member", "staff"].includes(name) ? "activate" : "approve"}`
   );
 
-  useEffect(() => {
-    getData({ query: filters })
-      .then(({ data }) => {
-        if (data.success) {
-          return setData(data.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        Prompt({ type: "error", message: err.message });
-      });
-  }, [filters]);
   return (
     <div className={s.wrapper}>
       <div className={`${s.content} grid m-a`}>
@@ -99,9 +88,10 @@ const Data = ({
         </div>
 
         <Table
-          loading={loading}
+          ref={tableRef}
           className={s.data}
           trStyle={trStyle}
+          filters={filters}
           columns={columns}
           onScroll={(dir) => {
             if (dir === "down") {
@@ -110,8 +100,9 @@ const Data = ({
               setShowAddBtn(true);
             }
           }}
-        >
-          {data.map((item) => (
+          pagination
+          url={endpoint}
+          renderRow={(item) => (
             <tr key={item._id} style={trStyle}>
               {renderRow(item, s, status)}
 
@@ -154,7 +145,7 @@ const Data = ({
                                     { params: { "{ID}": item._id } }
                                   ).then(({ data }) => {
                                     if (data.success) {
-                                      setData((prev) =>
+                                      tableRef.current.setData((prev) =>
                                         prev.map((item) =>
                                           item._id === data.data._id
                                             ? data.data
@@ -204,7 +195,7 @@ const Data = ({
                                     { params: { "{ID}": item._id } }
                                   ).then(({ data }) => {
                                     if (data.success) {
-                                      setData((prev) =>
+                                      tableRef.current.setData((prev) =>
                                         checkPermission(`${name}_delete`)
                                           ? prev.map((i) =>
                                               i._id === item._id
@@ -250,7 +241,7 @@ const Data = ({
                                     { params: { "{ID}": item._id } }
                                   ).then(({ data }) => {
                                     if (data.success) {
-                                      setData((prev) =>
+                                      tableRef.current.setData((prev) =>
                                         prev.filter(
                                           (dep) => dep._id !== item._id
                                         )
@@ -271,8 +262,8 @@ const Data = ({
                 />
               )}
             </tr>
-          ))}
-        </Table>
+          )}
+        />
 
         <Modal
           open={addData}
@@ -290,17 +281,19 @@ const Data = ({
             schema={schema}
             onSuccess={(newData) => {
               if (edit) {
-                setData((prev) =>
+                tableRef.current.setData((prev) =>
                   prev.map((item) =>
                     item._id === newData._id ? newData : item
                   )
                 );
                 setEdit(null);
               } else {
-                setData((prev) => [...prev, newData]);
+                tableRef.current.setData((prev) => [...prev, newData]);
               }
               setAddData(false);
             }}
+            prefillValues={prefillValues}
+            parseValues={parseValues}
           />
         </Modal>
 

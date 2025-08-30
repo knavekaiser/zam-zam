@@ -13,6 +13,8 @@ const paths = {
   members: "/members",
   staffs: "/staffs",
   roles: "/roles",
+  suppliers: "/suppliers",
+  bills: "/bills",
 
   profile: "/profile",
 };

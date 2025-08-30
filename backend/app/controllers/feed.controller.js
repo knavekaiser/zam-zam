@@ -2,20 +2,9 @@ const {
   appConfig: { responseFn, responseStr },
 } = require("../config");
 const { ObjectId } = require("mongodb");
-const { appHelper, fileHelper, cdnHelper } = require("../helpers");
+const { cdnHelper } = require("../helpers");
 
-const {
-  Deposit,
-  Expense,
-  Withdrawal,
-  Device,
-  Milestone,
-  Member,
-  BugReport,
-  Income,
-  FeedPost,
-  Comment,
-} = require("../models");
+const { FeedPost, Comment } = require("../models");
 
 exports.getFeed = async (req, res) => {
   try {

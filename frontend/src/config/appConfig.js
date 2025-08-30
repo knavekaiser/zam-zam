@@ -11,7 +11,7 @@ Number.prototype.fix = function (n, locale) {
     const loc = locale === "en-US" ? "en-IN" : locale;
     return (
       parseInt(this).toLocaleString(loc) +
-      (decimal ? "." + (+decimal || 0).toLocaleString(loc) : "")
+      (+decimal ? "." + (+decimal).toLocaleString(loc).replaceAll(",", "") : "")
     );
   }
   return +this.toFixed(n);

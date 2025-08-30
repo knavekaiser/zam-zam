@@ -41,7 +41,7 @@ import { IoClose } from "react-icons/io5";
 import { Table } from ".";
 
 export const Input = forwardRef(
-  ({ className, label, icon, error, type, required, ...rest }, ref) => {
+  ({ className, label, icon, error, type, required, hint, ...rest }, ref) => {
     const _id = useRef(Math.random().toString(32).substr(-8));
     return (
       <section
@@ -72,6 +72,7 @@ export const Input = forwardRef(
             {icon && icon}
           </div>
           {error && <span className={s.errMsg}>{error.message}</span>}
+          {hint && <span className={s.hint}>{hint}</span>}
         </div>
       </section>
     );

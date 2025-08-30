@@ -19,6 +19,8 @@ module.exports = {
   Withdrawal: require("./withdrawal.model"),
   Role: require("./role.model"),
   Milestone: require("./milestone.model"),
+  Supplier: require("./supplier.model"),
+  Bill: require("./bill.model"),
   Device: require("./device.model"),
   BugReport: require("./bugReport.model"),
   FeedPost: require("./feedPost.model"),

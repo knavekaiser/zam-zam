@@ -44,13 +44,104 @@ exports.findAll = async (req, res) => {
         $lte: new Date(req.query.to_date),
       };
     }
-    Withdrawal.find(conditions)
-      .populate("member", "name email photo phone")
-      .populate("timeline.staff", "name email photo phone")
-      .sort("-date")
-      .then((data) => {
-        responseFn.success(res, { data });
-      })
+
+    const pipeline = [
+      { $match: conditions },
+      {
+        $lookup: {
+          from: "staffs",
+          localField: "timeline.staff",
+          foreignField: "_id",
+          as: "staff_details",
+        },
+      },
+      {
+        $addFields: {
+          timeline: {
+            $map: {
+              input: "$timeline",
+              as: "timeline",
+              in: {
+                $mergeObjects: [
+                  "$$timeline",
+                  {
+                    staff: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: "$staff_details",
+                            as: "staff",
+                            cond: {
+                              $eq: ["$$staff._id", "$$timeline.staff"],
+                            },
+                          },
+                        },
+                        0,
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "members",
+          localField: "member",
+          foreignField: "_id",
+          as: "member",
+        },
+      },
+      { $unwind: { path: "$member", preserveNullAndEmptyArrays: true } },
+      {
+        $unset: [
+          "staff_details",
+          "timeline.staff.password",
+          "timeline.staff.devices",
+          "timeline.staff.status",
+          "timeline.staff.role",
+          "timeline.staff.updatedAt",
+          "timeline.staff.createdAt",
+          "member.password",
+          "member.devices",
+          "member.status",
+          "member.role",
+          "member.updatedAt",
+          "member.createdAt",
+        ],
+      },
+      { $sort: { date: -1 } },
+    ];
+    const page = parseInt(req.query.page) || null;
+    const pageSize = parseInt(req.query.pageSize) || null;
+    if (page && pageSize) {
+      pipeline.push({
+        $facet: {
+          records: [{ $skip: pageSize * (page - 1) }, { $limit: pageSize }],
+          metadata: [{ $group: { _id: null, total: { $sum: 1 } } }],
+        },
+      });
+    }
+
+    Withdrawal.aggregate(pipeline)
+      .then((data) =>
+        responseFn.success(
+          res,
+          page && pageSize
+            ? {
+                data: data[0].records,
+                metadata: {
+                  ...data[0].metadata[0],
+                  _id: undefined,
+                  page,
+                  pageSize,
+                },
+              }
+            : { data }
+        )
+      )
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
@@ -84,13 +175,13 @@ exports.create = async (req, res) => {
       })
       .catch((err) => {
         if (req.files?.length) {
-          cdnHelper.deleteFiles(req.files.map((file) => file.path));
+          cdnHelper.deleteFiles(req.files.map((file) => file.key));
         }
         return responseFn.error(res, {}, err.message);
       });
   } catch (error) {
     if (req.files?.length) {
-      cdnHelper.deleteFiles(req.files.map((file) => file.path));
+      cdnHelper.deleteFiles(req.files.map((file) => file.key));
     }
     return responseFn.error(res, {}, error.message, 500);
   }
@@ -143,13 +234,13 @@ exports.update = async (req, res) => {
       })
       .catch((err) => {
         if (req.files?.length) {
-          cdnHelper.deleteFiles(req.files.map((file) => file.path));
+          cdnHelper.deleteFiles(req.files.map((file) => file.key));
         }
         return responseFn.error(res, {}, err.message);
       });
   } catch (error) {
     if (req.files?.length) {
-      cdnHelper.deleteFiles(req.files.map((file) => file.path));
+      cdnHelper.deleteFiles(req.files.map((file) => file.key));
     }
     return responseFn.error(res, {}, error.message, 500);
   }

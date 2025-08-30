@@ -6,6 +6,8 @@ module.exports = {
   withdrawal: require("./withdrawal"),
   role: require("./role"),
   milestone: require("./milestone"),
+  supplier: require("./supplier"),
   common: require("./common"),
   feed: require("./feed"),
+  bill: require("./bill"),
 };

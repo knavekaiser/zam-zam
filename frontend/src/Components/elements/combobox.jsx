@@ -7,6 +7,7 @@ import { Modal, Prompt } from "../modal";
 import { Controller } from "react-hook-form";
 
 import ReactSelect, { components } from "react-select";
+import CreatableSelect from "react-select/creatable";
 import { BsX } from "react-icons/bs";
 import { Trans } from "react-i18next";
 
@@ -332,11 +333,14 @@ export const Select = ({
   renderOption,
   disabled,
   onChange: _onChange,
+  clearable = true,
+  creatable,
 }) => {
   const firstRender = useRef(true);
   const [inputValue, setInputValue] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [options, setOptions] = useState([]);
+  const [newOptions, setNewOptions] = useState([]);
 
   const { get: fetchData, loading } = useFetch(url);
 
@@ -407,10 +411,7 @@ export const Select = ({
       control={control}
       name={name}
       rules={formOptions}
-      render={({
-        field: { onChange, onBlur, value, name, ref },
-        fieldState: { invalid, isTouched, isDirty, error },
-      }) => {
+      render={({ field: { onChange, value, ref }, fieldState: { error } }) => {
         const ClearButton = (props) => {
           return (
             components.DropdownIndicator && (
@@ -420,6 +421,110 @@ export const Select = ({
             )
           );
         };
+        const props = {
+          placeholder: (
+            <Trans>
+              {!label
+                ? placeholder
+                : url
+                ? "Search..."
+                : !options || !options?.length
+                ? "No options provided"
+                : placeholder || "Enter"}
+            </Trans>
+          ),
+          components: {
+            // DropdownIndicator,
+            // ...(renderOption && { Option: renderOption }),
+            // ...((readOnly || disabled || hideSearchIcon) && {
+            //   DropdownIndicator: () => null,
+            //   IndicatorSeparator: () => null,
+            // }),
+            DropdownIndicator: clearable
+              ? (multiple && !value?.length) || (!multiple && !value)
+                ? DropdownIndicator
+                : ClearButton
+              : null,
+            ...(disabled && {
+              DropdownIndicator: undefined,
+            }),
+            ...(multiple && { DropdownIndicator: undefined }),
+            ...(renderOption && {
+              Option: (props) => (
+                <components.Option {...props}>
+                  {renderOption(props.data)}
+                </components.Option>
+              ),
+            }),
+          },
+          className: `reactSelect ${s.reactSelect} ${
+            disabled ? "readOnly" : ""
+          } ${error ? "err" : ""} ${className || ""}`,
+          classNamePrefix: "reactSelect",
+          isDisabled: url ? false : !options || !options?.length,
+          inputRef: ref,
+          menuPortalTarget: document.querySelector("#portal"),
+          menuPosition: "fixed",
+          menuPlacement: "auto",
+          options: options || [],
+          value:
+            (creatable
+              ? [...(options || []), ...(newOptions || [])]
+              : options
+            )?.find((op) => op.value === value) ||
+            (creatable
+              ? [...(options || []), ...(newOptions || [])]
+              : options
+            )?.filter((op) => value?.some?.((item) => item === op.value)) ||
+            "",
+          onInputChange: (value) => {
+            if (url) {
+              setInputValue(value);
+            }
+          },
+          onChange: (val) => {
+            if (creatable) {
+              if (multiple) {
+                const newOpt = val.filter(
+                  (v) =>
+                    v.__isNew__ && !newOptions.some((i) => i.value === v.value)
+                );
+                if (newOpt.length) {
+                  setNewOptions((prev) => [...prev, ...newOpt]);
+                }
+              } else {
+                if (!newOptions.some((item) => item.value === val.value)) {
+                  setNewOptions((prev) => [...prev, val]);
+                }
+              }
+            }
+            if (multiple) {
+              onChange(val.map((item) => item.value));
+              setSelectedOptions(val);
+            } else {
+              setSelectedOptions([val]);
+              onChange(val.value);
+            }
+            _onChange?.(val);
+          },
+          isMulti: multiple,
+          styles: {
+            option: (provided, state) => ({
+              ...provided,
+              background: state.isSelected
+                ? "#e8e8e8;"
+                : state.isFocused
+                ? "#eeeeee"
+                : "white",
+              padding: "6px 10px",
+              color: "black",
+              fontSize: "0.8rem",
+            }),
+            control: () => ({}),
+            singleValue: (provided, state) => {},
+            menuPortal: (base) => ({ ...base, zIndex: 99999999999 }),
+          },
+        };
         return (
           <section className={`${s.select} ${className || ""}`}>
             {label && (
@@ -428,90 +533,11 @@ export const Select = ({
               </label>
             )}
             <div className={s.field}>
-              <ReactSelect
-                placeholder={
-                  <Trans>
-                    {!label
-                      ? placeholder
-                      : url
-                      ? "Search..."
-                      : !options || !options?.length
-                      ? "No options provided"
-                      : placeholder || "Enter"}
-                  </Trans>
-                }
-                components={{
-                  // DropdownIndicator,
-                  // ...(renderOption && { Option: renderOption }),
-                  // ...((readOnly || disabled || hideSearchIcon) && {
-                  //   DropdownIndicator: () => null,
-                  //   IndicatorSeparator: () => null,
-                  // }),
-                  DropdownIndicator:
-                    (multiple && !value?.length) || (!multiple && !value)
-                      ? DropdownIndicator
-                      : ClearButton,
-                  ...(disabled && {
-                    DropdownIndicator: undefined,
-                  }),
-                  ...(multiple && { DropdownIndicator: undefined }),
-                  ...(renderOption && {
-                    Option: (props) => (
-                      <components.Option {...props}>
-                        {renderOption(props.data)}
-                      </components.Option>
-                    ),
-                  }),
-                }}
-                className={`reactSelect ${s.reactSelect} ${
-                  disabled ? "readOnly" : ""
-                } ${error ? "err" : ""} ${className || ""}`}
-                classNamePrefix="reactSelect"
-                isDisabled={url ? false : !options || !options?.length}
-                inputRef={ref}
-                menuPortalTarget={document.querySelector("#portal")}
-                menuPosition="fixed"
-                menuPlacement="auto"
-                options={options || []}
-                value={
-                  options?.find((op) => op.value === value) ||
-                  options?.filter((op) =>
-                    value?.some?.((item) => item === op.value)
-                  ) ||
-                  ""
-                }
-                onInputChange={(value) => {
-                  if (url) {
-                    setInputValue(value);
-                  }
-                }}
-                onChange={(val) => {
-                  if (multiple) {
-                    onChange(val.map((item) => item.value));
-                    setSelectedOptions(val);
-                  } else {
-                    onChange(val.value);
-                  }
-                  _onChange && _onChange(val);
-                }}
-                isMulti={multiple}
-                styles={{
-                  option: (provided, state) => ({
-                    ...provided,
-                    background: state.isSelected
-                      ? "#e8e8e8;"
-                      : state.isFocused
-                      ? "#eeeeee"
-                      : "white",
-                    padding: "6px 10px",
-                    color: "black",
-                    fontSize: "0.8rem",
-                  }),
-                  control: () => ({}),
-                  singleValue: (provided, state) => {},
-                  menuPortal: (base) => ({ ...base, zIndex: 99999999999 }),
-                }}
-              />
+              {creatable ? (
+                <CreatableSelect {...props} />
+              ) : (
+                <ReactSelect {...props} />
+              )}
             </div>
             {error && <span className={s.errMsg}>{error.message}</span>}
           </section>

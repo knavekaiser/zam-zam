@@ -13,8 +13,35 @@ exports.findAll = async (req, res) => {
         $options: "i",
       };
     }
-    Role.find(conditions)
-      .then((data) => responseFn.success(res, { data }))
+    const pipeline = [{ $match: conditions }];
+    const page = parseInt(req.query.page) || null;
+    const pageSize = parseInt(req.query.pageSize) || null;
+    if (page && pageSize) {
+      pipeline.push({
+        $facet: {
+          records: [{ $skip: pageSize * (page - 1) }, { $limit: pageSize }],
+          metadata: [{ $group: { _id: null, total: { $sum: 1 } } }],
+        },
+      });
+    }
+
+    Role.aggregate(pipeline)
+      .then((data) =>
+        responseFn.success(
+          res,
+          page && pageSize
+            ? {
+                data: data[0].records,
+                metadata: {
+                  ...data[0].metadata[0],
+                  _id: undefined,
+                  page,
+                  pageSize,
+                },
+              }
+            : { data }
+        )
+      )
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
@@ -68,6 +95,8 @@ exports.getPermissions = async (req, res) => {
       { label: "Staff", name: "staff" },
       { label: "Role", name: "role" },
       { label: "Milestone", name: "milestone" },
+      { label: "Supplier", name: "supplier" },
+      { label: "Bill", name: "bill" },
     ];
     const groups = [
       ...basicGroups.map((group) => ({
@@ -81,7 +110,7 @@ exports.getPermissions = async (req, res) => {
             ? [{ label: `Sending SMS`, value: `${group.name}_send_sms` }]
             : []),
           { label: `Update`, value: `${group.name}_update` },
-          ...(!["role", "milestone"].includes(group.name)
+          ...(!["role", "milestone", "supplier", "bill"].includes(group.name)
             ? [{ label: `Approve`, value: `${group.name}_approve` }]
             : []),
           ...(["deposit", "expense", "withdrawal"].includes(group.name)

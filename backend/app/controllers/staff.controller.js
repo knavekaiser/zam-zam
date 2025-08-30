@@ -363,15 +363,53 @@ exports.find = (req, res) => {
         $options: "i",
       };
     }
-    // Staff.aggregate([
-    //   { $match: conditions },
-    //   { $project: { __v: 0, password: 0 } },
-    // ])
-    Staff.find(conditions, "-__v -password")
-      .populate("role", "name permissions")
-      .then((data) => {
-        responseFn.success(res, { data });
-      })
+
+    const pipeline = [
+      { $match: conditions },
+      {
+        $lookup: {
+          from: "roles",
+          localField: "role",
+          foreignField: "_id",
+          as: "role",
+        },
+      },
+      {
+        $unwind: {
+          path: "$role",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      { $unset: ["password", "__v", "role.createdAt", "role.updatedAt"] },
+    ];
+    const page = parseInt(req.query.page) || null;
+    const pageSize = parseInt(req.query.pageSize) || null;
+    if (page && pageSize) {
+      pipeline.push({
+        $facet: {
+          records: [{ $skip: pageSize * (page - 1) }, { $limit: pageSize }],
+          metadata: [{ $group: { _id: null, total: { $sum: 1 } } }],
+        },
+      });
+    }
+
+    Staff.aggregate(pipeline)
+      .then((data) =>
+        responseFn.success(
+          res,
+          page && pageSize
+            ? {
+                data: data[0].records,
+                metadata: {
+                  ...data[0].metadata[0],
+                  _id: undefined,
+                  page,
+                  pageSize,
+                },
+              }
+            : { data }
+        )
+      )
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);

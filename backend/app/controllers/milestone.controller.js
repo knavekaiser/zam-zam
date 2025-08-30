@@ -27,7 +27,7 @@ exports.findAll = async (req, res) => {
       };
     }
     const totalShares = await Member.count({ status: "active" });
-    Milestone.aggregate([
+    const pipeline = [
       { $match: conditions },
       { $set: { perMember: { $divide: ["$amount", totalShares || 1] } } },
       {
@@ -76,9 +76,33 @@ exports.findAll = async (req, res) => {
         },
       },
       { $sort: { startDate: -1 } },
-    ])
+    ];
+    const page = parseInt(req.query.page) || null;
+    const pageSize = parseInt(req.query.pageSize) || null;
+    if (page && pageSize) {
+      pipeline.push({
+        $facet: {
+          records: [{ $skip: pageSize * (page - 1) }, { $limit: pageSize }],
+          metadata: [{ $group: { _id: null, total: { $sum: 1 } } }],
+        },
+      });
+    }
+    Milestone.aggregate(pipeline)
       .then((data) => {
-        responseFn.success(res, { data });
+        responseFn.success(
+          res,
+          page && pageSize
+            ? {
+                data: data[0].records,
+                metadata: {
+                  ...data[0].metadata[0],
+                  _id: undefined,
+                  page,
+                  pageSize,
+                },
+              }
+            : { data }
+        );
       })
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {

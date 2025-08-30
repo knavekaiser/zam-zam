@@ -15,33 +15,20 @@ import { Trans, useTranslation } from "react-i18next";
 
 const Data = ({ setSidebarOpen }) => {
   const { t } = useTranslation();
-  const { user, checkPermission } = useContext(SiteContext);
+  const tableRef = useRef();
+  const { checkPermission } = useContext(SiteContext);
   const [allPermissions, setAllPermissions] = useState([]);
   const [filters, setFilters] = useState({});
-  const [roles, setRoles] = useState([]);
   const [edit, setEdit] = useState(null);
   const [addRole, setAddRole] = useState(false);
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
 
-  const { get: getRoles, loading } = useFetch(endpoints.roles);
   const { get: getPermissions } = useFetch(endpoints.permissions);
   const { remove: deleteRole, loading: deletingRole } = useFetch(
-    endpoints.role + "/{ID}"
+    endpoints.roles + "/{ID}"
   );
 
-  useEffect(() => {
-    getRoles({ query: filters })
-      .then(({ data }) => {
-        if (data.success) {
-          return setRoles(data.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        Prompt({ type: "error", message: err.message });
-      });
-  }, [filters]);
   useEffect(() => {
     getPermissions()
       .then(({ data }) => {
@@ -78,8 +65,10 @@ const Data = ({ setSidebarOpen }) => {
           </>
         </div>
         <Table
-          loading={loading}
+          url={endpoints.roles}
+          pagination
           className={s.data}
+          filters={filters}
           columns={[
             { label: <Trans>Name</Trans> },
             { label: <Trans>Action</Trans>, className: "text-right" },
@@ -91,8 +80,7 @@ const Data = ({ setSidebarOpen }) => {
               setShowAddBtn(true);
             }
           }}
-        >
-          {roles.map((item) => (
+          renderRow={(item) => (
             <tr key={item._id}>
               <td className={s.name}>{item.name}</td>
 
@@ -131,7 +119,7 @@ const Data = ({ setSidebarOpen }) => {
                                   { params: { "{ID}": item._id } }
                                 ).then(({ data }) => {
                                   if (data.success) {
-                                    setRoles((prev) =>
+                                    tableRef.current.setData((prev) =>
                                       prev.filter((dep) => dep._id !== item._id)
                                     );
                                   } else {
@@ -149,8 +137,8 @@ const Data = ({ setSidebarOpen }) => {
                 ]}
               />
             </tr>
-          ))}
-        </Table>
+          )}
+        />
         <Modal
           open={addRole}
           head
@@ -166,14 +154,14 @@ const Data = ({ setSidebarOpen }) => {
             allPermissions={allPermissions}
             onSuccess={(newData) => {
               if (edit) {
-                setRoles((prev) =>
+                tableRef.current.setData((prev) =>
                   prev.map((item) =>
                     item._id === newData._id ? newData : item
                   )
                 );
                 setEdit(null);
               } else {
-                setRoles((prev) => [...prev, newData]);
+                tableRef.current.setData((prev) => [...prev, newData]);
               }
               setAddRole(false);
             }}

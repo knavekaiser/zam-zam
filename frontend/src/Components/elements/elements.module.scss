@@ -117,6 +117,10 @@
     text-align: left;
     display: block;
   }
+  .hint {
+    font-size: 14px;
+    color: rgb(var(--font-color), 0.6);
+  }
   .calenderIcon {
     font-size: 15pt;
     z-index: 10;
@@ -847,6 +851,36 @@
   &.virtual {
     tbody {
       min-height: 60vh;
+    }
+  }
+  .paginationFooter {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    tr {
+      border-top: 1px solid rgba(var(--font-color), 0.2);
+      padding: 1rem 0.5rem;
+      padding-right: 0;
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      td {
+        display: flex;
+        gap: 0.5rem;
+        position: sticky;
+        right: 0;
+        padding-right: 1rem;
+        flex-wrap: wrap;
+        .pageSize,
+        .pageNum {
+          font-size: 0.8rem;
+          color: rgba(var(--font-color), 0.75);
+          text-align: center;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+      }
     }
   }
 }

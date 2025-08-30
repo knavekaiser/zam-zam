@@ -109,6 +109,14 @@ button {
         background: $primary-color-dark2;
       }
     }
+    &.icon {
+      padding: 0.35rem;
+      font-size: 1.3em;
+      width: max-content;
+      svg {
+        font-size: 1.05em;
+      }
+    }
   }
   &.clear {
     cursor: pointer;
@@ -234,6 +242,9 @@ a {
 }
 .m-2 {
   margin: 2rem;
+}
+.ml-a {
+  margin-left: auto;
 }
 .m-a {
   margin: auto;

@@ -17,7 +17,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Trans, useTranslation } from "react-i18next";
 import { CgSpinner } from "react-icons/cg";
 
-export const Form = ({ edit, onSuccess, endpoint, schema }) => {
+export const Form = ({
+  edit,
+  onSuccess,
+  endpoint,
+  schema,
+  prefillValues,
+  parseValues,
+}) => {
   const {
     handleSubmit,
     register,
@@ -81,8 +88,10 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
   } = useFetch(endpoint + `/${edit?._id || ""}`);
 
   useEffect(() => {
-    const _edit = {};
-    if (edit?._id) {
+    let _edit = {};
+    if (prefillValues) {
+      _edit = prefillValues(edit);
+    } else if (edit?._id) {
       schema.forEach((field) => {
         if (["input", "textarea"].includes(field.fieldType)) {
           if (field.type === "date") {
@@ -123,6 +132,7 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
           required={item.required}
           placeholder={item.placeholder || " "}
           error={errors[item.name]}
+          hint={item.hint}
         />
       );
     } else if (fieldType === "select") {
@@ -166,7 +176,9 @@ export const Form = ({ edit, onSuccess, endpoint, schema }) => {
       <form
         onSubmit={handleSubmit((values) => {
           let payload = {};
-          if (schema.some((item) => item.fieldType === "fileInput")) {
+          if (parseValues) {
+            payload = parseValues(values);
+          } else if (schema.some((item) => item.fieldType === "fileInput")) {
             payload = new FormData();
             const json = {};
             schema.forEach((field) => {

@@ -336,7 +336,8 @@ exports.get = async (req, res) => {
     if ("status" in req.query) {
       conditions.status = req.query.status;
     }
-    Member.aggregate([
+
+    const pipeline = [
       { $match: conditions },
       {
         $lookup: {
@@ -373,8 +374,36 @@ exports.get = async (req, res) => {
       },
       { $set: { withdrawal: { $first: "$withdrawal.amount" } } },
       { $project: { __v: 0, password: 0 } },
-    ])
-      .then((data) => responseFn.success(res, { data }))
+    ];
+
+    const page = parseInt(req.query.page) || null;
+    const pageSize = parseInt(req.query.pageSize) || null;
+    if (page && pageSize) {
+      pipeline.push({
+        $facet: {
+          records: [{ $skip: pageSize * (page - 1) }, { $limit: pageSize }],
+          metadata: [{ $group: { _id: null, total: { $sum: 1 } } }],
+        },
+      });
+    }
+
+    Member.aggregate(pipeline)
+      .then((data) =>
+        responseFn.success(
+          res,
+          page && pageSize
+            ? {
+                data: data[0].records,
+                metadata: {
+                  ...data[0].metadata[0],
+                  _id: undefined,
+                  page,
+                  pageSize,
+                },
+              }
+            : { data }
+        )
+      )
       .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);

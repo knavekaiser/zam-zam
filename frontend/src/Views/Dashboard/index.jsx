@@ -27,6 +27,9 @@ import {
   BsCalendar3RangeFill,
   BsArrowDownRightSquare,
   BsArrowDownRightSquareFill,
+  BsShop,
+  BsFileBreak,
+  BsFileBreakFill,
 } from "react-icons/bs";
 
 import s from "./dashboard.module.scss";
@@ -43,6 +46,8 @@ const Withdrawals = lazy(() => import("./Withdrawals"));
 const Members = lazy(() => import("./Members"));
 const Staffs = lazy(() => import("./Staffs"));
 const Roles = lazy(() => import("./Roles"));
+const Suppliers = lazy(() => import("./Suppliers"));
+const Bills = lazy(() => import("./Bills"));
 const Milestones = lazy(() => import("./Milestones"));
 
 const Loading = ({ columns, trStyle, setSidebarOpen }) => {
@@ -201,6 +206,26 @@ const MainApp = () => {
             activeIcon: <BsPeopleFill className={s.filled} />,
             label: "Members",
             path: paths.members,
+          },
+        ]
+      : []),
+    ...(checkPermission("supplier_read")
+      ? [
+          {
+            icon: <BsShop />,
+            activeIcon: <BsShop className={s.filled} />,
+            label: "Suppliers",
+            path: paths.suppliers,
+          },
+        ]
+      : []),
+    ...(checkPermission("bill_read")
+      ? [
+          {
+            icon: <BsFileBreak />,
+            activeIcon: <BsFileBreakFill className={s.filled} />,
+            label: "Bills",
+            path: paths.bills,
           },
         ]
       : []),
@@ -480,6 +505,38 @@ const MainApp = () => {
               }
             >
               <Members setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
+        />
+        <Route
+          path={paths.suppliers}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={2}
+                  trStyle={{ gridTemplateColumns: `1fr 5rem` }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Suppliers setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
+        />
+        <Route
+          path={paths.bills}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={2}
+                  trStyle={{ gridTemplateColumns: `1fr 5rem` }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Bills setSidebarOpen={setSidebarOpen} />
             </Suspense>
           }
         />
