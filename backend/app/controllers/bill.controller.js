@@ -1,7 +1,7 @@
 const {
   appConfig: { responseFn, responseStr },
 } = require("../config");
-const { firebase, cdnHelper } = require("../helpers");
+const { cdnHelper } = require("../helpers");
 const { Bill } = require("../models");
 
 exports.findAll = async (req, res) => {
@@ -147,20 +147,15 @@ exports.delete = async (req, res) => {
 
 exports.getBillItems = async (req, res) => {
   try {
+    const conditions = {};
+    if (req.query.name) {
+      conditions.name = { $regex: req.query.name, $options: "i" };
+    }
     Bill.aggregate([
       { $unwind: "$items" },
-      {
-        $group: {
-          _id: "$items.name",
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          name: "$_id",
-        },
-      },
-      { $match: { name: { $regex: req.query.name || "", $options: "i" } } },
+      { $group: { _id: "$items.name" } },
+      { $project: { _id: 0, name: "$_id" } },
+      { $match: conditions },
     ])
       .then((data) => responseFn.success(res, { data }))
       .catch((err) => responseFn.error(res, {}, err.message));
@@ -170,20 +165,17 @@ exports.getBillItems = async (req, res) => {
 };
 exports.getBillCharges = async (req, res) => {
   try {
+    const conditions = {};
+    if (req.query.name) {
+      conditions.name = {
+        name: { $regex: req.query.name, $options: "i" },
+      };
+    }
     Bill.aggregate([
       { $unwind: "$charges" },
-      {
-        $group: {
-          _id: "$charges.name",
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          name: "$_id",
-        },
-      },
-      { $match: { name: { $regex: req.query.name || "", $options: "i" } } },
+      { $group: { _id: "$charges.name" } },
+      { $project: { _id: 0, name: "$_id" } },
+      { $match: conditions },
     ])
       .then((data) => responseFn.success(res, { data }))
       .catch((err) => responseFn.error(res, {}, err.message));

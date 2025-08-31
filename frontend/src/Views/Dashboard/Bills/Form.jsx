@@ -44,6 +44,7 @@ export const Form = ({ edit, onSuccess }) => {
 
   useEffect(() => {
     reset({
+      ref: edit?.ref || "",
       date: moment(edit?.date || new Date(), "yyyy-MM-dd", "en"),
       supplier: edit?.supplier?._id || "",
       adjustment: edit?.adjustment || "",
@@ -73,6 +74,7 @@ export const Form = ({ edit, onSuccess }) => {
       <form
         onSubmit={handleSubmit((values) => {
           const payload = {
+            ref: values.ref,
             date: new Date(values.date),
             supplier: values.supplier,
             adjustment: values.adjustment ?? 0,
@@ -123,14 +125,25 @@ export const Form = ({ edit, onSuccess }) => {
         })}
         className={`grid gap-1`}
       >
-        <Input
-          label={<Trans>Date</Trans>}
-          placeholder=" "
-          {...register("date")}
-          type="date"
-          required
-          error={errors.date}
-        />
+        <div className="flex wrap gap_5">
+          <Input
+            label={<Trans>Ref</Trans>}
+            placeholder=" "
+            className="flex-1"
+            {...register("ref")}
+            type="number"
+            error={errors.ref}
+          />
+          <Input
+            label={<Trans>Date</Trans>}
+            className="flex-1"
+            placeholder=" "
+            {...register("date")}
+            type="date"
+            required
+            error={errors.date}
+          />
+        </div>
         <Select
           label={<Trans>Supplier</Trans>}
           control={control}
@@ -234,7 +247,7 @@ const Items = ({ items, setItems }) => {
             url={endpoints.billItems}
             getQuery={(inputValue, selected) => ({
               ...(inputValue && { name: inputValue }),
-              _id: selected,
+              name: selected,
             })}
             creatable
             placeholder="Item"
@@ -314,7 +327,7 @@ const Items = ({ items, setItems }) => {
               );
             }}
           />
-          {items.length > 1 ? (
+          {item.name ? (
             <button
               className="btn icon"
               onClick={() => {
@@ -324,7 +337,7 @@ const Items = ({ items, setItems }) => {
               <GoX />
             </button>
           ) : (
-            <span />
+            <span style={{ display: "block", width: "33px" }} />
           )}
         </li>
       ))}
@@ -362,7 +375,7 @@ const Charges = ({ items, setItems }) => {
             url={endpoints.billCharges}
             getQuery={(inputValue, selected) => ({
               ...(inputValue && { name: inputValue }),
-              _id: selected,
+              name: selected,
             })}
             creatable
             placeholder="Item"
@@ -401,7 +414,7 @@ const Charges = ({ items, setItems }) => {
               );
             }}
           />
-          {items.length > 1 ? (
+          {item.name ? (
             <button
               className="btn icon"
               onClick={() => {
@@ -411,7 +424,7 @@ const Charges = ({ items, setItems }) => {
               <GoX />
             </button>
           ) : (
-            <span />
+            <span style={{ display: "block", width: "33px" }} />
           )}
         </li>
       ))}

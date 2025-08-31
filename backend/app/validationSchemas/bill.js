@@ -2,6 +2,7 @@ const yup = require("yup");
 const { Bill } = require("../models");
 
 const body = {
+  ref: yup.string(),
   date: yup.date().required(),
   description: yup.string(),
   supplier: yup.string().required(),
@@ -9,9 +10,9 @@ const body = {
     .array()
     .of(
       yup.object({
-        name: yup.string().required(),
+        name: yup.string().trim().required(),
         qty: yup.number().required(),
-        unit: yup.string().required(),
+        unit: yup.string().trim().required(),
         rate: yup.number().required(),
       })
     )
@@ -21,7 +22,7 @@ const body = {
     .array()
     .of(
       yup.object({
-        name: yup.string().required(),
+        name: yup.string().trim().required(),
         amount: yup.number().required(),
       })
     )
@@ -63,7 +64,7 @@ module.exports = {
     body: yup.object({
       date: yup.string().required(),
       amount: yup.string().required(),
-      paymentMethod: yup.string().required(),
+      paymentMethod: yup.string().trim().required(),
     }),
   }),
   updatePayment: yup.object({

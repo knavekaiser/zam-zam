@@ -5,6 +5,7 @@ module.exports = mongoose.model(
       date: { type: Schema.Types.Date, required: true },
       amount: { type: Schema.Types.Number, required: true, min: 1 },
       description: { type: Schema.Types.String, required: true },
+      category: { type: Schema.Types.String },
       status: {
         type: Schema.Types.String,
         default: "pending-approval",

@@ -4,6 +4,7 @@ module.exports = mongoose.model(
   "Bill",
   new Schema(
     {
+      ref: { type: String },
       _id: {
         type: String,
         default: () =>

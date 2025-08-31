@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import {
   Input,
@@ -252,6 +252,9 @@ export const Filter = ({
     if (schema.some((item) => item.name === "milestone")) {
       _filter.milestones = filters.milestones || [];
     }
+    if (schema.some((item) => item.name === "category")) {
+      _filter.categories = filters.categories || [];
+    }
     _filter.status = filters.status || [];
     _filter.from_date = filters.from_date || "";
     _filter.to_date = filters.to_date || "";
@@ -274,6 +277,23 @@ export const Filter = ({
           handleData={(item) => ({
             label: item.name,
             value: item._id,
+          })}
+        />
+      )}
+      {schema.some((item) => item.name === "category") && (
+        <Select
+          placeholder="Category"
+          url={endpoints.expenseCategories}
+          control={control}
+          name="categories"
+          multiple
+          getQuery={(inputValue, selected) => ({
+            ...(inputValue && { name: inputValue }),
+            name: selected,
+          })}
+          handleData={(item) => ({
+            label: item.name,
+            value: item.name,
           })}
         />
       )}
@@ -388,5 +408,149 @@ export const Filter = ({
         </div>
       </form>
     </motion.div>
+  );
+};
+
+export const PaymentForm = ({ supplier, onSuccess }) => {
+  const { i18n } = useTranslation();
+  const { total, paid } = useMemo(() => {
+    return {
+      total: supplier.payment?.totalPurchase || 0,
+      paid: supplier.payment?.totalPaid || 0,
+    };
+  }, [supplier]);
+  const {
+    handleSubmit,
+    register,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: useYup(
+      yup.object({
+        date: yup.string().required(),
+        paymentMethod: yup.string().required(),
+        amount: yup
+          .number()
+          .min(1, `Can't be less than 1`)
+          .max(
+            total - paid,
+            `Can't be more than ${(total - paid).fix(2, i18n.language)}`
+          )
+          .required("Please provide an amount")
+          .typeError("Plase enter a valid number"),
+        // documents: yup.array().of(yup.mixed()),
+      })
+    ),
+  });
+
+  const { post: makePayment, loading } = useFetch(
+    endpoints.suppliers + `/${supplier._id}/payments`
+  );
+
+  useEffect(() => {
+    reset({
+      date: moment(new Date(), "yyyy-MM-dd", "en"),
+      paymentMethod: "Cash",
+      amount: "",
+      // documents:  [],
+    });
+  }, []);
+
+  return (
+    <div className={`grid gap-1 p-1 ${s.paymentForm}`}>
+      <form
+        onSubmit={handleSubmit((values) => {
+          const payload = {
+            date: new Date(values.date),
+            paymentMethod: values.paymentMethod,
+            amount: values.amount,
+          };
+          // const formData = new FormData();
+          // Object.entries(payload).forEach(([key, value]) => {
+          //   formData.append(key, value);
+          // });
+          // if (values.documents?.length) {
+          //   values.documents?.forEach((file) => {
+          //     formData.append(
+          //       "documents",
+          //       file.url ? JSON.stringify(file) : file
+          //     );
+          //   });
+          // } else {
+          //   formData.append("documents", null);
+          // }
+          makePayment(payload).then(({ data }) => {
+            if (data.errors) {
+              return Prompt({ type: "error", message: data.message });
+            } else if (data.success) {
+              onSuccess(data.data);
+            }
+          });
+        })}
+        className={`grid gap-1`}
+      >
+        <div className={s.summary}>
+          <span>
+            <Trans>Total</Trans>
+          </span>
+          <span className="text-right">{total.fix(2, i18n.language)}</span>
+          <span>
+            <Trans>Paid</Trans>
+          </span>
+          <span className="text-right">{paid.fix(2, i18n.language)}</span>
+          <hr />
+          <span>
+            <Trans>Due</Trans>
+          </span>
+          <span className="text-right">
+            ৳ {(total - paid).fix(2, i18n.language)}
+          </span>
+        </div>
+        <Input
+          label={<Trans>Date</Trans>}
+          placeholder=" "
+          {...register("date")}
+          type="date"
+          required
+          error={errors.date}
+        />
+        <Select
+          label={<Trans>Payment Method</Trans>}
+          control={control}
+          name="paymentMethod"
+          clearable={false}
+          options={[
+            { label: "Cash", value: "Cash" },
+            { label: "Cheque", value: "Cheque" },
+            { label: "Bank Transfer", value: "Bank Transfer" },
+          ]}
+        />
+
+        <Input
+          label={<Trans>Amount</Trans>}
+          placeholder=" "
+          {...register("amount")}
+          step={0.1}
+          type="number"
+          required
+          error={errors.amount}
+        />
+
+        {/* <FileInput
+          control={control}
+          name="documents"
+          multiple={5}
+          label="Documents"
+          accept="image/*,application/pdf"
+        /> */}
+
+        <div className="btns">
+          <button className="btn" disabled={loading} title="Submit">
+            <Trans>Submit</Trans>
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };

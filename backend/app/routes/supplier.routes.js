@@ -10,6 +10,12 @@ module.exports = function (app) {
     validate(schema.create),
     controller.create
   );
+  router.post(
+    "/:_id/payments",
+    authJwt.verifyToken("bill_create"),
+    validate(schema.makePayment),
+    controller.makePayment
+  );
   router.put(
     "/:_id",
     authJwt.verifyToken("supplier_update"),

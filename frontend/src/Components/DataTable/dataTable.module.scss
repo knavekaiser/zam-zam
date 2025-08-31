@@ -113,11 +113,22 @@
           }
         }
       }
+      .supplier {
+        display: grid;
+        .phone {
+          font-size: 0.8rem;
+          color: rgba(var(--font-color), 0.6);
+        }
+      }
       .cardLabel {
         display: none;
       }
       .currencySymbol {
         font-family: "Times New Roman", Times, serif;
+      }
+      .supplierLabel,
+      .supplierLine {
+        display: none;
       }
     }
   }
@@ -382,6 +393,23 @@
   // mask: var(--mask);
 }
 
+.paymentFormModal {
+  width: 100%;
+  max-width: 30rem;
+  .paymentForm {
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 0.5rem;
+      hr {
+        grid-column: 1 / -1;
+        margin-top: 0.25rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+}
+
 @container wrapper (max-width: 980px) {
   .content {
     margin: 0;
@@ -475,8 +503,22 @@
           text-align: right;
           margin: 0;
         }
-        .role {
-          // text-align: right;
+        .supplierPurchase {
+          grid-column: 2;
+        }
+        .supplierPaid {
+          grid-column: 2;
+        }
+        .supplierDue {
+          grid-column: 2;
+        }
+        .supplierLabel {
+          display: block;
+        }
+        .supplierLine {
+          display: block;
+          grid-column: 1 / -1;
+          border-bottom: 1px solid rgba(var(--font-color), 0.6);
         }
         .actions {
           grid-column: -1 / -2;

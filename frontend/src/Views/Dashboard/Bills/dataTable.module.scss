@@ -110,7 +110,7 @@
 
 .addFormModal {
   width: 100%;
-  max-width: 62rem;
+  max-width: 50rem;
 }
 
 .paymentFormModal {
@@ -176,6 +176,10 @@
     .date {
       text-align: center;
       margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      align-items: center;
     }
     .items {
       margin-top: 2rem;

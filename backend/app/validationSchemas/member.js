@@ -11,7 +11,7 @@ module.exports = {
       // .test("deviceId", "Please pass a valid device ID", (v) =>
       //   Device.findOne({ deviceId: v })
       // ),
-      name: yup.string().required(),
+      name: yup.string().trim().required(),
       phone: yup
         .string()
         .phone()
@@ -62,7 +62,7 @@ module.exports = {
 
   update: yup.object({
     body: yup.object({
-      name: yup.string().min(3),
+      name: yup.string().trim().min(3),
       phone: yup.string(),
       // .test("checkPhone", "Phone number already in use", (v) =>
       //   User.findOne({ phone: v }).then((user) => !user)

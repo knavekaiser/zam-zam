@@ -41,6 +41,9 @@ exports.findAll = async (req, res) => {
         $lte: new Date(req.query.to_date),
       };
     }
+    if (req.query.categories) {
+      conditions.category = { $in: req.query.categories.split(",") };
+    }
 
     const pipeline = [
       { $match: conditions },
@@ -309,6 +312,24 @@ exports.delete = async (req, res) => {
         responseFn.success(res, {}, responseStr.record_deleted);
       })
       .catch((err) => responseFn.error(res, {}, err.message, 500));
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
+exports.getExpCategories = async (req, res) => {
+  try {
+    const conditions = {};
+    if (req.query.name) {
+      conditions.name = { $regex: req.query.name, $options: "i" };
+    }
+    Expense.aggregate([
+      { $group: { _id: "$category" } },
+      { $project: { _id: 0, name: "$_id" } },
+      { $match: conditions },
+    ])
+      .then((data) => responseFn.success(res, { data }))
+      .catch((err) => responseFn.error(res, {}, err.message));
   } catch (error) {
     return responseFn.error(res, {}, error.message, 500);
   }

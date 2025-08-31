@@ -270,6 +270,11 @@ const Detail = ({ bill, setBill, i18n }) => {
           )}
         </div>
         <p className={s.date}>
+          {bill.ref && (
+            <>
+              <p>{bill.ref}</p> ●
+            </>
+          )}
           <Moment format="MMM dd, yy">{bill.date}</Moment>
         </p>
         <ul className={s.items}>

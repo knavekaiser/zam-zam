@@ -21,6 +21,11 @@ module.exports = function (app) {
     validate(schema.create),
     controller.create
   );
+  router.get(
+    "/categories",
+    authJwt.verifyToken("expense_read"),
+    controller.getExpCategories
+  );
   router.put(
     "/:_id",
     authJwt.verifyToken("expense_update"),

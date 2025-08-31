@@ -101,6 +101,7 @@ export default {
   Paid: "পরিশোধ",
   Payments: "আদায়",
   Adjustment: "সমন্বয়",
+  Purchase: "ক্রয়",
   "Payment Method": "আদায়ের পদ্ধতি",
 
   Timeline: "টাইমলাইন",

@@ -100,6 +100,7 @@ export default {
   Paid: "Paid",
   Payments: "Payments",
   Adjustment: "Adjustment",
+  Purchase: "Purchase",
   "Payment Method": "Payment Method",
 
   Timeline: "Timeline",

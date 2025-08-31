@@ -9,7 +9,7 @@ import s from "./dataTable.module.scss";
 import { useFetch } from "hooks";
 import { status } from "config";
 import { cubicBezier } from "framer-motion";
-import { Form, Filter } from "./Form";
+import { Form, PaymentForm, Filter } from "./Form";
 import Detail from "./Detail";
 import { BsList, BsX } from "react-icons/bs";
 import { Trans, useTranslation } from "react-i18next";
@@ -37,6 +37,7 @@ const Data = ({
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [view, setView] = useState(null);
+  const [paymentForm, setPaymentForm] = useState(null);
   const { t } = useTranslation();
 
   const { remove: deleteItem, loading: deletingItem } = useFetch(
@@ -120,6 +121,20 @@ const Data = ({
                             label: <Trans>View Detail</Trans>,
                             onClick: () => {
                               setView({ ...item, type: title.slice(0, -1) });
+                            },
+                          },
+                        ]
+                      : []),
+                    ...(name === "supplier" &&
+                    item.payment?.due > 0 &&
+                    checkPermission("bill_create")
+                      ? [
+                          {
+                            icon: <BiCheckDouble />,
+                            label: <Trans>Make Payment</Trans>,
+                            disabled: approvingItem,
+                            onClick: () => {
+                              setPaymentForm(item);
                             },
                           },
                         ]
@@ -291,6 +306,28 @@ const Data = ({
                 tableRef.current.setData((prev) => [...prev, newData]);
               }
               setAddData(false);
+            }}
+            prefillValues={prefillValues}
+            parseValues={parseValues}
+          />
+        </Modal>
+
+        <Modal
+          open={paymentForm}
+          head
+          label={<Trans>Make Payment</Trans>}
+          className={s.paymentFormModal}
+          setOpen={() => {
+            setPaymentForm(false);
+          }}
+        >
+          <PaymentForm
+            supplier={paymentForm}
+            onSuccess={(newData) => {
+              tableRef.current.setData((prev) =>
+                prev.map((item) => (item._id === newData._id ? newData : item))
+              );
+              setPaymentForm(false);
             }}
             prefillValues={prefillValues}
             parseValues={parseValues}

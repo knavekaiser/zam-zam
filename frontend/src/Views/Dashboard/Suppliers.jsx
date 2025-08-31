@@ -2,13 +2,14 @@ import DataTable from "Components/DataTable";
 import { endpoints } from "config";
 import { useContext } from "react";
 import { SiteContext } from "@/SiteContext";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import phone from "phone";
 
 export default function Suppliers({ setSidebarOpen }) {
+  const { i18n } = useTranslation();
   const { user } = useContext(SiteContext);
   const actionColumns = ["approve", "update", "delete"].some((item) =>
-    user.role?.permissions?.includes(`deposit_${item}`)
+    user.role?.permissions?.includes(`supplier_${item}`)
   );
   return (
     <DataTable
@@ -18,28 +19,51 @@ export default function Suppliers({ setSidebarOpen }) {
       setSidebarOpen={setSidebarOpen}
       endpoint={endpoints.suppliers}
       trStyle={{
-        gridTemplateColumns: `1fr 1fr 1fr ${actionColumns ? "3rem" : ""}`,
+        gridTemplateColumns: `1fr 8rem 8rem 8rem ${
+          actionColumns ? "3rem" : ""
+        }`,
       }}
       deleteRequest
       columns={[
         { label: <Trans>Name</Trans> },
-        { label: <Trans>Phone</Trans> },
-        { label: <Trans>Address</Trans> },
+        { label: <Trans>Purchase</Trans>, className: "text-right" },
+        { label: <Trans>Paid</Trans>, className: "text-right" },
+        { label: <Trans>Due</Trans>, className: "text-right" },
         ...(actionColumns
           ? [{ label: <Trans>Action</Trans>, className: "text-right" }]
           : []),
       ]}
       renderRow={(item, s, status) => (
         <>
-          <td className={s.date}>{item.name}</td>
-          <td className={s.user}>
-            {(item.phones || []).map((phone) => (
-              <span key={phone} className={s.phone}>
-                <a href={`tel:${phone}`}>{phone}</a>
-              </span>
-            ))}
+          <td className={s.supplier}>
+            <p>{item.name}</p>
+            <div className="flex wrap gap_5">
+              {(item.phones || []).map((phone) => (
+                <span key={phone} className={s.phone}>
+                  <a href={`tel:${phone}`}>{phone}</a>
+                </span>
+              ))}
+            </div>
           </td>
-          <td>{item.address}</td>
+          <td className={`${s.supplierLabel} text-right`}>
+            <Trans>Purchase</Trans>
+          </td>
+          <td className={`${s.supplierPurchase} text-right`}>
+            {(item.payment?.totalPurchase || 0).fix(2, i18n.language)}
+          </td>
+          <td className={`${s.supplierLabel} text-right`}>
+            <Trans>Paid</Trans>
+          </td>
+          <td className={`${s.supplierPaid} text-right`}>
+            {(item.payment?.totalPaid || 0).fix(2, i18n.language)}
+          </td>
+          <td className={s.supplierLine} />
+          <td className={`${s.supplierLabel} text-right`}>
+            <Trans>Due</Trans>
+          </td>
+          <td className={`${s.supplierDue} text-right`}>
+            {(item.payment?.due || 0).fix(2, i18n.language)}
+          </td>
         </>
       )}
       schema={[

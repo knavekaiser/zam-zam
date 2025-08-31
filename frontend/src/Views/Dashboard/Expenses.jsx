@@ -70,6 +70,22 @@ export default function Deposits({ setSidebarOpen }) {
       )}
       schema={[
         {
+          fieldType: "select",
+          label: "Category",
+          url: endpoints.expenseCategories,
+          name: "category",
+          formOptions: { required: true },
+          getQuery: (inputValue, selected) => ({
+            ...(inputValue && { name: inputValue }),
+            ...(selected && { name: selected }),
+          }),
+          handleData: (item) => ({
+            label: item.name,
+            value: item.name,
+          }),
+          creatable: true,
+        },
+        {
           fieldType: "input",
           type: "date",
           name: "date",
