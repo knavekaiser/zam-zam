@@ -87,6 +87,7 @@ export default {
   "End Date": "End Date",
   End: "End",
 
+  Tags: "Tags",
   Item: "Item",
   Items: "Items",
   Charges: "Charges",

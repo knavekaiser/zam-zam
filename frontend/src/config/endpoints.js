@@ -22,7 +22,7 @@ const endpoints = {
   milestones: `${baseApiUrl}/api/milestones`,
   incomes: `${baseApiUrl}/api/incomes`,
   expenses: `${baseApiUrl}/api/expenses`,
-  expenseCategories: `${baseApiUrl}/api/expenses/categories`,
+  expenseTags: `${baseApiUrl}/api/expenses/tags`,
   deposits: `${baseApiUrl}/api/deposits`,
   withdrawals: `${baseApiUrl}/api/withdrawals`,
   members: `${baseApiUrl}/api/members`,

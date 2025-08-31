@@ -106,6 +106,7 @@ export default function Members({ setSidebarOpen }) {
       name="member"
       setSidebarOpen={setSidebarOpen}
       endpoint={endpoints.members}
+      pagination={false}
       trStyle={{
         gridTemplateColumns: `1fr 8rem 8rem ${
           user.userType === "staff" ? "8rem" : ""

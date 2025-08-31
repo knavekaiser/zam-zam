@@ -28,6 +28,7 @@ const Data = ({
   prefillValues,
   parseValues,
   filterStatus,
+  pagination = true,
 }) => {
   const tableRef = useRef();
   const { checkPermission } = useContext(SiteContext);
@@ -101,7 +102,7 @@ const Data = ({
               setShowAddBtn(true);
             }
           }}
-          pagination
+          pagination={pagination}
           url={endpoint}
           renderRow={(item) => (
             <tr key={item._id} style={trStyle}>

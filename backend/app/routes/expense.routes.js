@@ -22,9 +22,9 @@ module.exports = function (app) {
     controller.create
   );
   router.get(
-    "/categories",
+    "/tags",
     authJwt.verifyToken("expense_read"),
-    controller.getExpCategories
+    controller.getExpenseTags
   );
   router.put(
     "/:_id",

@@ -102,10 +102,13 @@ export const Form = ({
             _edit[field.name] = edit[field.name] || "";
           }
         } else if (field.fieldType === "select") {
-          if (typeof edit[field.name] === "object") {
-            _edit[field.name] = edit[field.name]._id || "";
+          if (Array.isArray(edit[field.name])) {
+            _edit[field.name] = edit[field.name];
+          } else if (typeof edit[field.name] === "object") {
+            _edit[field.name] =
+              edit[field.name]._id || (field.multiple ? [] : "");
           } else {
-            _edit[field.name] = edit[field.name] || "";
+            _edit[field.name] = edit[field.name] || (field.multiple ? [] : "");
           }
         } else if (field.fieldType === "fileInput") {
           _edit[field.name] = edit[field.name] || (field.multiple ? [] : null);
@@ -252,8 +255,8 @@ export const Filter = ({
     if (schema.some((item) => item.name === "milestone")) {
       _filter.milestones = filters.milestones || [];
     }
-    if (schema.some((item) => item.name === "category")) {
-      _filter.categories = filters.categories || [];
+    if (schema.some((item) => item.name === "tags")) {
+      _filter.tags = filters.tags || [];
     }
     _filter.status = filters.status || [];
     _filter.from_date = filters.from_date || "";
@@ -280,12 +283,12 @@ export const Filter = ({
           })}
         />
       )}
-      {schema.some((item) => item.name === "category") && (
+      {schema.some((item) => item.name === "tags") && (
         <Select
-          placeholder="Category"
-          url={endpoints.expenseCategories}
+          placeholder="Tags"
+          url={endpoints.expenseTags}
           control={control}
-          name="categories"
+          name="tags"
           multiple
           getQuery={(inputValue, selected) => ({
             ...(inputValue && { name: inputValue }),

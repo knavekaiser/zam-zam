@@ -41,8 +41,8 @@ exports.findAll = async (req, res) => {
         $lte: new Date(req.query.to_date),
       };
     }
-    if (req.query.categories) {
-      conditions.category = { $in: req.query.categories.split(",") };
+    if (req.query.tags) {
+      conditions.tags = { $all: req.query.tags.split(",") };
     }
 
     const pipeline = [
@@ -317,14 +317,15 @@ exports.delete = async (req, res) => {
   }
 };
 
-exports.getExpCategories = async (req, res) => {
+exports.getExpenseTags = async (req, res) => {
   try {
     const conditions = {};
     if (req.query.name) {
       conditions.name = { $regex: req.query.name, $options: "i" };
     }
     Expense.aggregate([
-      { $group: { _id: "$category" } },
+      { $unwind: { path: "$tags", preserveNullAndEmptyArrays: false } },
+      { $group: { _id: "$tags" } },
       { $project: { _id: 0, name: "$_id" } },
       { $match: conditions },
     ])

@@ -88,6 +88,7 @@ export default {
   "End Date": "শেষ তারিখ",
   End: "শেষ",
 
+  Tags: "ট্যাগ",
   Item: "বিবরণ",
   Items: "বিবরণ",
   Charges: "খরচ",

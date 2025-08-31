@@ -340,7 +340,6 @@ export const Select = ({
   const [inputValue, setInputValue] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [options, setOptions] = useState([]);
-  const [newOptions, setNewOptions] = useState([]);
 
   const { get: fetchData, loading } = useFetch(url);
 
@@ -468,36 +467,17 @@ export const Select = ({
           menuPlacement: "auto",
           options: options || [],
           value:
-            (creatable
-              ? [...(options || []), ...(newOptions || [])]
-              : options
-            )?.find((op) => op.value === value) ||
-            (creatable
-              ? [...(options || []), ...(newOptions || [])]
-              : options
-            )?.filter((op) => value?.some?.((item) => item === op.value)) ||
-            "",
+            (multiple
+              ? options?.filter((op) =>
+                  value?.some?.((item) => item === op.value)
+                )
+              : options?.find((op) => op.value === value)) || "",
           onInputChange: (value) => {
             if (url) {
               setInputValue(value);
             }
           },
           onChange: (val) => {
-            if (creatable) {
-              if (multiple) {
-                const newOpt = val.filter(
-                  (v) =>
-                    v.__isNew__ && !newOptions.some((i) => i.value === v.value)
-                );
-                if (newOpt.length) {
-                  setNewOptions((prev) => [...prev, ...newOpt]);
-                }
-              } else {
-                if (!newOptions.some((item) => item.value === val.value)) {
-                  setNewOptions((prev) => [...prev, val]);
-                }
-              }
-            }
             if (multiple) {
               onChange(val.map((item) => item.value));
               setSelectedOptions(val);
