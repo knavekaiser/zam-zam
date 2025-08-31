@@ -389,7 +389,7 @@ export const Select = ({
   );
 
   useEffect(() => {
-    if (url && inputValue) {
+    if (url) {
       getOptions(inputValue);
     }
   }, [inputValue]);
