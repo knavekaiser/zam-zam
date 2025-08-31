@@ -4,6 +4,8 @@ import { useContext } from "react";
 import { SiteContext } from "@/SiteContext";
 import { Trans, useTranslation } from "react-i18next";
 import phone from "phone";
+import { Link } from "react-router-dom";
+import { paths } from "config";
 
 export default function Suppliers({ setSidebarOpen }) {
   const { i18n } = useTranslation();
@@ -33,10 +35,16 @@ export default function Suppliers({ setSidebarOpen }) {
           ? [{ label: <Trans>Action</Trans>, className: "text-right" }]
           : []),
       ]}
+      pagination={false}
       renderRow={(item, s, status) => (
         <>
           <td className={s.supplier}>
-            <p>{item.name}</p>
+            <Link
+              className={`mb_5`}
+              to={`${paths.bills.replace(":supplier_id", item._id)}`}
+            >
+              {item.name}
+            </Link>
             <div className="flex wrap gap_5">
               {(item.phones || []).map((phone) => (
                 <span key={phone} className={s.phone}>

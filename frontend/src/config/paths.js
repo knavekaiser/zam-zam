@@ -14,7 +14,8 @@ const paths = {
   staffs: "/staffs",
   roles: "/roles",
   suppliers: "/suppliers",
-  bills: "/bills",
+  bills: "/suppliers/:supplier_id/bills",
+  materials: "/materials",
 
   profile: "/profile",
 };

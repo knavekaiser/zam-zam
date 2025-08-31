@@ -113,6 +113,12 @@
           }
         }
       }
+      a {
+        width: max-content;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
       .supplier {
         display: grid;
         .phone {

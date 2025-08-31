@@ -3,15 +3,13 @@ const {
 } = require("../config");
 const { cdnHelper } = require("../helpers");
 const { Bill } = require("../models");
+const { ObjectId } = require("mongodb");
 
 exports.findAll = async (req, res) => {
   try {
     const conditions = {};
-    if (req.query.members) {
-      conditions.member = { $in: req.query.members.split(",") };
-    }
-    if (req.query.milestones) {
-      conditions.milestone = { $in: req.query.milestones.split(",") };
+    if (req.query.supplier) {
+      conditions.supplier = ObjectId(req.query.supplier);
     }
     if (req.query.from_date && req.query.to_date) {
       conditions.date = {
@@ -175,6 +173,37 @@ exports.getBillCharges = async (req, res) => {
       { $unwind: "$charges" },
       { $group: { _id: "$charges.name" } },
       { $project: { _id: 0, name: "$_id" } },
+      { $match: conditions },
+    ])
+      .then((data) => responseFn.success(res, { data }))
+      .catch((err) => responseFn.error(res, {}, err.message));
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+exports.getMaterials = async (req, res) => {
+  try {
+    const conditions = {};
+    if (req.query.name) {
+      conditions.name = { $regex: req.query.name, $options: "i" };
+    }
+    Bill.aggregate([
+      { $project: { items: 1 } },
+      {
+        $unwind: {
+          path: "$items",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $group: {
+          _id: { $concat: ["$items.name", "_", "$items.unit"] },
+          name: { $first: "$items.name" },
+          unit: { $first: "$items.unit" },
+          qty: { $sum: "$items.qty" },
+          cost: { $sum: { $multiply: ["$items.qty", "$items.rate"] } },
+        },
+      },
       { $match: conditions },
     ])
       .then((data) => responseFn.success(res, { data }))

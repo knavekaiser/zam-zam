@@ -30,6 +30,7 @@ const endpoints = {
   bills: `${baseApiUrl}/api/bills`,
   billItems: `${baseApiUrl}/api/bills/items`,
   billCharges: `${baseApiUrl}/api/bills/charges`,
+  materials: `${baseApiUrl}/api/bills/materials`,
   findMembers: `${baseApiUrl}/api/members/find`,
   sendMessageToMembers: `${baseApiUrl}/api/members/send-sms`,
   roles: `${baseApiUrl}/api/roles`,

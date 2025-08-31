@@ -30,6 +30,8 @@ import {
   BsShop,
   BsFileBreak,
   BsFileBreakFill,
+  BsBoxSeamFill,
+  BsBoxSeam,
 } from "react-icons/bs";
 
 import s from "./dashboard.module.scss";
@@ -49,6 +51,7 @@ const Roles = lazy(() => import("./Roles"));
 const Suppliers = lazy(() => import("./Suppliers"));
 const Bills = lazy(() => import("./Bills"));
 const Milestones = lazy(() => import("./Milestones"));
+const Materials = lazy(() => import("./Materials"));
 
 const Loading = ({ columns, trStyle, setSidebarOpen }) => {
   return (
@@ -222,10 +225,10 @@ const MainApp = () => {
     ...(checkPermission("bill_read")
       ? [
           {
-            icon: <BsFileBreak />,
-            activeIcon: <BsFileBreakFill className={s.filled} />,
-            label: "Bills",
-            path: paths.bills,
+            icon: <BsBoxSeam />,
+            activeIcon: <BsBoxSeamFill className={s.filled} />,
+            label: "Materials",
+            path: paths.materials,
           },
         ]
       : []),
@@ -537,6 +540,22 @@ const MainApp = () => {
               }
             >
               <Bills setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
+        />
+        <Route
+          path={paths.materials}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={2}
+                  trStyle={{ gridTemplateColumns: `1fr 5rem` }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <Materials setSidebarOpen={setSidebarOpen} />
             </Suspense>
           }
         />

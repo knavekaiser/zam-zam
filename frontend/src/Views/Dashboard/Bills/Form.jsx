@@ -436,7 +436,10 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
   const { t } = useTranslation();
   const { handleSubmit, register, reset } = useForm();
   useEffect(() => {
-    reset(filters);
+    reset({
+      from_date: filters.from_date || "",
+      to_date: filters.to_date || "",
+    });
   }, [filters]);
   return (
     <motion.div
@@ -449,7 +452,7 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
         onSubmit={handleSubmit((values) => {
           setFilters(
             Object.entries(values).reduce((p, [key, value]) => {
-              if (value?.length) {
+              if (value) {
                 p[key] = value;
               }
               return p;
@@ -459,9 +462,14 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
         className={s.filters}
       >
         <Input
-          // label={<Trans>Name</Trans>}
-          placeholder={t("Name")}
-          {...register("name")}
+          placeholder={<Trans>Start Date</Trans>}
+          type="date"
+          {...register("from_date")}
+        />
+        <Input
+          placeholder={<Trans>End Date</Trans>}
+          type="date"
+          {...register("to_date")}
         />
 
         <div className="btns">

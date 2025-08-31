@@ -10,9 +10,11 @@ import { useFetch } from "hooks";
 
 import { Form, Filter, PaymentForm } from "./Form";
 import { endpoints } from "config";
-import { BsList, BsX } from "react-icons/bs";
+import { BsArrowLeft, BsList, BsX } from "react-icons/bs";
 import { Trans, useTranslation } from "react-i18next";
 import { CgSpinner } from "react-icons/cg";
+import { Link, useParams } from "react-router-dom";
+import { paths } from "config";
 
 const Data = ({ setSidebarOpen }) => {
   const { t, i18n } = useTranslation();
@@ -25,6 +27,8 @@ const Data = ({ setSidebarOpen }) => {
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
 
+  const { supplier_id } = useParams();
+
   const { remove: deleteBill, loading: deletingBill } = useFetch(
     endpoints.bills + "/{ID}"
   );
@@ -33,11 +37,16 @@ const Data = ({ setSidebarOpen }) => {
     <div className={s.wrapper}>
       <div className={`${s.content} grid m-a`}>
         <div className={`${s.head} flex`}>
-          <div
-            className={`flex align-center pointer gap_5  ml-1`}
-            onClick={() => setSidebarOpen((prev) => !prev)}
-          >
-            <BsList style={{ fontSize: "1.75rem" }} />
+          <div className={`flex align-center pointer gap_5  ml-1`}>
+            <button
+              className="clear"
+              onClick={() => setSidebarOpen((prev) => !prev)}
+            >
+              <BsList style={{ fontSize: "1.75rem" }} />
+            </button>
+            <Link to={paths.suppliers} className="grid">
+              <BsArrowLeft style={{ fontSize: "1.75rem" }} />
+            </Link>
             <h2>
               <Trans>Bills</Trans>
             </h2>
@@ -62,6 +71,7 @@ const Data = ({ setSidebarOpen }) => {
           className={s.data}
           columns={[
             { label: <Trans>Date</Trans> },
+            { label: <Trans>Ref</Trans> },
             { label: <Trans>Supplier</Trans> },
             { label: <Trans>Total</Trans>, className: "text-right" },
             { label: <Trans>Paid</Trans>, className: "text-right" },
@@ -76,10 +86,10 @@ const Data = ({ setSidebarOpen }) => {
             }
           }}
           url={endpoints.bills}
-          filters={filters}
+          filters={{ ...filters, supplier: supplier_id }}
           pagination
           trStyle={{
-            gridTemplateColumns: `6rem 1fr 7rem 7rem 7rem 3rem`,
+            gridTemplateColumns: `6rem 6rem 1fr 7rem 7rem 7rem 3rem`,
           }}
           renderRow={(item) => {
             const total =
@@ -91,12 +101,13 @@ const Data = ({ setSidebarOpen }) => {
               <tr
                 key={item._id}
                 style={{
-                  gridTemplateColumns: `6rem 1fr 7rem 7rem 7rem 3rem`,
+                  gridTemplateColumns: `6rem 6rem 1fr 7rem 7rem 7rem 3rem`,
                 }}
               >
                 <td>
                   <Moment format="MMM dd, yy">{item.date}</Moment>
                 </td>
+                <td>{item.ref || "--"}</td>
                 <td>{item.supplier?.name || "--"}</td>
                 <td className="text-right">{total.fix(2, i18n.language)}</td>
                 <td className="text-right">{paid.fix(2, i18n.language)}</td>

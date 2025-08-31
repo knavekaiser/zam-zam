@@ -56,11 +56,13 @@ const Data = ({
     <div className={s.wrapper}>
       <div className={`${s.content} grid m-a`}>
         <div className={`${s.head} flex`}>
-          <div
-            className={`flex align-center pointer gap_5  ml-1`}
-            onClick={() => setSidebarOpen((prev) => !prev)}
-          >
-            <BsList style={{ fontSize: "1.75rem" }} />
+          <div className={`flex align-center pointer gap_5  ml-1`}>
+            <button
+              className="clear"
+              onClick={() => setSidebarOpen((prev) => !prev)}
+            >
+              <BsList style={{ fontSize: "1.75rem" }} />
+            </button>
             <h2>
               <Trans>{title}</Trans>
             </h2>

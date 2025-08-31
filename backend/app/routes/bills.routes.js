@@ -38,6 +38,11 @@ module.exports = function (app) {
     controller.update
   );
   router.get(
+    "/materials",
+    authJwt.verifyToken("bill_read"),
+    controller.getMaterials
+  );
+  router.get(
     "/items",
     authJwt.verifyToken("bill_read"),
     controller.getBillItems
