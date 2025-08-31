@@ -163,9 +163,22 @@ exports.update = async (req, res) => {
     ["addedBy", "status"].forEach((item) => {
       delete req.body[item];
     });
+
+    let status = "upcoming";
+    if (new Date(req.body.startDate) > new Date()) {
+      status = "upcoming";
+    } else if (new Date(req.body.endDate) < new Date()) {
+      status = "past-due";
+    } else if (
+      new Date(req.body.startDate) < new Date() &&
+      new Date(req.body.endDate) > new Date()
+    ) {
+      status = "ongoing";
+    }
+
     Milestone.findOneAndUpdate(
       { _id: req.params._id },
-      { ...req.body },
+      { ...req.body, status },
       { new: true }
     )
       .then((data) => {

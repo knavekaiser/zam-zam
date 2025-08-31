@@ -17,6 +17,9 @@
   border: 1px solid rgba(var(--font-color), 0.1);
   position: relative;
   transition: 0.25s margin ease-in-out, 0.25s border-radius ease-in-out;
+  height: 100%;
+  max-height: calc((var(--vh) * 100) - 2rem);
+  overflow: hidden;
   .head {
     flex-wrap: wrap;
     grid-gap: 0 0.5rem;

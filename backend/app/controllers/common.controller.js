@@ -196,6 +196,76 @@ exports.dashboardData = async (req, res) => {
               },
             ]
           : []),
+        ...(req.authToken.userType === "staff"
+          ? [
+              {
+                $lookup: {
+                  from: "members",
+                  let: { milestone_id: "$_id" },
+                  pipeline: [
+                    {
+                      $match: {
+                        status: "active",
+                      },
+                    },
+                    {
+                      $project: {
+                        _id: 1,
+                        name: 1,
+                        photo: 1,
+                        phone: 1,
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: "deposits",
+                        let: { member_id: "$_id" },
+                        pipeline: [
+                          {
+                            $match: {
+                              status: "approved",
+                              $expr: {
+                                $and: [
+                                  {
+                                    $eq: ["$$member_id", "$member"],
+                                  },
+                                  {
+                                    $eq: ["$$milestone_id", "$milestone"],
+                                  },
+                                ],
+                              },
+                            },
+                          },
+                          {
+                            $group: {
+                              _id: null,
+                              total: {
+                                $sum: "$amount",
+                              },
+                            },
+                          },
+                        ],
+                        as: "totalDeposite",
+                      },
+                    },
+                    {
+                      $set: {
+                        totalDeposite: {
+                          $getField: {
+                            input: {
+                              $first: "$totalDeposite",
+                            },
+                            field: "total",
+                          },
+                        },
+                      },
+                    },
+                  ],
+                  as: "members",
+                },
+              },
+            ]
+          : []),
         {
           $lookup: {
             from: "deposits",
@@ -260,6 +330,7 @@ exports.dashboardData = async (req, res) => {
             totalDue: 1,
             myDeposit: 1,
             myDue: 1,
+            members: 1,
             perMember: 1,
             status: 1,
           },
@@ -324,5 +395,3 @@ exports.autoBugReport = async (req, res) => {
     responseFn.error(res, {}, err.message);
   }
 };
-
-//

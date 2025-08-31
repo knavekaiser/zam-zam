@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Prompt } from "Components/modal";
+import { Modal, Prompt } from "Components/modal";
 import s from "./home.module.scss";
 import { useFetch } from "hooks";
 import { endpoints } from "config";
@@ -260,119 +260,181 @@ const Card = ({ label, amount, onClick = () => {} }) => {
 const Milestones = ({ milestones }) => {
   const { user } = useContext(SiteContext);
   const [view, setView] = useState(milestones.length - 1);
+  const [viewMembers, setViewMembers] = useState(null);
   const { i18n } = useTranslation();
   return (
-    <div className={s.milestones}>
-      <div className={s.milestoneInfoWrapper}>
+    <>
+      <div className={s.milestones}>
+        <div className={s.milestoneInfoWrapper}>
+          <div
+            className={s.milestoneInfo}
+            style={{
+              gridTemplateColumns: milestones.reduce((p, c) => p + "102% ", ""),
+              transform: `translateX(-${102 * view}%)`,
+            }}
+          >
+            {milestones.map((item, i) => (
+              <div
+                key={item._id}
+                className={`${s.info} ${view === i ? s.view : ""}`}
+              >
+                <div className={s.left}>
+                  <h4>{item.title}</h4>
+                  <p className={s.dscr}>{item.description}</p>
+                </div>
+                <div className={s.right}>
+                  <div className={s.money}>
+                    <span className={s.paid}>
+                      <span className={s.currencySymbol}>৳</span>
+                      <CountUp
+                        number={
+                          user.userType === "member"
+                            ? item.myDeposit
+                            : item.totalDeposited
+                        }
+                        offset={50}
+                      />
+                    </span>
+
+                    <span>
+                      / <span className={s.currencySymbol}>৳</span>
+                      {(
+                        (user.userType === "member"
+                          ? item.perMember
+                          : item.amount) || 0
+                      ).fix(0, i18n.language)}
+                    </span>
+                  </div>
+                  <div className={s.dates}>
+                    <Moment className={s.startDate} format="MMM dd, yyyy">
+                      {item.startDate}
+                    </Moment>{" "}
+                    -{" "}
+                    <Moment format="MMM dd, yyyy" className={s.endDate}>
+                      {item.endDate}
+                    </Moment>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div
-          className={s.milestoneInfo}
+          className={s.progressBars}
           style={{
-            gridTemplateColumns: milestones.reduce((p, c) => p + "102% ", ""),
-            transform: `translateX(-${102 * view}%)`,
+            gridTemplateColumns: milestones.reduce(
+              (p, c, j) =>
+                p +
+                (j === view
+                  ? "1fr "
+                  : j === view - 1 || j === view + 1
+                  ? `${window.innerWidth <= 480 ? 0.075 : 0.03}fr `
+                  : "0fr "),
+              ""
+            ),
           }}
         >
-          {milestones.map((item, i) => (
+          {milestones.map((item, i, arr) => (
             <div
               key={item._id}
-              className={`${s.info} ${view === i ? s.view : ""}`}
-            >
-              <div className={s.left}>
-                <h4>{item.title}</h4>
-                <p className={s.dscr}>{item.description}</p>
-              </div>
-              <div className={s.right}>
-                <div className={s.money}>
-                  <span className={s.paid}>
-                    <span className={s.currencySymbol}>৳</span>
-                    <CountUp
-                      number={
-                        user.userType === "member"
-                          ? item.myDeposit
-                          : item.totalDeposited
-                      }
-                      offset={50}
-                    />
-                  </span>
+              className={`${s.singleBar} ${view === i ? s.view : ""} ${
+                item.status === "ongoing" ? s.ongoing : ""
+              }`}
+              style={{
+                marginRight:
+                  (view === i && arr[i + 1]) || view === i + 1 ? "3px" : "0",
+                marginLeft:
+                  (view === i && arr[i - 1]) || view === i - 1 ? "3px" : "0",
 
-                  <span>
-                    / <span className={s.currencySymbol}>৳</span>
-                    {(
+                background: `linear-gradient(90deg, #0374361c ${
+                  (item.totalDeposited / item.amount) * 100 - 5
+                }%, #ffffff05 ${
+                  (item.totalDeposited / item.amount) * 100 + 5
+                }%)`,
+              }}
+              onClick={() => {
+                if (view === i && item.members?.length) {
+                  setViewMembers(item);
+                }
+                setView(i);
+              }}
+            >
+              <span
+                className={s.progressWrapper}
+                // style={{
+                //   display: "inline-block",
+                //   background: `linear-gradient(90deg, #0374361c ${95}%, #ffffff05 ${105}%)`,
+                // }}
+              >
+                <span
+                  className={s.progress}
+                  style={{
+                    width: `${Math.min(
                       (user.userType === "member"
-                        ? item.perMember
-                        : item.amount) || 0
-                    ).fix(0, i18n.language)}
-                  </span>
-                </div>
-                <div className={s.dates}>
-                  <Moment className={s.startDate} format="MMM dd, yyyy">
-                    {item.startDate}
-                  </Moment>{" "}
-                  -{" "}
-                  <Moment format="MMM dd, yyyy" className={s.endDate}>
-                    {item.endDate}
-                  </Moment>
-                </div>
-              </div>
+                        ? item.myDeposit / item.perMember
+                        : item.totalDeposited / item.amount) * 100,
+                      100
+                    )}%`,
+                  }}
+                />
+              </span>
             </div>
           ))}
         </div>
       </div>
 
-      <div
-        className={s.progressBars}
-        style={{
-          gridTemplateColumns: milestones.reduce(
-            (p, c, j) =>
-              p +
-              (j === view
-                ? "1fr "
-                : j === view - 1 || j === view + 1
-                ? `${window.innerWidth <= 480 ? 0.075 : 0.03}fr `
-                : "0fr "),
-            ""
-          ),
+      <Modal
+        open={viewMembers}
+        className={s.memberModal}
+        head
+        label={<Trans>Milestone</Trans>}
+        setOpen={() => {
+          setViewMembers(null);
         }}
       >
-        {milestones.map((item, i, arr) => (
-          <div
-            key={item._id}
-            className={`${s.singleBar} ${view === i ? s.view : ""} ${
-              item.status === "ongoing" ? s.ongoing : ""
-            }`}
-            style={{
-              marginRight:
-                (view === i && arr[i + 1]) || view === i + 1 ? "3px" : "0",
-              marginLeft:
-                (view === i && arr[i - 1]) || view === i - 1 ? "3px" : "0",
+        <Members milestone={viewMembers} i18n={i18n} />
+      </Modal>
+    </>
+  );
+};
 
-              background: `linear-gradient(90deg, #0374361c ${
-                (item.totalDeposited / item.amount) * 100 - 5
-              }%, #ffffff05 ${(item.totalDeposited / item.amount) * 100 + 5}%)`,
-            }}
-            onClick={() => setView(i)}
-          >
-            <span
-              className={s.progressWrapper}
-              // style={{
-              //   display: "inline-block",
-              //   background: `linear-gradient(90deg, #0374361c ${95}%, #ffffff05 ${105}%)`,
-              // }}
-            >
-              <span
-                className={s.progress}
-                style={{
-                  width: `${Math.min(
-                    (user.userType === "member"
-                      ? item.myDeposit / item.perMember
-                      : item.totalDeposited / item.amount) * 100,
-                    100
-                  )}%`,
-                }}
+const Members = ({ milestone, i18n }) => {
+  return (
+    <div className={s.memberWrapper}>
+      <ul className={s.members}>
+        {milestone.members.map((member) => (
+          <li className={s.member} key={member._id}>
+            <div className={s.user}>
+              <img
+                src={member.photo || "/asst/avatar.webp"}
+                alt={`Member Photo - ${member.name}`}
               />
-            </span>
-          </div>
+              <div className={s.detail}>
+                <span className={s.name}>{member.name}</span>
+                <span className={s.phone}>
+                  <a href={`tel:${member.phone}`}>{member.phone}</a>
+                  {/* <Message s={s} id={member._id} /> */}
+                </span>
+              </div>
+            </div>
+
+            <div className={s.amounts}>
+              <p className={`text-right ${s.deposit}`}>
+                <span className={s.currencySymbol}>৳</span>
+                {(member.totalDeposite || 0).fix(0, i18n.language)}
+              </p>
+              <p className={`text-right ${s.due}`}>
+                <span className={s.currencySymbol}>৳</span>
+                {(milestone.perMember - (member.totalDeposite || 0)).fix(
+                  0,
+                  i18n.language
+                )}
+              </p>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };

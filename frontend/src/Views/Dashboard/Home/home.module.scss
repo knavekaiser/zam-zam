@@ -285,6 +285,61 @@
   }
 }
 
+.memberModal {
+  width: 100%;
+  max-width: 30rem;
+  .memberWrapper {
+    .members {
+      display: grid;
+      gap: 1rem;
+      .member {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 1rem 2rem;
+        .user {
+          display: flex;
+          grid-gap: 1rem;
+          align-items: center;
+          img {
+            height: 3rem;
+            width: 3rem;
+            object-fit: cover;
+            border-radius: 50%;
+            outline: 2px solid $primary-color;
+            outline-offset: 2px;
+          }
+          &.staff {
+            img {
+              outline-color: $orange;
+            }
+          }
+          .detail {
+            display: grid;
+            grid-gap: 0.3rem;
+            .phone {
+              grid-gap: 0.5rem;
+              display: flex;
+              font-size: 0.8rem;
+              color: $grey2;
+            }
+          }
+        }
+        .amounts {
+          display: grid;
+          text-align: right;
+          .deposit {
+            color: $green;
+          }
+          .due {
+            color: $red;
+          }
+        }
+      }
+    }
+  }
+}
+
 @keyframes cardIn {
   0% {
     opacity: 0;
@@ -353,6 +408,23 @@
       .card {
         p {
           font-size: 13vw;
+        }
+      }
+    }
+  }
+  .memberModal {
+    .memberWrapper {
+      .members {
+        width: 100%;
+        gap: 1rem;
+        .member {
+          padding: 0.5rem 1rem;
+          width: 100%;
+          display: grid;
+          // gap: 1rem;
+          justify-content: stretch;
+          border-bottom: 1px solid rgba(var(--font-color), 0.3);
+          padding-bottom: 1rem;
         }
       }
     }
