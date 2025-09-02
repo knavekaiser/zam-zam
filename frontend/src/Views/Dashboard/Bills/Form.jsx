@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { Trans, useTranslation } from "react-i18next";
 import { GoX } from "react-icons/go";
 
-export const Form = ({ edit, onSuccess }) => {
+export const Form = ({ supplierId, edit, onSuccess }) => {
   const {
     handleSubmit,
     register,
@@ -41,6 +41,7 @@ export const Form = ({ edit, onSuccess }) => {
 
   const items = watch("items");
   const charges = watch("charges");
+  const returns = watch("returns");
 
   useEffect(() => {
     reset({
@@ -51,6 +52,15 @@ export const Form = ({ edit, onSuccess }) => {
       documents: edit?.documents || [],
       items: [
         ...(edit?.items || []),
+        {
+          _id: Math.random().toString(36).slice(-8),
+          name: "",
+          qty: "",
+          rate: "",
+        },
+      ],
+      returns: [
+        ...(edit?.returns || []),
         {
           _id: Math.random().toString(36).slice(-8),
           name: "",
@@ -76,10 +86,22 @@ export const Form = ({ edit, onSuccess }) => {
           const payload = {
             ref: values.ref,
             date: new Date(values.date),
-            supplier: values.supplier,
+            supplier: supplierId,
             adjustment: values.adjustment ?? 0,
             items: JSON.stringify(
               values.items
+                .filter(
+                  (item) => item.name && item.unit && item.qty && item.rate
+                )
+                .map((item) => {
+                  if (item._id.length === 8) {
+                    delete item._id;
+                  }
+                  return item;
+                })
+            ),
+            returns: JSON.stringify(
+              values.returns
                 .filter(
                   (item) => item.name && item.unit && item.qty && item.rate
                 )
@@ -144,7 +166,7 @@ export const Form = ({ edit, onSuccess }) => {
             error={errors.date}
           />
         </div>
-        <Select
+        {/* <Select
           label={<Trans>Supplier</Trans>}
           control={control}
           name="supplier"
@@ -158,7 +180,7 @@ export const Form = ({ edit, onSuccess }) => {
             label: item.name,
             value: item._id,
           })}
-        />
+        /> */}
 
         <div className={s.itemWrapper}>
           <h3>
@@ -183,6 +205,17 @@ export const Form = ({ edit, onSuccess }) => {
           <Charges
             items={charges || []}
             setItems={(newItems) => setValue("charges", newItems)}
+          />
+        </div>
+
+        <div className={s.itemWrapper}>
+          <h3>
+            <Trans>Returns</Trans>
+          </h3>
+          <Returns
+            products={items}
+            items={returns || []}
+            setItems={(newItems) => setValue("returns", newItems)}
           />
         </div>
 
@@ -432,6 +465,142 @@ const Charges = ({ items, setItems }) => {
   );
 };
 
+const Returns = ({ products, items, setItems }) => {
+  const valuesFilled = useRef(false);
+  const { control, register, reset } = useForm({
+    resolver: useYup(
+      yup.object({
+        name: yup.string().required(),
+        qty: yup.number().required(),
+        rate: yup.number().required(),
+        unit: yup.string().required(),
+      })
+    ),
+  });
+  useEffect(() => {
+    if (items.length < 2 || valuesFilled.current) return;
+    const values = {};
+    items.forEach((item) => {
+      values[`${item._id}_name`] = item.name;
+      values[`${item._id}_qty`] = item.qty;
+      values[`${item._id}_unit`] = item.unit;
+      values[`${item._id}_rate`] = item.rate;
+    });
+    reset(values);
+    valuesFilled.current = true;
+  }, [items]);
+  return (
+    <ul className={s.items}>
+      {items.map((item, i, arr) => (
+        <li key={item._id} className={s.item}>
+          <Select
+            control={control}
+            name={`${item._id}_name`}
+            placeholder="Item"
+            clearable={false}
+            options={products.map((item) => ({
+              label: item.name,
+              value: item.name,
+              product: item,
+            }))}
+            onChange={(opt) => {
+              let newItems = items.map((it) =>
+                it._id === item._id
+                  ? {
+                      _id: it._id,
+                      name: opt.value,
+                      qty: it.qty || "",
+                      unit: it.unit || opt.product.unit,
+                      rate: it.rate || opt.product.rate,
+                    }
+                  : it
+              );
+              if (!arr[i + 1]) {
+                newItems.push({
+                  _id: Math.random().toString(36).slice(-8),
+                  name: "",
+                  qty: "",
+                  unit: "",
+                  rate: "",
+                });
+              }
+              setItems(newItems);
+            }}
+          />
+          <Input
+            placeholder="Qty"
+            {...register(`${item._id}_qty`)}
+            type="number"
+            min={0.1}
+            step="0.1"
+            onChange={(e) => {
+              setItems(
+                items.map((it) =>
+                  it._id === item._id
+                    ? { ...it, qty: +e.target.value || e.target.value }
+                    : it
+                )
+              );
+            }}
+          />
+          <Select
+            control={control}
+            name={`${item._id}_unit`}
+            placeholder="Unit"
+            clearable={false}
+            disabled
+            options={[
+              { label: "kg", value: "kg" },
+              { label: "litre", value: "litre" },
+              { label: "pcs", value: "pcs" },
+              { label: "packet", value: "packet" },
+              { label: "box", value: "box" },
+              { label: "bag", value: "bag" },
+              { label: "thela", value: "thela" },
+            ]}
+            onChange={(opt) => {
+              setItems(
+                items.map((it) =>
+                  it._id === item._id ? { ...it, unit: opt?.value || "" } : it
+                )
+              );
+            }}
+          />
+          <Input
+            placeholder="Rate"
+            {...register(`${item._id}_rate`)}
+            type="number"
+            min={0.1}
+            step="0.1"
+            disabled
+            onChange={(e) => {
+              setItems(
+                items.map((it) =>
+                  it._id === item._id
+                    ? { ...it, rate: +e.target.value || e.target.value }
+                    : it
+                )
+              );
+            }}
+          />
+          {item.name ? (
+            <button
+              className="btn icon"
+              onClick={() => {
+                setItems(items.filter((it) => it._id !== item._id));
+              }}
+            >
+              <GoX />
+            </button>
+          ) : (
+            <span style={{ display: "block", width: "33px" }} />
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 export const Filter = ({ showFilter, filters = {}, setFilters }) => {
   const { t } = useTranslation();
   const { handleSubmit, register, reset } = useForm();
@@ -451,12 +620,15 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
         tabIndex="-1"
         onSubmit={handleSubmit((values) => {
           setFilters(
-            Object.entries(values).reduce((p, [key, value]) => {
-              if (value) {
-                p[key] = value;
-              }
-              return p;
-            }, {})
+            Object.entries(values).reduce(
+              (p, [key, value]) => {
+                if (value) {
+                  p[key] = value;
+                }
+                return p;
+              },
+              { supplier: filters.supplier }
+            )
           );
         })}
         className={s.filters}
@@ -481,7 +653,7 @@ export const Filter = ({ showFilter, filters = {}, setFilters }) => {
             className="btn clear medium"
             onClick={() => {
               reset({});
-              setFilters({});
+              setFilters({ supplier: filters.supplier });
             }}
           >
             <Trans>Clear</Trans>
@@ -497,7 +669,8 @@ export const PaymentForm = ({ bill, edit, onSuccess }) => {
   const { total, paid } = useMemo(() => {
     return {
       total:
-        bill.items.reduce((p, c) => p + c.rate * c.qty, 0) +
+        bill.items.reduce((p, c) => p + c.rate * c.qty, 0) -
+        (bill.returns || []).reduce((p, c) => p + c.rate * c.qty, 0) +
         bill.charges.reduce((p, c) => p + c.amount, 0) +
         (bill.adjustment || 0),
       paid:

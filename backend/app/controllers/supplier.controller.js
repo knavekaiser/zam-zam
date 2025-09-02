@@ -2,7 +2,8 @@ const {
   appConfig: { responseFn, responseStr },
 } = require("../config");
 const { ObjectId } = require("mongodb");
-const { Supplier, Bill } = require("../models");
+const { Supplier, Bill, SupplierPayment } = require("../models");
+const { cdnHelper } = require("../helpers");
 
 const joinPayments = [
   {
@@ -25,6 +26,20 @@ const joinPayments = [
             totalItem: {
               $reduce: {
                 input: "$items",
+                initialValue: 0,
+                in: {
+                  $sum: [
+                    "$$value",
+                    {
+                      $multiply: ["$$this.qty", "$$this.rate"],
+                    },
+                  ],
+                },
+              },
+            },
+            totalReturn: {
+              $reduce: {
+                input: "$returns",
                 initialValue: 0,
                 in: {
                   $sum: [
@@ -61,7 +76,14 @@ const joinPayments = [
             _id: null,
             totalPurchase: {
               $sum: {
-                $sum: ["$totalItem", "$totalCharge", "$adj"],
+                $sum: [
+                  "$totalItem",
+                  "$totalCharge",
+                  "$adj",
+                  {
+                    $multiply: ["$totalReturn", -1],
+                  },
+                ],
               },
             },
             totalPaid: {
@@ -71,7 +93,14 @@ const joinPayments = [
               $sum: {
                 $subtract: [
                   {
-                    $sum: ["$totalItem", "$totalCharge", "$adj"],
+                    $sum: [
+                      "$totalItem",
+                      "$totalCharge",
+                      "$adj",
+                      {
+                        $multiply: ["$totalReturn", -1],
+                      },
+                    ],
                   },
                   "$totalPaid",
                 ],
@@ -89,6 +118,63 @@ const joinPayments = [
       preserveNullAndEmptyArrays: true,
     },
   },
+  {
+    $lookup: {
+      from: "supplierpayments",
+      let: {
+        supplier: "$_id",
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ["$supplier", "$$supplier"],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            amount: {
+              $sum: "$amount",
+            },
+          },
+        },
+      ],
+      as: "supplierPayment",
+    },
+  },
+  {
+    $set: {
+      "payment.supplierPayment": {
+        $getField: {
+          input: {
+            $first: "$supplierPayment",
+          },
+          field: "amount",
+        },
+      },
+      "payment.due": {
+        $subtract: [
+          "$payment.due",
+          {
+            $ifNull: [
+              {
+                $getField: {
+                  input: {
+                    $first: "$supplierPayment",
+                  },
+                  field: "amount",
+                },
+              },
+              0,
+            ],
+          },
+        ],
+      },
+    },
+  },
+  { $unset: "supplierPayment" },
 ];
 
 exports.findAll = async (req, res) => {
@@ -139,20 +225,14 @@ exports.findAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    new Supplier({
-      ...req.body,
-      status: "pending-approval",
-      timeline: [
-        {
-          action: "Created",
-          staff: req.authUser._id,
-          dateTime: new Date(),
-        },
-      ],
-    })
+    new Supplier(req.body)
       .save()
       .then(async (data) => {
-        return responseFn.success(res, { data });
+        const supplier = await Supplier.aggregate([
+          { $match: { _id: data._id } },
+          ...joinPayments,
+        ]);
+        return responseFn.success(res, { data: supplier });
       })
       .catch((err) => {
         return responseFn.error(res, {}, err.message);
@@ -164,40 +244,17 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    ["timeline"].forEach((item) => {
-      delete req.body[item];
-    });
-    const deposit = await Supplier.findOne({ _id: req.params._id });
-
-    const filesToDelete = [];
-    if (req.body.documents) {
-      deposit.documents?.forEach((doc) => {
-        if (!req.body.documents.find((d) => d.url === doc.url)) {
-          filesToDelete.push(doc.url);
-        }
-      });
-    }
-
-    Supplier.findOneAndUpdate(
-      { _id: req.params._id },
-      {
-        ...req.body,
-        $push: {
-          timeline: {
-            $each: [
-              {
-                action: "Updated",
-                staff: req.authUser._id,
-                dateTime: new Date(),
-              },
-            ],
-          },
-        },
-      },
-      { new: true }
-    )
+    Supplier.findOneAndUpdate({ _id: req.params._id }, req.body, { new: true })
       .then(async (data) => {
-        return responseFn.success(res, { data }, responseStr.record_updated);
+        const supplier = await Supplier.aggregate([
+          { $match: { _id: data._id } },
+          ...joinPayments,
+        ]);
+        return responseFn.success(
+          res,
+          { data: supplier },
+          responseStr.record_updated
+        );
       })
       .catch((err) => {
         return responseFn.error(res, {}, err.message);
@@ -209,23 +266,7 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    Supplier.findOneAndUpdate(
-      { _id: req.params._id },
-      {
-        status: "deleted",
-        $push: {
-          timeline: {
-            $each: [
-              {
-                action: "Deleted",
-                staff: req.authUser._id,
-                dateTime: new Date(),
-              },
-            ],
-          },
-        },
-      }
-    )
+    Supplier.deleteOne({ _id: req.params._id })
       .then(async (num) => {
         return responseFn.success(res, {}, responseStr.record_deleted);
       })
@@ -235,7 +276,144 @@ exports.delete = async (req, res) => {
   }
 };
 
+exports.getPayments = async (req, res) => {
+  try {
+    const conditions = {};
+    if (req.query.supplier) {
+      conditions.supplier = ObjectId(req.query.supplier);
+    }
+    if (req.query.paymentMethods) {
+      conditions.paymentMethod = { $in: req.query.paymentMethods.split(",") };
+    }
+    if (req.query.bills) {
+      conditions.bills = { $all: req.query.bills.split(",") };
+    }
+    if (req.query.from_date && req.query.to_date) {
+      conditions.date = {
+        $gte: new Date(req.query.from_date),
+        $lte: new Date(req.query.to_date),
+      };
+    }
+    const pipeline = [{ $match: conditions }, ...joinPayments];
+    const page = parseInt(req.query.page) || null;
+    const pageSize = parseInt(req.query.pageSize) || null;
+    if (page && pageSize) {
+      pipeline.push({
+        $facet: {
+          records: [{ $skip: pageSize * (page - 1) }, { $limit: pageSize }],
+          metadata: [{ $group: { _id: null, total: { $sum: 1 } } }],
+        },
+      });
+    }
+    SupplierPayment.aggregate(pipeline)
+      .then((data) => {
+        responseFn.success(
+          res,
+          page && pageSize
+            ? {
+                data: data[0].records,
+                metadata: {
+                  ...data[0].metadata[0],
+                  _id: undefined,
+                  page,
+                  pageSize,
+                },
+              }
+            : { data }
+        );
+      })
+      .catch((err) => responseFn.error(res, {}, err.message));
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
 exports.makePayment = async (req, res) => {
+  try {
+    new SupplierPayment({
+      ...req.body,
+      supplier: req.params._id,
+    })
+      .save()
+      .then(async (data) => {
+        data = await SupplierPayment.findOne({ _id: data._id }).populate(
+          "supplier",
+          "name phones address"
+        );
+        return responseFn.success(res, { data });
+      })
+      .catch((err) => {
+        if (req.files?.length) {
+          cdnHelper.deleteFiles(req.files.map((file) => file.key));
+        }
+        return responseFn.error(res, {}, err.message);
+      });
+  } catch (error) {
+    if (req.files?.length) {
+      cdnHelper.deleteFiles(req.files.map((file) => file.key));
+    }
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
+exports.updatePayment = async (req, res) => {
+  try {
+    const payment = await SupplierPayment.findOne({
+      supplier: req.params._id,
+      _id: req.params.paymentId,
+    });
+    const filesToDelete = [];
+    if (req.body.documents) {
+      payment.documents?.forEach((doc) => {
+        if (!req.body.documents.find((d) => d.url === doc.url)) {
+          filesToDelete.push(doc.url);
+        }
+      });
+    }
+
+    SupplierPayment.findOneAndUpdate({ _id: payment._id }, req.body, {
+      new: true,
+    })
+      .then(async (data) => {
+        data = await SupplierPayment.findOne({ _id: data._id }).populate(
+          "supplier",
+          "name phones address"
+        );
+        await cdnHelper.deleteFiles(filesToDelete);
+        return responseFn.success(res, { data });
+      })
+      .catch((err) => {
+        if (req.files?.length) {
+          cdnHelper.deleteFiles(req.files.map((file) => file.key));
+        }
+        return responseFn.error(res, {}, err.message);
+      });
+  } catch (error) {
+    if (req.files?.length) {
+      cdnHelper.deleteFiles(req.files.map((file) => file.key));
+    }
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
+exports.deletePayment = async (req, res) => {
+  try {
+    const payment = await SupplierPayment.findOne({
+      supplier: req.params._id,
+      _id: req.params.paymentId,
+    });
+    SupplierPayment.deleteOne({ _id: payment._id })
+      .then(async (num) => {
+        await cdnHelper.deleteFiles(payment.documents.map((doc) => doc.url));
+        return responseFn.success(res, {}, responseStr.record_deleted);
+      })
+      .catch((err) => responseFn.error(res, {}, err.message, 500));
+  } catch (error) {
+    return responseFn.error(res, {}, error.message, 500);
+  }
+};
+
+exports.bulkBillPayment = async (req, res) => {
   try {
     const bills = await Bill.aggregate([
       {
@@ -251,6 +429,20 @@ exports.makePayment = async (req, res) => {
           totalItem: {
             $reduce: {
               input: "$items",
+              initialValue: 0,
+              in: {
+                $sum: [
+                  "$$value",
+                  {
+                    $multiply: ["$$this.qty", "$$this.rate"],
+                  },
+                ],
+              },
+            },
+          },
+          totalReturn: {
+            $reduce: {
+              input: "$returns",
               initialValue: 0,
               in: {
                 $sum: [
@@ -286,7 +478,14 @@ exports.makePayment = async (req, res) => {
         $addFields: {
           due: {
             $subtract: [
-              { $sum: ["$totalItem", "$totalCharge", "$adj"] },
+              {
+                $sum: [
+                  "$totalItem",
+                  "$totalCharge",
+                  "$adj",
+                  { $multiply: ["$totalReturn", -1] },
+                ],
+              },
               "$totalPaid",
             ],
           },

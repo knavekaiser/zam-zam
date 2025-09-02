@@ -20,14 +20,13 @@ const Data = ({ setSidebarOpen }) => {
   const { t, i18n } = useTranslation();
   const tableRef = useRef();
   const { checkPermission } = useContext(SiteContext);
-  const [filters, setFilters] = useState({});
+  const { supplier_id } = useParams();
+  const [filters, setFilters] = useState({ supplier: supplier_id });
   const [edit, setEdit] = useState(null);
   const [addBill, setAddBill] = useState(false);
   const [view, setView] = useState(null);
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
-
-  const { supplier_id } = useParams();
 
   const { remove: deleteBill, loading: deletingBill } = useFetch(
     endpoints.bills + "/{ID}"
@@ -86,14 +85,15 @@ const Data = ({ setSidebarOpen }) => {
             }
           }}
           url={endpoints.bills}
-          filters={{ ...filters, supplier: supplier_id }}
+          filters={filters}
           pagination
           trStyle={{
             gridTemplateColumns: `6rem 6rem 1fr 7rem 7rem 7rem 3rem`,
           }}
           renderRow={(item) => {
             const total =
-              item.items.reduce((p, c) => p + c.rate * c.qty, 0) +
+              item.items.reduce((p, c) => p + c.rate * c.qty, 0) -
+              (item.returns || []).reduce((p, c) => p + c.rate * c.qty, 0) +
               item.charges.reduce((p, c) => p + c.amount, 0) +
               (item.adjustment || 0);
             const paid = item.payments.reduce((p, c) => p + c.amount, 0);
@@ -102,6 +102,10 @@ const Data = ({ setSidebarOpen }) => {
                 key={item._id}
                 style={{
                   gridTemplateColumns: `6rem 6rem 1fr 7rem 7rem 7rem 3rem`,
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  setView(item);
                 }}
               >
                 <td>
@@ -118,13 +122,6 @@ const Data = ({ setSidebarOpen }) => {
                 <TableActions
                   className={s.actions}
                   actions={[
-                    {
-                      icon: <BiDetail />,
-                      label: <Trans>View Detail</Trans>,
-                      onClick: () => {
-                        setView(item);
-                      },
-                    },
                     ...(checkPermission(`bill_update`)
                       ? [
                           {
@@ -191,6 +188,7 @@ const Data = ({ setSidebarOpen }) => {
           }}
         >
           <Form
+            supplierId={supplier_id}
             edit={edit?._id ? edit : null}
             onSuccess={(newData) => {
               if (edit) {
@@ -250,12 +248,13 @@ const Detail = ({ bill, setBill, i18n }) => {
   const { remove: deletePayment, loading: deletingItem } = useFetch(
     endpoints.bills + `/${bill._id}/payments/{ID}`
   );
-  const { total, paid } = useMemo(() => {
+  const { total, totalReturn, paid } = useMemo(() => {
     return {
       total:
         bill.items.reduce((p, c) => p + c.qty * c.rate, 0) +
         bill.charges.reduce((p, c) => p + c.amount, 0),
       paid: bill.payments.reduce((p, c) => p + c.amount, 0),
+      totalReturn: (bill.returns || []).reduce((p, c) => p + c.qty * c.rate, 0),
     };
   }, [bill]);
   return (
@@ -316,6 +315,7 @@ const Detail = ({ bill, setBill, i18n }) => {
             </li>
           ))}
         </ul>
+
         {bill.charges.length > 0 && (
           <ul className={s.charges}>
             {bill.charges.map((charge) => (
@@ -328,7 +328,7 @@ const Detail = ({ bill, setBill, i18n }) => {
             ))}
           </ul>
         )}
-        {bill.adjustment && (
+        {(bill.adjustment || bill.returns?.length > 0) && (
           <>
             <div className={s.subtotal}>
               <p className="ml-a">
@@ -336,14 +336,42 @@ const Detail = ({ bill, setBill, i18n }) => {
               </p>
               <p className="text-right">৳ {total.fix(2, i18n.language)}</p>
             </div>
-            <div className={s.adj}>
-              <p className="ml-a">
-                <Trans>Adjustment</Trans>
-              </p>
-              <p className="text-right">
-                {bill.adjustment.fix(2, i18n.language)}
-              </p>
-            </div>
+            {bill.returns?.length > 0 && (
+              <ul className={s.items} style={{ marginTop: "0" }}>
+                {bill.returns.map((item) => (
+                  <li className={s.item} key={item._id}>
+                    <p>
+                      {item.name}
+                      {" - "}
+                      <Trans>
+                        <small>
+                          <i style={{ opacity: ".7" }}>Return</i>
+                        </small>
+                      </Trans>
+                    </p>
+                    <p className="text-right">
+                      {item.qty.fix(2, i18n.language)} {item.unit}
+                    </p>
+                    <p className="text-right">
+                      {item.rate.fix(2, i18n.language)}
+                    </p>
+                    <p className="text-right">
+                      -{(item.rate * item.qty).fix(2, i18n.language)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {bill.adjustment && (
+              <div className={s.adj}>
+                <p className="ml-a">
+                  <Trans>Adjustment</Trans>
+                </p>
+                <p className="text-right">
+                  {bill.adjustment.fix(2, i18n.language)}
+                </p>
+              </div>
+            )}
           </>
         )}
         <div className={s.subtotal}>
@@ -351,9 +379,10 @@ const Detail = ({ bill, setBill, i18n }) => {
             <Trans>Grand Total</Trans>
           </p>
           <p className="text-right">
-            ৳ {(total + bill.adjustment).fix(2, i18n.language)}
+            ৳ {(total + bill.adjustment - totalReturn).fix(2, i18n.language)}
           </p>
         </div>
+
         {bill.payments.length > 0 ? (
           <ul className={s.payments}>
             <li className={s.devider}>
@@ -443,7 +472,7 @@ const Detail = ({ bill, setBill, i18n }) => {
         )}
         <div className={s.subtotal}>
           <p className="ml-a flex align-center gap-1">
-            {total + bill.adjustment - paid > 0 &&
+            {total + bill.adjustment - totalReturn - paid > 0 &&
               checkPermission(`bill_update`) && (
                 <button className={s.btn} onClick={() => setAddPayment(true)}>
                   Make Payment
@@ -452,7 +481,11 @@ const Detail = ({ bill, setBill, i18n }) => {
             Due
           </p>
           <p className="text-right">
-            ৳ {(total + bill.adjustment - paid).fix(2, i18n.language)}
+            ৳{" "}
+            {(total + bill.adjustment - totalReturn - paid).fix(
+              2,
+              i18n.language
+            )}
           </p>
         </div>
       </div>

@@ -436,10 +436,6 @@ export const PaymentForm = ({ supplier, onSuccess }) => {
         amount: yup
           .number()
           .min(1, `Can't be less than 1`)
-          .max(
-            total - paid,
-            `Can't be more than ${(total - paid).fix(2, i18n.language)}`
-          )
           .required("Please provide an amount")
           .typeError("Plase enter a valid number"),
         // documents: yup.array().of(yup.mixed()),
@@ -456,7 +452,7 @@ export const PaymentForm = ({ supplier, onSuccess }) => {
       date: moment(new Date(), "yyyy-MM-dd", "en"),
       paymentMethod: "Cash",
       amount: "",
-      // documents:  [],
+      documents: [],
     });
   }, []);
 
@@ -469,21 +465,21 @@ export const PaymentForm = ({ supplier, onSuccess }) => {
             paymentMethod: values.paymentMethod,
             amount: values.amount,
           };
-          // const formData = new FormData();
-          // Object.entries(payload).forEach(([key, value]) => {
-          //   formData.append(key, value);
-          // });
-          // if (values.documents?.length) {
-          //   values.documents?.forEach((file) => {
-          //     formData.append(
-          //       "documents",
-          //       file.url ? JSON.stringify(file) : file
-          //     );
-          //   });
-          // } else {
-          //   formData.append("documents", null);
-          // }
-          makePayment(payload).then(({ data }) => {
+          const formData = new FormData();
+          Object.entries(payload).forEach(([key, value]) => {
+            formData.append(key, value);
+          });
+          if (values.documents?.length) {
+            values.documents?.forEach((file) => {
+              formData.append(
+                "documents",
+                file.url ? JSON.stringify(file) : file
+              );
+            });
+          } else {
+            formData.append("documents", null);
+          }
+          makePayment(formData).then(({ data }) => {
             if (data.errors) {
               return Prompt({ type: "error", message: data.message });
             } else if (data.success) {
@@ -540,13 +536,13 @@ export const PaymentForm = ({ supplier, onSuccess }) => {
           error={errors.amount}
         />
 
-        {/* <FileInput
+        <FileInput
           control={control}
           name="documents"
           multiple={5}
           label="Documents"
           accept="image/*,application/pdf"
-        /> */}
+        />
 
         <div className="btns">
           <button className="btn" disabled={loading} title="Submit">

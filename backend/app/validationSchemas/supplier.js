@@ -34,4 +34,16 @@ module.exports = {
       amount: yup.number().min(1),
     }),
   }),
+
+  removePayment: yup.object({
+    params: yup.object({
+      _id: yup
+        .string()
+        .test(
+          "checkSupplier",
+          "Supplier not found",
+          async (v) => await Supplier.findOne({ _id: v })
+        ),
+    }),
+  }),
 };

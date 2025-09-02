@@ -63,7 +63,15 @@ export default function Suppliers({ setSidebarOpen }) {
             <Trans>Paid</Trans>
           </td>
           <td className={`${s.supplierPaid} text-right`}>
-            {(item.payment?.totalPaid || 0).fix(2, i18n.language)}
+            <Link
+              className={`mb_5`}
+              to={`${paths.supplierPayments.replace(":supplier_id", item._id)}`}
+            >
+              {(
+                (item.payment?.totalPaid || 0) +
+                (item.payment?.supplierPayment || 0)
+              ).fix(2, i18n.language)}
+            </Link>
           </td>
           <td className={s.supplierLine} />
           <td className={`${s.supplierLabel} text-right`}>

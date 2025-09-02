@@ -233,9 +233,8 @@
       grid-template-columns: 1fr 7rem;
       padding: 0.5rem 0;
     }
-    .payments {
-      margin-top: 3rem;
-      margin-left: auto;
+    .payments,
+    .items {
       .devider {
         margin-bottom: 1rem;
         display: grid;
@@ -246,6 +245,11 @@
           opacity: 0.2;
         }
       }
+    }
+    .payments {
+      margin-top: 3rem;
+      margin-left: auto;
+
       .payment {
         padding: 0.5rem 0;
         display: grid;

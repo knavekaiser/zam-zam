@@ -27,6 +27,7 @@ const endpoints = {
   withdrawals: `${baseApiUrl}/api/withdrawals`,
   members: `${baseApiUrl}/api/members`,
   suppliers: `${baseApiUrl}/api/suppliers`,
+  supplierPayments: `${baseApiUrl}/api/suppliers/:supplier_id/payments`,
   bills: `${baseApiUrl}/api/bills`,
   billItems: `${baseApiUrl}/api/bills/items`,
   billCharges: `${baseApiUrl}/api/bills/charges`,

@@ -52,6 +52,7 @@ const Suppliers = lazy(() => import("./Suppliers"));
 const Bills = lazy(() => import("./Bills"));
 const Milestones = lazy(() => import("./Milestones"));
 const Materials = lazy(() => import("./Materials"));
+const SupplierPayments = lazy(() => import("./SupplierPayments"));
 
 const Loading = ({ columns, trStyle, setSidebarOpen }) => {
   return (
@@ -540,6 +541,22 @@ const MainApp = () => {
               }
             >
               <Bills setSidebarOpen={setSidebarOpen} />
+            </Suspense>
+          }
+        />
+        <Route
+          path={paths.supplierPayments}
+          element={
+            <Suspense
+              fallback={
+                <Loading
+                  columns={2}
+                  trStyle={{ gridTemplateColumns: `1fr 5rem` }}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            >
+              <SupplierPayments setSidebarOpen={setSidebarOpen} />
             </Suspense>
           }
         />

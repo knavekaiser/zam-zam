@@ -20,6 +20,7 @@ module.exports = {
   Role: require("./role.model"),
   Milestone: require("./milestone.model"),
   Supplier: require("./supplier.model"),
+  SupplierPayment: require("./supplierPayment.model"),
   Bill: require("./bill.model"),
   Device: require("./device.model"),
   BugReport: require("./bugReport.model"),

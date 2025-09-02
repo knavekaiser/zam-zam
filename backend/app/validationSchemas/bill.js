@@ -18,6 +18,17 @@ const body = {
     )
     .min(1, "Please enter at least one item")
     .required(),
+  returns: yup
+    .array()
+    .of(
+      yup.object({
+        name: yup.string().trim().required(),
+        qty: yup.number().required(),
+        unit: yup.string().trim().required(),
+        rate: yup.number().required(),
+      })
+    )
+    .required(),
   charges: yup
     .array()
     .of(

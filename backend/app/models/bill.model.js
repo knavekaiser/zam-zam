@@ -25,6 +25,14 @@ module.exports = mongoose.model(
           rate: { type: Schema.Types.Number, required: true },
         }),
       ],
+      returns: [
+        new Schema({
+          name: { type: Schema.Types.String, required: true },
+          qty: { type: Schema.Types.Number, required: true },
+          unit: { type: Schema.Types.String, required: true },
+          rate: { type: Schema.Types.Number, required: true },
+        }),
+      ],
       charges: [
         new Schema({
           name: { type: Schema.Types.String, required: true },

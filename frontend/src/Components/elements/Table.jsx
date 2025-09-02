@@ -226,7 +226,13 @@ export const TableActions = ({ actions, className }) => {
   }
 
   return (
-    <td className={`${s.tableActions} ${className || ""}`}>
+    <td
+      className={`${s.tableActions} ${className || ""}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
       <Menu options={actions} />
     </td>
   );
