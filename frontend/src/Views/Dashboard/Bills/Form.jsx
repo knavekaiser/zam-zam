@@ -23,7 +23,7 @@ export const Form = ({ supplierId, edit, onSuccess }) => {
     resolver: useYup(
       yup.object({
         date: yup.string().required(),
-        supplier: yup.string().required(),
+        // supplier: yup.string().required(),
         items: yup
           .array()
           .of(yup.object())
@@ -47,7 +47,7 @@ export const Form = ({ supplierId, edit, onSuccess }) => {
     reset({
       ref: edit?.ref || "",
       date: moment(edit?.date || new Date(), "yyyy-MM-dd", "en"),
-      supplier: edit?.supplier?._id || "",
+      // supplier: edit?.supplier?._id || "",
       adjustment: edit?.adjustment || "",
       documents: edit?.documents || [],
       items: [
