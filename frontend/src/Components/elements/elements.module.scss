@@ -1,4 +1,4 @@
-@import "../variables";
+@use "../variables" as variables;
 
 .input {
   display: grid;
@@ -58,7 +58,7 @@
     min-width: 4rem;
     font-size: 0.88em;
     &:focus {
-      border-color: $primary-color;
+      border-color: variables.$primary-color;
     }
     &:read-only {
       background: #f5f4f4;
@@ -585,7 +585,7 @@
   &:focus-within {
     .field {
       p {
-        border-color: $primary-color;
+        border-color: variables.$primary-color;
       }
     }
   }
@@ -637,14 +637,14 @@
         }
       }
       &.selected {
-        background: $grey1;
+        background: variables.$grey1;
       }
       &.hover {
-        background: rgba($primary-color, 0.3) !important;
+        background: rgba(variables.$primary-color, 0.3) !important;
       }
       &.disabled {
         font-style: italic;
-        color: $grey2;
+        color: variables.$grey2;
         cursor: not-allowed;
       }
     }
@@ -660,13 +660,13 @@
 .imgInput {
   font-size: 2rem;
   label {
-    color: $primary-color;
+    color: variables.$primary-color;
     display: grid;
     height: 4em;
     width: 4em;
     border-radius: 50%;
     place-items: center;
-    outline: 2px solid $primary-color;
+    outline: 2px solid variables.$primary-color;
     outline-offset: 0.15em;
     cursor: pointer;
   }
@@ -753,8 +753,8 @@
   thead {
     background: linear-gradient(
       80deg,
-      rgba($primary-color, 0.85) 0%,
-      rgba($primary-color-dark1, 1) 100%
+      rgba(variables.$primary-color, 0.85) 0%,
+      rgba(variables.$primary-color-dark1, 1) 100%
     );
     position: sticky;
     top: 0;
@@ -800,7 +800,7 @@
           display: flex;
           align-items: center;
           grid-gap: 6px;
-          color: $primary-color;
+          color: variables.$primary-color;
           .icon {
             font-size: 1.7rem;
           }
@@ -840,7 +840,7 @@
     tbody {
       tr {
         // &:nth-child(even) {
-        //   background: rgba($primary-color, 0.1);
+        //   background: rgba(variables.$primary-color, 0.1);
         // }
         // &:nth-child(odd) {
         //   background: #ffffff;
@@ -934,7 +934,7 @@
       cursor: pointer;
       border-radius: 5px;
       &.selected {
-        box-shadow: 0 0 0 3px $primary-color;
+        box-shadow: 0 0 0 3px variables.$primary-color;
       }
     }
   }

@@ -1,4 +1,4 @@
-@import "Components/variables";
+@use "Components/variables";
 
 .container {
   // color: white;
@@ -86,11 +86,11 @@
         transform: translateY(-50%);
         background: linear-gradient(
           90deg,
-          rgba($primary-color-dark1, 1) 0%,
-          rgba($primary-color-dark2, 1) 100%
+          rgba(variables.$primary-color-dark1, 1) 0%,
+          rgba(variables.$primary-color-dark2, 1) 100%
         );
         transition: width 0.4s ease-in-out, left 0.4s ease-in-out;
-        filter: drop-shadow(0 0 10px rgba($primary-color-dark2, 0.5));
+        filter: drop-shadow(0 0 10px rgba(variables.$primary-color-dark2, 0.5));
       }
       button {
         z-index: 3;

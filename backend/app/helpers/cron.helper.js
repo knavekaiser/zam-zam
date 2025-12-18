@@ -3,7 +3,7 @@ const firebase = require("./firebase.helper");
 const { Milestone, Member } = require("../models");
 
 const sendMilestoneReminder = async () => {
-  const totalShares = await Member.count({ status: "active" });
+  const totalShares = await Member.countDocuments({ status: "active" });
   const milestone = await Milestone.aggregate([
     [
       {

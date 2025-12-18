@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-99a13aae'], (function (workbox) { 'use strict';
+define(['./workbox-cffa4085'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -78,8 +78,11 @@ define(['./workbox-99a13aae'], (function (workbox) { 'use strict';
    * See https://goo.gl/S9QRab
    */
   workbox.precacheAndRoute([{
-    "revision": null,
-    "url": "index.html"
+    "url": "registerSW.js",
+    "revision": "3ca0b8505b4bec776b69afdba2768812"
+  }, {
+    "url": "index.html",
+    "revision": "0.vhnq8qmgqno"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {

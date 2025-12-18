@@ -1,4 +1,4 @@
-@import "./Components/variables";
+@use "Components/variables";
 
 #portal,
 #prompt {
@@ -137,10 +137,10 @@ body.dark {
         color: rgb(var(--blue));
       }
       &.success {
-        color: $green;
+        color: variables.$green;
       }
       &._error {
-        color: $red;
+        color: variables.$red;
       }
     }
     p {
@@ -161,7 +161,7 @@ body.dark {
 .reactSelect {
   width: 100%;
   &:focus-within {
-    border-color: $primary-color;
+    border-color: variables.$primary-color;
   }
   &.err {
     border-color: red;
@@ -262,7 +262,7 @@ body.dark {
   }
   .rdrDateDisplayWrapper {
     .rdrDateDisplayItemActive {
-      color: $primary-color;
+      color: variables.$primary-color;
     }
   }
   .rdrDays {
@@ -271,16 +271,16 @@ body.dark {
       .rdrStartEdge,
       .rdrInRange,
       .rdrEndEdge {
-        color: $primary-color-dark1 !important;
+        color: variables.$primary-color-dark1 !important;
       }
       .rdrDayStartPreview,
       .rdrDayInPreview,
       .rdrDayEndPreview {
-        border-color: $primary-color-dark1 !important;
+        border-color: variables.$primary-color-dark1 !important;
       }
       &.rdrDayToday {
         span::after {
-          background: $primary-color-dark2;
+          background: variables.$primary-color-dark2;
         }
       }
     }
@@ -291,12 +291,12 @@ body.dark {
         .rdrStartEdge,
         .rdrInRange,
         .rdrEndEdge {
-          color: $orange !important;
+          color: variables.$orange !important;
         }
         .rdrDayStartPreview,
         .rdrDayInPreview,
         .rdrDayEndPreview {
-          border-color: $orange !important;
+          border-color: variables.$orange !important;
         }
       }
     }
@@ -330,14 +330,14 @@ body.dark {
       margin-bottom: 1em;
     }
     a {
-      border: 2px solid $orange;
+      border: 2px solid variables.$orange;
       width: max-content;
       padding: 0.75em 1.5em;
       border-radius: 0.5em;
       font-size: 0.8em;
       background: #112643;
       &:hover {
-        background: $orange;
+        background: variables.$orange;
       }
     }
   }
@@ -347,11 +347,11 @@ body.dark {
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-    background-color: rgba($primary-color, 0.2);
+    background-color: rgba(variables.$primary-color, 0.2);
     border-radius: 1rem;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: $primary-color;
+    background-color: variables.$primary-color;
     border-radius: 1rem;
   }
 }

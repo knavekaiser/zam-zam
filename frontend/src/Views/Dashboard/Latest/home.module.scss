@@ -1,4 +1,4 @@
-@import "Components/variables";
+@use "Components/variables";
 
 .contentWrapper {
   margin: 0 auto;
@@ -52,12 +52,12 @@
           width: 3rem;
           object-fit: cover;
           border-radius: 50%;
-          outline: 2px solid $primary-color;
+          outline: 2px solid variables.$primary-color;
           outline-offset: 2px;
         }
         &.staff {
           img {
-            outline-color: $orange;
+            outline-color: variables.$orange;
           }
         }
         .detail {
@@ -67,7 +67,7 @@
             grid-gap: 0.5rem;
             // display: flex;
             font-size: 0.8rem;
-            color: $grey2;
+            color: variables.$grey2;
           }
         }
       }

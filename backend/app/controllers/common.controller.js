@@ -29,7 +29,7 @@ exports.dashboardData = async (req, res) => {
       conditions.member = req.authUser._id;
     }
 
-    const totalShares = await Member.count({ status: "active" });
+    const totalShares = await Member.countDocuments({ status: "active" });
     const pipeline = [
       {
         $group: {

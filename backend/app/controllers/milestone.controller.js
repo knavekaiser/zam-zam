@@ -26,7 +26,7 @@ exports.findAll = async (req, res) => {
         $lte: new Date(req.query.to_date),
       };
     }
-    const totalShares = await Member.count({ status: "active" });
+    const totalShares = await Member.countDocuments({ status: "active" });
     const pipeline = [
       { $match: conditions },
       { $set: { perMember: { $divide: ["$amount", totalShares || 1] } } },
@@ -123,7 +123,7 @@ exports.create = async (req, res) => {
     ) {
       status = "ongoing";
     }
-    const totalMembers = await Member.count({ status: "active" });
+    const totalMembers = await Member.countDocuments({ status: "active" });
     new Milestone({
       ...req.body,
       addedBy: req.authUser.id,

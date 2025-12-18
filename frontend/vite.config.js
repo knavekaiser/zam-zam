@@ -1,10 +1,19 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
+import { createHtmlPlugin } from "vite-plugin-html";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    createHtmlPlugin({
+      inject: {
+        data: {
+          title: "App",
+        },
+      },
+    }),
     react(),
     VitePWA({
       registerType: "autoUpdate",
@@ -100,12 +109,12 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": "/src",
-      Components: "/src/Components",
-      config: "/src/config",
-      helpers: "/src/helpers",
-      hooks: "/src/hooks",
-      Views: "/src/Views",
+      "@": path.resolve(__dirname, "src"),
+      Components: path.resolve(__dirname, "src/Components"),
+      config: path.resolve(__dirname, "src/config"),
+      helpers: path.resolve(__dirname, "src/helpers"),
+      hooks: path.resolve(__dirname, "src/hooks"),
+      Views: path.resolve(__dirname, "src/Views"),
     },
   },
   server: {

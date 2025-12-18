@@ -1,4 +1,4 @@
-@import "Components/variables";
+@use "Components/variables";
 
 .container {
   // overflow: hidden;
@@ -37,7 +37,7 @@
       .profile {
         height: 4rem;
         width: 4rem;
-        outline: 2px solid $primary-color;
+        outline: 2px solid variables.$primary-color;
         outline-offset: 2px;
         margin-bottom: 6px;
         border-radius: 50%;
@@ -52,7 +52,7 @@
       }
       &.staff {
         .profile {
-          outline-color: $orange;
+          outline-color: variables.$orange;
         }
       }
       .role {
@@ -129,7 +129,7 @@
           content: "";
           display: block;
           position: absolute;
-          background: $primary-color;
+          background: variables.$primary-color;
           top: 50%;
           transform-origin: left;
           display: block;
@@ -147,8 +147,8 @@
           z-index: -5;
           background: radial-gradient(
             circle,
-            rgba($primary-color, 0.35) 0%,
-            rgba($primary-color, 0) 60%
+            rgba(variables.$primary-color, 0.35) 0%,
+            rgba(variables.$primary-color, 0) 60%
           );
           transition: 0.25s transform ease-in-out;
           transform: translateY(-50%) scale(0);
@@ -182,9 +182,9 @@
       }
       .logoutBtn {
         font-size: 1.2em;
-        color: $primary-color;
+        color: variables.$primary-color;
         :global(.light) & {
-          color: $primary-color-dark1;
+          color: variables.$primary-color-dark1;
         }
       }
     }
@@ -313,7 +313,7 @@
     th {
       p {
         height: 15px;
-        background: rgba($primary-color, 0.75);
+        background: rgba(variables.$primary-color, 0.75);
       }
     }
     tr {

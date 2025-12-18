@@ -1,4 +1,4 @@
-@import "Components/variables";
+@use "Components/variables";
 
 .contentWrapper {
   margin: 0 auto;
@@ -35,7 +35,7 @@
         // width: 100%;
         aspect-ratio: 1;
         border-radius: 50%;
-        background: $primary-color-dark1;
+        background: variables.$primary-color-dark1;
         transition: transform 0.4s cubic-bezier(0.62, 0.34, 0.24, 1.01);
       }
       &.selfOnly {
@@ -105,7 +105,7 @@
             .left {
               .dscr {
                 font-size: 0.85rem;
-                color: $grey2;
+                color: variables.$grey2;
               }
             }
             .right {
@@ -122,7 +122,7 @@
           .dates {
             font-size: 0.85rem;
             padding-right: 4px;
-            color: $grey2;
+            color: variables.$grey2;
           }
           .money {
             padding-right: 4px;
@@ -162,7 +162,7 @@
               display: block;
               position: absolute;
               height: 100%;
-              background: $red;
+              background: variables.$red;
               border-radius: 1rem;
               transition: width 1s cubic-bezier(0.49, 0.01, 0.14, 1.01),
                 height 0.4s ease-in-out;
@@ -189,7 +189,7 @@
           }
           &.ongoing {
             .progress {
-              background: $green;
+              background: variables.$green;
             }
           }
         }
@@ -243,8 +243,8 @@
       border-radius: 1rem;
       background: linear-gradient(
         45deg,
-        $primary-color-dark1 0%,
-        $primary-color-dark2 100%
+        variables.$primary-color-dark1 0%,
+        variables.$primary-color-dark2 100%
       );
       opacity: 0;
       animation: cardIn 1.5s forwards cubic-bezier(0.01, 0.38, 0.35, 0.96);
@@ -306,12 +306,12 @@
             width: 3rem;
             object-fit: cover;
             border-radius: 50%;
-            outline: 2px solid $primary-color;
+            outline: 2px solid variables.$primary-color;
             outline-offset: 2px;
           }
           &.staff {
             img {
-              outline-color: $orange;
+              outline-color: variables.$orange;
             }
           }
           .detail {
@@ -321,7 +321,7 @@
               grid-gap: 0.5rem;
               display: flex;
               font-size: 0.8rem;
-              color: $grey2;
+              color: variables.$grey2;
             }
           }
         }
@@ -329,10 +329,10 @@
           display: grid;
           text-align: right;
           .deposit {
-            color: $green;
+            color: variables.$green;
           }
           .due {
-            color: $red;
+            color: variables.$red;
           }
         }
       }

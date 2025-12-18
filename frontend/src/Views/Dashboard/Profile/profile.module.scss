@@ -1,4 +1,4 @@
-@import "Components/variables";
+@use "Components/variables";
 
 .wrapper {
   container-name: wrapper;
@@ -28,7 +28,7 @@
     }
     .staff {
       label {
-        outline-color: $orange;
+        outline-color: variables.$orange;
       }
     }
     .divider {
@@ -71,7 +71,7 @@
       left: 50%;
       aspect-ratio: 1;
       border-radius: 50%;
-      background: $primary-color-dark1;
+      background: variables.$primary-color-dark1;
       transition: transform 0.4s cubic-bezier(0.62, 0.34, 0.24, 1.01);
       // animation: none;
     }

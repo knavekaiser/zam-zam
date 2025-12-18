@@ -1,4 +1,4 @@
-@import "./Components/variables";
+@use "Components/variables";
 @import url("https://fonts.maateen.me/solaiman-lipi/font.css");
 
 * {
@@ -57,8 +57,8 @@ button {
     background: none;
     background: linear-gradient(
       45deg,
-      $primary-color-dark1 0%,
-      $primary-color-dark2 100%
+      variables.$primary-color-dark1 0%,
+      variables.$primary-color-dark2 100%
     );
     position: relative;
     z-index: 1;
@@ -82,14 +82,14 @@ button {
     &:not(.clear)::before {
       // background: red;
       transform: translate(-50%, -50%) scale(0.9);
-      border: 2px solid $primary-color-dark1;
+      border: 2px solid variables.$primary-color-dark1;
       z-index: -5;
     }
     &:not(.clear)::after {
       background: linear-gradient(
         45deg,
-        $primary-color-dark1 0%,
-        $primary-color-dark2 100%
+        variables.$primary-color-dark1 0%,
+        variables.$primary-color-dark2 100%
       );
       transform: translate(-50%, -50%);
       border-radius: 2rem;
@@ -106,7 +106,7 @@ button {
         }
       }
       &:active {
-        background: $primary-color-dark2;
+        background: variables.$primary-color-dark2;
       }
     }
     &.icon {
@@ -130,7 +130,7 @@ button {
       align-items: center;
     }
     &.border {
-      border: 1px solid $grey2;
+      border: 1px solid variables.$grey2;
       border-radius: 4px;
     }
   }
@@ -300,7 +300,7 @@ a {
 
 .subtitle1 {
   font-size: 14px;
-  color: $grey2;
+  color: variables.$grey2;
   font-style: italic;
 }
 
@@ -372,7 +372,7 @@ a {
   flex-wrap: wrap;
   .chip {
     padding-left: 0.5rem;
-    border: 1px solid $primary-color;
+    border: 1px solid variables.$primary-color;
     border-radius: 5px;
     display: flex;
     grid-gap: 5px;
@@ -382,10 +382,10 @@ a {
     .clear {
       font-size: 1.2em;
       padding: 0.3rem;
-      color: $primary-color-dark1;
+      color: variables.$primary-color-dark1;
       &:hover {
         color: white;
-        background: $primary-color-dark1;
+        background: variables.$primary-color-dark1;
       }
     }
   }
@@ -396,7 +396,7 @@ a {
 }
 
 .error {
-  background: $red;
+  background: variables.$red;
   color: white;
   font-size: 0.85em;
   border-radius: 0.5rem;
@@ -408,7 +408,7 @@ a {
   align-items: center;
   grid-gap: 6px;
   .icon {
-    background: $primary-color-dark2;
+    background: variables.$primary-color-dark2;
     color: white;
     aspect-ratio: 1;
     width: 2em;
